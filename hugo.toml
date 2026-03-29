@@ -1,35 +1,10 @@
 baseURL = 'https://Z-tianyuan.github.io/'
 languageCode = 'zh-cn'
-title = 'Z-tianyuan 的技术自留地'
-theme = 'PaperMod'
+title = 'Z-tianyuan 的技术基地'
+theme = 'hugo-book'
 
-# 开启 JSON 输出，这是为了让搜索功能生效
-[outputs]
-  home = ["HTML", "RSS", "JSON"]
-
+# 开启搜索功能（这是这个主题的强项，会在左上角自动生成搜索框）
 [params]
-  # 开启全局搜索（会在右上角多出一个放大镜）
-  ShowSearchButton = true
-
-  # 你的首页中心名片配置
-  [params.profileMode]
-    enabled = true
-    title = "Z-tianyuan"
-    subtitle = "网络工程 / 专注网络安全与漏洞挖掘 / AI 模型探索中..."
-    # 这里放你的头像路径，你可以把一张叫 avatar.png 的图片放进 static/img/ 文件夹里
-    imageUrl = "/img/avatar.png"
-    imageWidth = 150
-    imageHeight = 150
-    
-    # 首页中心的按钮，比如导向你的归档或者文章列表
-    [[params.profileMode.buttons]]
-      name = "💻 查看实战记录"
-      url = "/posts/"
-
-  # 社交链接（显示在签名下方）
-  [[params.socialIcons]]
-    name = "github"
-    url = "https://github.com/Z-tianyuan"
-  [[params.socialIcons]]
-    name = "email"
-    url = "mailto:你的邮箱@example.com"
+  BookSearch = true
+  # 默认折叠左侧的目录树，让界面更清爽
+  BookSection = '*'
