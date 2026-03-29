@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Web安全 on Z-tianyuan 的技术自留地</title>
+    <link>http://localhost:1313/tags/web%E5%AE%89%E5%85%A8/</link>
+    <description>Recent content in Web安全 on Z-tianyuan 的技术自留地</description>
+    <generator>Hugo</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 28 Mar 2026 17:00:00 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/web%E5%AE%89%E5%85%A8/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>记一次布尔盲注漏洞的绕过与复现</title>
+      <link>http://localhost:1313/posts/sql-injection-bypass-record/</link>
+      <pubDate>Sat, 28 Mar 2026 17:00:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/sql-injection-bypass-record/</guid>
+      <description>&lt;h3 id=&#34;背景&#34;&gt;背景&lt;/h3&gt;
+&lt;p&gt;在近期的靶场实战中，遇到了一个登录框过滤了大量常规 SQL 注入 Payload 的场景。在此记录一下如何利用 Burp Suite 抓包分析，并最终通过布尔盲注（Boolean-based Blind）成功绕过限制的过程。&lt;/p&gt;
+&lt;h3 id=&#34;分析过程&#34;&gt;分析过程&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;初步探测：尝试输入单引号，页面没有报错信息，直接排除报错注入。&lt;/li&gt;
+&lt;li&gt;抓包分析：开启 Burp Suite 拦截登录请求&amp;hellip;&lt;/li&gt;
+&lt;li&gt;构造 Payload：这里我使用了 Python 编写了一个简单的自动化脚本来跑数据。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;修复思考&#34;&gt;修复思考&lt;/h3&gt;
+&lt;p&gt;站在防御者的角度，建议在代码层使用预编译语句（参数化查询）来从根本上杜绝此类注入。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

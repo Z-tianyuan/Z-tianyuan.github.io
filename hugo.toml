@@ -1,0 +1,4 @@
+baseURL = 'https://Z-tianyuan.github.io/'
+languageCode = 'zh-cn'
+title = 'Z-tianyuan 的技术自留地'
+theme = 'PaperMod'
