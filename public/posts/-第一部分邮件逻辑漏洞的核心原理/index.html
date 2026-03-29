@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>这里写你这篇文章的真实标题 | Z-tianyuan 的技术自留地</title>
+<meta name="keywords" content="SQL注入, 靶场实战, BurpSuite">
+<meta name="description" content="🧠 第一部分：漏洞的核心原理
+这个漏洞之所以能成立，是因为目标网站的后端系统存在**“精神分裂”**——处理注册流程的两个核心组件，对数据的校验标准不一致。
+1. 宽容的“发件员”（邮件处理服务）
+当你在网页上提交注册邮箱时，负责发送验证邮件的代码逻辑非常简单粗暴。它只认死理：“只要这是一个格式合法的邮箱，我就往它 @ 后面的那个顶级域名发邮件。” 它没有限制长度。所以当你提交 238个a@dontwannacry.com.你的实验域名.net 时，它一看后缀是你的实验域名，就乖乖把邮件发到了你的客户端里。
+2. 严格且粗暴的“档案管理员”（数据库）
+发件员发完邮件后，要把你的信息存入后台数据库（比如 MySQL 的 users 表）。
+在设计数据库时，程序员给 email 这个字段设定了最大长度，通常是 VARCHAR(255)。
+当超过 255 个字符的数据涌进来时，老版本的数据库（或者未开启严格模式的数据库）不会报错拦截，而是会采取一种极其粗暴的默认行为：“既然装不下，那我就把第 255 个字符后面的所有东西，全部拿剪刀咔嚓剪掉！”
+3. 致命的“身份核验”（权限逻辑）
+网站的权限判断逻辑是：用户登录后，去数据库里查他的 email 字段，如果以 @dontwannacry.com 结尾，就给他 Admin 权限。
+💥 漏洞闭环： 你用超长邮箱骗过了“发件员”拿到了激活链接；随后“档案管理员”挥舞剪刀，把你邮箱后缀的实验域名剪掉了，只把前 255 个字符（刚好以 @dontwannacry.com 结尾）存进了数据库。
+当你登录时，权限系统一看数据库里的记录，当场肃然起敬：“欢迎您，内部管理员！”
+🕵️‍♂️ 第二部分：如何挖掘出这个漏洞？（黑客视角的详细过程）
+你可能会问：“原版教程是直接把答案喂给我了，但如果这是一个完全陌生的网站，我怎么知道要往框里填 255 个字符？”
+真正的挖掘过程，是一个严密的**“假设 -&gt; 测试 -&gt; 观察 -&gt; 利用”**的循环。以下是标准的渗透测试思路：
+Step 1: 确立目标与信息收集 (侦察阶段)
+
+
+观察现象： 你在网站上随便乱点，可能在某处（比如 JS 文件、或者是之前的目录扫描）发现了一个 /admin 路径。
+
+
+触碰边界： 你尝试访问 /admin，网页弹出一个无情的错误提示：Admin interface only available if logged in as a @dontwannacry.com user。">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/posts/-%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%E9%82%AE%E4%BB%B6%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.4ef2299ae814559c4055cd3d15919aff78737e44fa7af337c506246832ba458a.css" integrity="sha256-TvIpmugUVZxAVc09FZGa/3hzfkT6evM3xQYkaDK6RYo=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/-%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%E9%82%AE%E4%BB%B6%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Z-tianyuan 的技术自留地 (Alt + H)">Z-tianyuan 的技术自留地</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      这里写你这篇文章的真实标题
+    </h1>
+    <div class="post-meta"><span title='2026-03-29 15:00:00 +0800 CST'>March 29, 2026</span>
+
+</div>
+  </header> 
+  <div class="post-content"><h3 id="-第一部分漏洞的核心原理">🧠 第一部分：漏洞的核心原理<a hidden class="anchor" aria-hidden="true" href="#-第一部分漏洞的核心原理">#</a></h3>
+<p>这个漏洞之所以能成立，是因为目标网站的后端系统存在**“精神分裂”**——处理注册流程的两个核心组件，对数据的校验标准不一致。</p>
+<h4 id="1-宽容的发件员邮件处理服务">1. 宽容的“发件员”（邮件处理服务）<a hidden class="anchor" aria-hidden="true" href="#1-宽容的发件员邮件处理服务">#</a></h4>
+<p>当你在网页上提交注册邮箱时，负责发送验证邮件的代码逻辑非常简单粗暴。它只认死理：<strong>“只要这是一个格式合法的邮箱，我就往它 @ 后面的那个顶级域名发邮件。”</strong> 它<strong>没有限制长度</strong>。所以当你提交 <code>238个a@dontwannacry.com.你的实验域名.net</code> 时，它一看后缀是你的实验域名，就乖乖把邮件发到了你的客户端里。</p>
+<h4 id="2-严格且粗暴的档案管理员数据库">2. 严格且粗暴的“档案管理员”（数据库）<a hidden class="anchor" aria-hidden="true" href="#2-严格且粗暴的档案管理员数据库">#</a></h4>
+<p>发件员发完邮件后，要把你的信息存入后台数据库（比如 MySQL 的 <code>users</code> 表）。
+在设计数据库时，程序员给 <code>email</code> 这个字段设定了最大长度，通常是 <code>VARCHAR(255)</code>。</p>
+<p>当超过 255 个字符的数据涌进来时，老版本的数据库（或者未开启严格模式的数据库）<strong>不会报错拦截</strong>，而是会采取一种极其粗暴的默认行为：<strong>“既然装不下，那我就把第 255 个字符后面的所有东西，全部拿剪刀咔嚓剪掉！”</strong></p>
+<h4 id="3-致命的身份核验权限逻辑">3. 致命的“身份核验”（权限逻辑）<a hidden class="anchor" aria-hidden="true" href="#3-致命的身份核验权限逻辑">#</a></h4>
+<p>网站的权限判断逻辑是：用户登录后，去数据库里查他的 <code>email</code> 字段，如果以 <code>@dontwannacry.com</code> 结尾，就给他 Admin 权限。</p>
+<p><strong>💥 漏洞闭环：</strong> 你用超长邮箱骗过了“发件员”拿到了激活链接；随后“档案管理员”挥舞剪刀，把你邮箱后缀的实验域名剪掉了，只把前 255 个字符（刚好以 <code>@dontwannacry.com</code> 结尾）存进了数据库。
+当你登录时，权限系统一看数据库里的记录，当场肃然起敬：“欢迎您，内部管理员！”</p>
+<h3 id="-第二部分如何挖掘出这个漏洞黑客视角的详细过程">🕵️‍♂️ 第二部分：如何挖掘出这个漏洞？（黑客视角的详细过程）<a hidden class="anchor" aria-hidden="true" href="#-第二部分如何挖掘出这个漏洞黑客视角的详细过程">#</a></h3>
+<p>你可能会问：“原版教程是直接把答案喂给我了，但如果这是一个完全陌生的网站，我怎么知道要往框里填 255 个字符？”</p>
+<p>真正的挖掘过程，是一个严密的**“假设 -&gt; 测试 -&gt; 观察 -&gt; 利用”**的循环。以下是标准的渗透测试思路：</p>
+<h4 id="step-1-确立目标与信息收集-侦察阶段">Step 1: 确立目标与信息收集 (侦察阶段)<a hidden class="anchor" aria-hidden="true" href="#step-1-确立目标与信息收集-侦察阶段">#</a></h4>
+<ul>
+<li>
+<p><strong>观察现象：</strong> 你在网站上随便乱点，可能在某处（比如 JS 文件、或者是之前的目录扫描）发现了一个 <code>/admin</code> 路径。</p>
+</li>
+<li>
+<p><strong>触碰边界：</strong> 你尝试访问 <code>/admin</code>，网页弹出一个无情的错误提示：<code>Admin interface only available if logged in as a @dontwannacry.com user</code>。</p>
+</li>
+<li>
+<p><strong>得出结论：</strong> 你的终极目标就是搞到一个 <code>@dontwannacry.com</code> 的账号。</p>
+</li>
+</ul>
+<h4 id="step-2-寻找突破口-功能点分析">Step 2: 寻找突破口 (功能点分析)<a hidden class="anchor" aria-hidden="true" href="#step-2-寻找突破口-功能点分析">#</a></h4>
+<ul>
+<li>
+<p>你发现网站只有<strong>一个</strong>地方可以输入邮箱，那就是**“账号注册 (Register)”**页面。</p>
+</li>
+<li>
+<p><strong>尝试常规操作：</strong> 你直接输入 <code>admin@dontwannacry.com</code> 尝试注册。</p>
+</li>
+<li>
+<p><strong>遇到路障：</strong> 系统提示“已发送确认邮件，请点击链接激活”。因为你无法登录别人的内部邮箱，这招失败了。</p>
+</li>
+</ul>
+<h4 id="step-3-边界测试与模糊测试-fuzzing---产生奇迹的一步">Step 3: 边界测试与模糊测试 (Fuzzing - 产生奇迹的一步)<a hidden class="anchor" aria-hidden="true" href="#step-3-边界测试与模糊测试-fuzzing---产生奇迹的一步">#</a></h4>
+<p>既然常规逻辑走不通，黑客就会开始测试系统的<strong>健壮性（容错率）</strong>。其中最基础的一项测试就是<strong>超长字符输入测试（Length Extension / Boundary Testing）</strong>。</p>
+<ul>
+<li>
+<p><strong>黑客的动作：</strong> 在注册框的邮箱里，输入 100 个 a，200 个 a，300 个 a，500 个 a&hellip; 看看系统会不会崩溃。</p>
+</li>
+<li>
+<p><strong>观察“神异”现象：</strong> 假设你用一个 300 字符的普通邮箱注册成功了。你登录进去，点击“My Account（我的账户）”。</p>
+</li>
+<li>
+<p><strong>💡 尤里卡时刻（Eureka）：</strong> 你震惊地发现，页面上显示的“Your email is: &hellip;” 并没有显示你输入的全部 300 个字符，而是<strong>在第 255 个字符的地方诡异地断掉了！</strong></p>
+</li>
+</ul>
+<h4 id="step-4-构造漏洞利用链-exploit">Step 4: 构造漏洞利用链 (Exploit)<a hidden class="anchor" aria-hidden="true" href="#step-4-构造漏洞利用链-exploit">#</a></h4>
+<p>捕捉到“255字符截断”这个极其微小但致命的现象后，黑客的大脑开始飞速运转，把手里的线索拼凑起来：</p>
+<ol>
+<li>
+<p><strong>线索 A：</strong> 数据库会自动丢弃第 255 个字符之后的内容。</p>
+</li>
+<li>
+<p><strong>线索 B：</strong> 我需要数据库里最终保存的结尾是 <code>@dontwannacry.com</code>。</p>
+</li>
+<li>
+<p><strong>线索 C：</strong> 注册时，系统必须把邮件发到我能控制的域名（比如我的实验邮箱）。</p>
+</li>
+</ol>
+<p><strong>最后推导出的公式：</strong> 我输入的内容 = <code>填补物</code> + <code>目标后缀</code> + <code>我的真实域名</code> 并且：<code>填补物长度</code> + <code>目标后缀长度</code> 必须<strong>精确等于 255</strong>。</p>
+<p>于是，就有了我们刚才用 Python 精心计算出来的那 238 个 <code>a</code>！</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/sql%E6%B3%A8%E5%85%A5/">SQL注入</a></li>
+      <li><a href="http://localhost:1313/tags/%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98/">靶场实战</a></li>
+      <li><a href="http://localhost:1313/tags/burpsuite/">BurpSuite</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">Z-tianyuan 的技术自留地</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

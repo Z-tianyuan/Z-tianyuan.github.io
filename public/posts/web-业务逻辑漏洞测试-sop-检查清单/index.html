@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Web 业务逻辑漏洞测试 SOP 检查清单 | Z-tianyuan 的技术自留地</title>
+<meta name="keywords" content="SQL注入, 靶场实战, BurpSuite">
+<meta name="description" content="Web 业务逻辑漏洞测试 SOP 检查清单
+步骤 1：业务流程拓扑与绘图 (Mapping &amp; Recon)
+逻辑漏洞不生在代码的语法里，而生在业务的流程里。
+
+
+动作： 正常走一遍核心业务流程（如：注册 -&gt; 登录 -&gt; 浏览商品 -&gt; 加购物车 -&gt; 结算 -&gt; 支付 -&gt; 退款）。
+
+
+关键点： 记录每一个步骤产生的 HTTP 请求，找出所有的关键参数（金额、数量、用户 ID、订单号、状态码）。
+
+
+思考： 开发者在这个环节，最怕发生什么事？（比如支付环节最怕少给钱，找回密码环节最怕发错人）。
+
+
+步骤 2：交易与支付风控绕过 (你已经掌握的部分 &#43; 补充)
+针对电商、充值等涉及钱的场景。
+
+
+价格篡改： 抓包拦截，将 price 或 total_amount 参数修改为 0.01 或极小值。
+
+
+数量边界值溢出（你提到的）： 将数量改为负数（如 -1）、小数（如 0.5），或者极大的数字（如 9999999999，看是否会导致后端整数溢出变成负数）。
+
+
+⭐ 补充：步骤跳跃 (Skipping Steps)： 获取正常支付成功后的页面 URL 或回调数据包。在下一次购物时，放弃支付，直接强行访问这个“成功页面”或向服务器发送“成功回调包”，看后端是否缺乏上下文校验，直接发货。
+
+
+⭐ 补充：运费/优惠券逻辑： 尝试叠加使用互斥的优惠券，或者把运费参数改成负数来抵扣商品价格。
+
+
+步骤 3：身份认证与凭证缺陷 (你已经掌握的部分 &#43; 补充)
+针对登录、注册、找回密码环节。
+
+
+验证码暴力破解： 在没有错误次数限制的情况下，使用 Burp Intruder 爆破 4 位或 6 位纯数字验证码。">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/posts/web-%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%B5%8B%E8%AF%95-sop-%E6%A3%80%E6%9F%A5%E6%B8%85%E5%8D%95/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.4ef2299ae814559c4055cd3d15919aff78737e44fa7af337c506246832ba458a.css" integrity="sha256-TvIpmugUVZxAVc09FZGa/3hzfkT6evM3xQYkaDK6RYo=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/web-%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%B5%8B%E8%AF%95-sop-%E6%A3%80%E6%9F%A5%E6%B8%85%E5%8D%95/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Z-tianyuan 的技术自留地 (Alt + H)">Z-tianyuan 的技术自留地</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Web 业务逻辑漏洞测试 SOP 检查清单
+    </h1>
+    <div class="post-meta"><span title='2026-03-29 15:00:00 +0800 CST'>March 29, 2026</span>
+
+</div>
+  </header> 
+  <div class="post-content"><h3 id="web-业务逻辑漏洞测试-sop-检查清单">Web 业务逻辑漏洞测试 SOP 检查清单<a hidden class="anchor" aria-hidden="true" href="#web-业务逻辑漏洞测试-sop-检查清单">#</a></h3>
+<h4 id="步骤-1业务流程拓扑与绘图-mapping--recon">步骤 1：业务流程拓扑与绘图 (Mapping &amp; Recon)<a hidden class="anchor" aria-hidden="true" href="#步骤-1业务流程拓扑与绘图-mapping--recon">#</a></h4>
+<p>逻辑漏洞不生在代码的语法里，而生在业务的流程里。</p>
+<ul>
+<li>
+<p><strong>动作：</strong> 正常走一遍核心业务流程（如：注册 -&gt; 登录 -&gt; 浏览商品 -&gt; 加购物车 -&gt; 结算 -&gt; 支付 -&gt; 退款）。</p>
+</li>
+<li>
+<p><strong>关键点：</strong> 记录每一个步骤产生的 HTTP 请求，找出所有的关键参数（金额、数量、用户 ID、订单号、状态码）。</p>
+</li>
+<li>
+<p><strong>思考：</strong> 开发者在这个环节，最怕发生什么事？（比如支付环节最怕少给钱，找回密码环节最怕发错人）。</p>
+</li>
+</ul>
+<h4 id="步骤-2交易与支付风控绕过-你已经掌握的部分--补充">步骤 2：交易与支付风控绕过 (你已经掌握的部分 + 补充)<a hidden class="anchor" aria-hidden="true" href="#步骤-2交易与支付风控绕过-你已经掌握的部分--补充">#</a></h4>
+<p>针对电商、充值等涉及钱的场景。</p>
+<ul>
+<li>
+<p><strong>价格篡改：</strong> 抓包拦截，将 <code>price</code> 或 <code>total_amount</code> 参数修改为 0.01 或极小值。</p>
+</li>
+<li>
+<p><strong>数量边界值溢出（你提到的）：</strong> 将数量改为负数（如 <code>-1</code>）、小数（如 <code>0.5</code>），或者极大的数字（如 <code>9999999999</code>，看是否会导致后端整数溢出变成负数）。</p>
+</li>
+<li>
+<p><strong>⭐ 补充：步骤跳跃 (Skipping Steps)：</strong> 获取正常支付成功后的页面 URL 或回调数据包。在下一次购物时，放弃支付，直接强行访问这个“成功页面”或向服务器发送“成功回调包”，看后端是否缺乏上下文校验，直接发货。</p>
+</li>
+<li>
+<p><strong>⭐ 补充：运费/优惠券逻辑：</strong> 尝试叠加使用互斥的优惠券，或者把运费参数改成负数来抵扣商品价格。</p>
+</li>
+</ul>
+<h4 id="步骤-3身份认证与凭证缺陷-你已经掌握的部分--补充">步骤 3：身份认证与凭证缺陷 (你已经掌握的部分 + 补充)<a hidden class="anchor" aria-hidden="true" href="#步骤-3身份认证与凭证缺陷-你已经掌握的部分--补充">#</a></h4>
+<p>针对登录、注册、找回密码环节。</p>
+<ul>
+<li>
+<p><strong>验证码暴力破解：</strong> 在没有错误次数限制的情况下，使用 Burp Intruder 爆破 4 位或 6 位纯数字验证码。</p>
+</li>
+<li>
+<p><strong>凭证替换 / 狸猫换太子（你提到的）：</strong> 用自己的手机/邮箱接收真实的验证码，在提交时抓包，将数据包中的 <code>username</code>、<code>phone</code> 或 <code>Session</code> 修改为目标受害者的，实现越权登录或密码重置。</p>
+</li>
+<li>
+<p><strong>⭐ 补充：验证码回显：</strong> 抓取请求验证码的数据包，仔细观察服务器的响应包（Response）。有些粗心的开发者会直接把生成的验证码放在响应包里返回给前端。</p>
+</li>
+<li>
+<p><strong>⭐ 补充：空值绕过：</strong> 在提交验证码时，尝试直接删除验证码参数（<code>code=</code>），或者将其改为 <code>null</code>、<code>false</code>，看后端是否默认放行。</p>
+</li>
+</ul>
+<h4 id="步骤-4越权访问漏洞-idor---重点补充">步骤 4：越权访问漏洞 (IDOR - 重点补充)<a hidden class="anchor" aria-hidden="true" href="#步骤-4越权访问漏洞-idor---重点补充">#</a></h4>
+<p>这是逻辑漏洞中最常见、也是危害最大的类型之一。</p>
+<ul>
+<li>
+<p><strong>水平越权（看平级的数据）：</strong> 你登录了账号 A，点开自己的订单，发现 URL 是 <code>?order_id=1001</code>。你把它改成 <code>1002</code>，如果能看到账号 B 的订单信息（甚至帮 B 取消订单），这就是水平越权。</p>
+</li>
+<li>
+<p><strong>垂直越权（普通用户变管理员）：</strong> 抓取管理员在后台操作的数据包。用普通用户的 Session 去重放这个数据包。如果后端只在前端隐藏了管理菜单，但没有在接口层校验权限，普通用户就能执行管理员操作。</p>
+</li>
+</ul>
+<h4 id="步骤-5并发与条件竞争-race-conditions---重点补充">步骤 5：并发与条件竞争 (Race Conditions - 重点补充)<a hidden class="anchor" aria-hidden="true" href="#步骤-5并发与条件竞争-race-conditions---重点补充">#</a></h4>
+<p>利用服务器处理时间的微小差值。</p>
+<ul>
+<li>
+<p><strong>场景：</strong> 你只有 1 张无门槛 100 元优惠券。</p>
+</li>
+<li>
+<p><strong>动作：</strong> 抓取使用优惠券的数据包，发送到 Burp Suite 的 Intruder，将 Payload 设置为 Null payloads（不改变数据），并将线程数拉满（比如 50 个并发请求），同时发送。</p>
+</li>
+<li>
+<p><strong>结果：</strong> 正常的逻辑是使用 1 张后，数据库标记为已使用。但在极高并发下，数据库还没来得及更新状态，这 50 个请求可能都判断为“优惠券有效”，导致你用 1 张券抵扣了 50 次钱。</p>
+</li>
+</ul>
+<p>对于针对这种身份校验参数，我们会进行以下一系列尝试</p>
+<ol>
+<li>
+<p><strong>常规修改（篡改）：</strong> 把最后一个字母 <code>t</code> 改成 <code>a</code>。</p>
+<ul>
+<li><em>预期：</em> 报错。说明系统确实在校验 token。</li>
+</ul>
+</li>
+<li>
+<p><strong>留空测试（赋空值）：</strong> 也就是你刚才做的，保留参数名，删掉值：<code>token=&amp;username=carlos</code>。</p>
+<ul>
+<li>
+<p><em>开发者逻辑漏洞：</em> 很多开发者写代码时会犯这种低级错误：</p>
+<p>Python</p>
+<pre tabindex="0"><code>if token: # 如果传了token，就去数据库校验
+   verify(token)
+# 如果根本没传token的值（空值），代码直接跳过了校验块，往下执行了重置密码的逻辑！
+reset_password()
+</code></pre></li>
+</ul>
+</li>
+<li>
+<p><strong>彻底删除（去参数）：</strong> 把 <code>temp-forgot-password-token=</code> 这一整串从请求包里彻底删掉，只发 <code>username=carlos...</code>。</p>
+<ul>
+<li><em>效果：</em> 如果开发者的代码没做空指针异常处理，有时候这会引发系统报错，甚至直接绕过验证。</li>
+</ul>
+</li>
+<li>
+<p><strong>类型转换（数组绕过）：</strong> 把参数名改成 <code>token[]=xxx</code>。这在 PHP 写的网站里特别管用，有时能引发后端的致命错误或直接绕过。</p>
+</li>
+<li>
+<p><strong>参数污染（双重参数）：</strong> 发送 <code>token=你的真实token&amp;token=随便乱写的token</code>。看看服务器是读取第一个，还是读取第二个。</p>
+</li>
+</ol>
+<p><strong>黑客的直觉是怎么来的？</strong> 就是靠这一个个失败的测试积累出来的。你尝试了 1、3、4、5 都失败了（返回 200 OK 并报错），但当你尝试了第 2 步（留空），突然收到了一个美妙的 <code>302 Found</code>。那一瞬间，你就知道：“哈！写这行代码的程序员偷懒了！”</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/sql%E6%B3%A8%E5%85%A5/">SQL注入</a></li>
+      <li><a href="http://localhost:1313/tags/%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98/">靶场实战</a></li>
+      <li><a href="http://localhost:1313/tags/burpsuite/">BurpSuite</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">Z-tianyuan 的技术自留地</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

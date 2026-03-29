@@ -6,6 +6,14 @@
     <description>Recent content in Categories on Z-tianyuan 的技术自留地</description>
     <generator>Hugo</generator>
     <language>zh-cn</language>
+    <lastBuildDate>Sun, 29 Mar 2026 15:00:00 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>漏洞挖掘</title>
+      <link>http://localhost:1313/categories/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/</link>
+      <pubDate>Sun, 29 Mar 2026 15:00:00 +0800</pubDate>
+      <guid>http://localhost:1313/categories/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/</guid>
+      <description></description>
+    </item>
   </channel>
 </rss>
