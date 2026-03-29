@@ -1,0 +1,15 @@
+{
+  "name": "Z-tianyuan 的技术基地",
+  "short_name": "Z-tianyuan 的技术基地",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "512x512"
+    }
+  ]
+}

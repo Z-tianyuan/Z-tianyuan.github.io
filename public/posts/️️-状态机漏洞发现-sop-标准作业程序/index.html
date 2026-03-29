@@ -1,149 +1,327 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto" data-theme="auto">
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
-<title>状态机漏洞发现 SOP (标准作业程序) | Z-tianyuan 的技术自留地</title>
-<meta name="keywords" content="SQL注入, 靶场实战, BurpSuite">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="你问出了一个渗透测试工程师走向成熟的终极问题。
 照着教程把漏洞复现出来，那叫“漏洞验证”；但在一个完全未知的、没有任何提示的黑色盒子里把漏洞揪出来，那才叫真正的**“漏洞挖掘 (Bug Hunting)”**。
 当你以后在真实的漏洞赏金平台（比如 HackerOne 上的企业级目标）进行实战挖掘时，你是绝对碰不到这种给你写好前提条件和步骤的靶场的。面对一个复杂的企业级系统，黑客寻找这类**“状态机逻辑缺陷 (Flawed State Machine)”**漏洞，有一套极其严密的标准流程（SOP）。
 这是一套被称为**“业务流逆向降维分析”**的实战 WBS。我为你总结了四个阶段：
-🕵️‍♂️ 状态机漏洞发现 SOP (标准作业程序)
-第一阶段：全量状态测绘 (Mapping the Happy Path)
-不要一上来就想着搞破坏！黑客的第一步是把自己伪装成一个极其听话的“好用户”。
-
-
+🕵️‍♂️ 状态机漏洞发现 SOP (标准作业程序)#第一阶段：全量状态测绘 (Mapping the Happy Path)#不要一上来就想着搞破坏！黑客的第一步是把自己伪装成一个极其听话的“好用户”。
 清空历史： 在 Burp 的 HTTP History 中打一个标记（或者清空之前的记录），确保接下来的流量是纯净的。
-
-
 顺流而下： 关闭拦截 (Intercept is off)。在浏览器中，极其缓慢且完整地走完整个业务流程（比如：输入账号密码 -&gt; 点击登录 -&gt; 页面跳转 -&gt; 选择角色 -&gt; 进入主页）。
-
-
 绘制拓扑图： 回到 Burp，把刚才这套流程产生的所有核心 URL 提取出来，在脑子里（或纸上）画一条线： A (/login) ➡️ B (/role-selector) ➡️ C (/home)
-
-
-第二阶段：锚定“权力交接点” (Identify State Transitions)
-这是最考验深度思考的一步。你需要看着 HTTP History 里的数据包，找出系统是在哪一刻决定你的权限的。
-
-
+第二阶段：锚定“权力交接点” (Identify State Transitions)#这是最考验深度思考的一步。你需要看着 HTTP History 里的数据包，找出系统是在哪一刻决定你的权限的。
+追踪 Cookie/Token 的诞生： 仔细看 A (/login) 的响应包。它是不是在这里通过 Set-Cookie 给你发了身份证？
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#2e3440">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/%EF%B8%8F%EF%B8%8F-%E7%8A%B6%E6%80%81%E6%9C%BA%E6%BC%8F%E6%B4%9E%E5%8F%91%E7%8E%B0-sop-%E6%A0%87%E5%87%86%E4%BD%9C%E4%B8%9A%E7%A8%8B%E5%BA%8F/">
+  <meta property="og:site_name" content="Z-tianyuan 的技术基地">
+  <meta property="og:title" content="状态机漏洞发现 SOP (标准作业程序)">
+  <meta property="og:description" content="你问出了一个渗透测试工程师走向成熟的终极问题。
+照着教程把漏洞复现出来，那叫“漏洞验证”；但在一个完全未知的、没有任何提示的黑色盒子里把漏洞揪出来，那才叫真正的**“漏洞挖掘 (Bug Hunting)”**。
+当你以后在真实的漏洞赏金平台（比如 HackerOne 上的企业级目标）进行实战挖掘时，你是绝对碰不到这种给你写好前提条件和步骤的靶场的。面对一个复杂的企业级系统，黑客寻找这类**“状态机逻辑缺陷 (Flawed State Machine)”**漏洞，有一套极其严密的标准流程（SOP）。
+这是一套被称为**“业务流逆向降维分析”**的实战 WBS。我为你总结了四个阶段：
+🕵️‍♂️ 状态机漏洞发现 SOP (标准作业程序)#第一阶段：全量状态测绘 (Mapping the Happy Path)#不要一上来就想着搞破坏！黑客的第一步是把自己伪装成一个极其听话的“好用户”。
+清空历史： 在 Burp 的 HTTP History 中打一个标记（或者清空之前的记录），确保接下来的流量是纯净的。
+顺流而下： 关闭拦截 (Intercept is off)。在浏览器中，极其缓慢且完整地走完整个业务流程（比如：输入账号密码 -&gt; 点击登录 -&gt; 页面跳转 -&gt; 选择角色 -&gt; 进入主页）。
+绘制拓扑图： 回到 Burp，把刚才这套流程产生的所有核心 URL 提取出来，在脑子里（或纸上）画一条线： A (/login) ➡️ B (/role-selector) ➡️ C (/home)
+第二阶段：锚定“权力交接点” (Identify State Transitions)#这是最考验深度思考的一步。你需要看着 HTTP History 里的数据包，找出系统是在哪一刻决定你的权限的。
 追踪 Cookie/Token 的诞生： 仔细看 A (/login) 的响应包。它是不是在这里通过 Set-Cookie 给你发了身份证？">
-<meta name="author" content="">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-03-29T15:00:00+08:00">
+    <meta property="article:modified_time" content="2026-03-29T15:00:00+08:00">
+    <meta property="article:tag" content="SQL注入">
+    <meta property="article:tag" content="靶场实战">
+    <meta property="article:tag" content="BurpSuite">
+
+
+  <meta itemprop="name" content="状态机漏洞发现 SOP (标准作业程序)">
+  <meta itemprop="description" content="你问出了一个渗透测试工程师走向成熟的终极问题。
+照着教程把漏洞复现出来，那叫“漏洞验证”；但在一个完全未知的、没有任何提示的黑色盒子里把漏洞揪出来，那才叫真正的**“漏洞挖掘 (Bug Hunting)”**。
+当你以后在真实的漏洞赏金平台（比如 HackerOne 上的企业级目标）进行实战挖掘时，你是绝对碰不到这种给你写好前提条件和步骤的靶场的。面对一个复杂的企业级系统，黑客寻找这类**“状态机逻辑缺陷 (Flawed State Machine)”**漏洞，有一套极其严密的标准流程（SOP）。
+这是一套被称为**“业务流逆向降维分析”**的实战 WBS。我为你总结了四个阶段：
+🕵️‍♂️ 状态机漏洞发现 SOP (标准作业程序)#第一阶段：全量状态测绘 (Mapping the Happy Path)#不要一上来就想着搞破坏！黑客的第一步是把自己伪装成一个极其听话的“好用户”。
+清空历史： 在 Burp 的 HTTP History 中打一个标记（或者清空之前的记录），确保接下来的流量是纯净的。
+顺流而下： 关闭拦截 (Intercept is off)。在浏览器中，极其缓慢且完整地走完整个业务流程（比如：输入账号密码 -&gt; 点击登录 -&gt; 页面跳转 -&gt; 选择角色 -&gt; 进入主页）。
+绘制拓扑图： 回到 Burp，把刚才这套流程产生的所有核心 URL 提取出来，在脑子里（或纸上）画一条线： A (/login) ➡️ B (/role-selector) ➡️ C (/home)
+第二阶段：锚定“权力交接点” (Identify State Transitions)#这是最考验深度思考的一步。你需要看着 HTTP History 里的数据包，找出系统是在哪一刻决定你的权限的。
+追踪 Cookie/Token 的诞生： 仔细看 A (/login) 的响应包。它是不是在这里通过 Set-Cookie 给你发了身份证？">
+  <meta itemprop="datePublished" content="2026-03-29T15:00:00+08:00">
+  <meta itemprop="dateModified" content="2026-03-29T15:00:00+08:00">
+  <meta itemprop="wordCount" content="114">
+  <meta itemprop="keywords" content="SQL注入,靶场实战,BurpSuite">
+
+<title>状态机漏洞发现 SOP (标准作业程序) | Z-tianyuan 的技术基地</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
 <link rel="canonical" href="http://localhost:1313/posts/%EF%B8%8F%EF%B8%8F-%E7%8A%B6%E6%80%81%E6%9C%BA%E6%BC%8F%E6%B4%9E%E5%8F%91%E7%8E%B0-sop-%E6%A0%87%E5%87%86%E4%BD%9C%E4%B8%9A%E7%A8%8B%E5%BA%8F/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.4ef2299ae814559c4055cd3d15919aff78737e44fa7af337c506246832ba458a.css" integrity="sha256-TvIpmugUVZxAVc09FZGa/3hzfkT6evM3xQYkaDK6RYo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/%EF%B8%8F%EF%B8%8F-%E7%8A%B6%E6%80%81%E6%9C%BA%E6%BC%8F%E6%B4%9E%E5%8F%91%E7%8E%B0-sop-%E6%A0%87%E5%87%86%E4%BD%9C%E4%B8%9A%E7%A8%8B%E5%BA%8F/">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
+<link rel="stylesheet" href="/book.min.4d6d5ad3b0ae85d2a15b20ab217863f70db543e46314629e239ced759e674898.css" integrity="sha256-TW1a07CuhdKhWyCrIXhj9w21Q&#43;RjFGKeI5ztdZ5nSJg=" crossorigin="anonymous">
 
-    </style>
-    <style>
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --theme: rgb(29, 30, 32);
-                --entry: rgb(46, 46, 51);
-                --primary: rgb(218, 218, 219);
-                --secondary: rgb(155, 156, 157);
-                --tertiary: rgb(65, 66, 68);
-                --content: rgb(196, 196, 197);
-                --code-block-bg: rgb(46, 46, 51);
-                --code-bg: rgb(55, 56, 62);
-                --border: rgb(51, 51, 51);
-                color-scheme: dark;
-            }
 
-            .list {
-                background: var(--theme);
-            }
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.7ec7bb849cb38bb7c41a5b893ee0fccbcbebfd1d8cd9a7549a340baf01f592b9.js" integrity="sha256-fse7hJyzi7fEGluJPuD8y8vr/R2M2adUmjQLrwH1krk=" crossorigin="anonymous"></script>
 
-            .toc {
-                background: var(--entry);
-            }
-        }
 
-        @media (prefers-color-scheme: light) {
-            .list::-webkit-scrollbar-thumb {
-                border-color: var(--code-bg);
-            }
-        }
 
-    </style>
-</noscript>
-<script>
-    if (localStorage.getItem("pref-theme") === "dark") {
-        document.querySelector("html").dataset.theme = 'dark';
-    } else if (localStorage.getItem("pref-theme") === "light") {
-       document.querySelector("html").dataset.theme = 'light';
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.querySelector("html").dataset.theme = 'dark';
-    } else {
-        document.querySelector("html").dataset.theme = 'light';
-    }
-
-</script>
+  
 </head>
-<body id="top">
-    <header class="header">
-    <nav class="nav">
-        <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Z-tianyuan 的技术自留地 (Alt + H)">Z-tianyuan 的技术自留地</a>
-            <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
-                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                </button>
-            </div>
-        </div>
-        <ul id="menu">
-        </ul>
-    </nav>
-</header>
-<main class="main">
-
-<article class="post-single">
-  <header class="post-header">
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
     
-    <h1 class="post-title entry-hint-parent">
-      状态机漏洞发现 SOP (标准作业程序)
-    </h1>
-    <div class="post-meta"><span title='2026-03-29 15:00:00 +0800 CST'>March 29, 2026</span>
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>Z-tianyuan 的技术基地</span>
+  </a>
+</h2>
 
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
 </div>
-  </header> 
-  <div class="post-content"><p>你问出了一个渗透测试工程师走向成熟的<strong>终极问题</strong>。</p>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a>
+      Posts</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/web-%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%B5%8B%E8%AF%95-sop-%E6%A3%80%E6%9F%A5%E6%B8%85%E5%8D%95/" class="">
+      Web 业务逻辑漏洞测试 SOP 检查清单</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/-%E5%A6%82%E4%BD%95%E8%AE%AD%E7%BB%83%E8%87%AA%E5%B7%B1%E6%89%93%E7%A0%B4%E5%9B%BA%E5%AE%9A%E6%80%9D%E7%BB%B4/" class="">
+      如何训练自己打破“固定思维”</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%EF%B8%8F%EF%B8%8F-%E7%8A%B6%E6%80%81%E6%9C%BA%E6%BC%8F%E6%B4%9E%E5%8F%91%E7%8E%B0-sop-%E6%A0%87%E5%87%86%E4%BD%9C%E4%B8%9A%E7%A8%8B%E5%BA%8F/" class="active">
+      状态机漏洞发现 SOP (标准作业程序)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/-%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%E9%82%AE%E4%BB%B6%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86/" class="">
+      这里写你这篇文章的真实标题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/sql-%E6%B3%A8%E5%85%A5%E6%A0%87%E5%87%86%E5%8C%96%E6%93%8D%E4%BD%9C%E8%B7%AF%E5%BE%84-sop/" class="">
+      进阶版的 SQL 注入标准化操作路径 (SOP)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/sql-injection-bypass-record/" class="">
+      记一次布尔盲注漏洞的绕过与复现</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>状态机漏洞发现 SOP (标准作业程序)</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#-状态机漏洞发现-sop-标准作业程序">🕵️‍♂️ 状态机漏洞发现 SOP (标准作业程序)</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    状态机漏洞发现 SOP (标准作业程序)
+  </h1>
+  
+  <div class="flex align-center text-small book-post-date">
+    <img src="/icons/calendar.svg" class="book-icon" alt="Calendar" />
+    <span>March 29, 2026</span>
+  </div>
+
+
+
+  
+  <div class="text-small">
+    
+      <a href="/categories/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/">漏洞挖掘</a>
+  </div>
+  
+
+  
+  <div class="text-small">
+    
+      <a href="/tags/sql%E6%B3%A8%E5%85%A5/">SQL注入</a>, 
+      <a href="/tags/%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98/">靶场实战</a>, 
+      <a href="/tags/burpsuite/">BurpSuite</a>
+  </div>
+  
+
+
+  <div class="book-post-content markdown-inner"><p>你问出了一个渗透测试工程师走向成熟的<strong>终极问题</strong>。</p>
 <p>照着教程把漏洞复现出来，那叫“漏洞验证”；但在一个完全未知的、没有任何提示的黑色盒子里把漏洞揪出来，那才叫真正的**“漏洞挖掘 (Bug Hunting)”**。</p>
 <p>当你以后在真实的漏洞赏金平台（比如 HackerOne 上的企业级目标）进行实战挖掘时，你是绝对碰不到这种给你写好前提条件和步骤的靶场的。面对一个复杂的企业级系统，黑客寻找这类**“状态机逻辑缺陷 (Flawed State Machine)”**漏洞，有一套极其严密的标准流程（SOP）。</p>
 <p>这是一套被称为**“业务流逆向降维分析”**的实战 WBS。我为你总结了四个阶段：</p>
-<h3 id="-状态机漏洞发现-sop-标准作业程序">🕵️‍♂️ 状态机漏洞发现 SOP (标准作业程序)<a hidden class="anchor" aria-hidden="true" href="#-状态机漏洞发现-sop-标准作业程序">#</a></h3>
-<h4 id="第一阶段全量状态测绘-mapping-the-happy-path">第一阶段：全量状态测绘 (Mapping the Happy Path)<a hidden class="anchor" aria-hidden="true" href="#第一阶段全量状态测绘-mapping-the-happy-path">#</a></h4>
+<h3 id="-状态机漏洞发现-sop-标准作业程序">🕵️‍♂️ 状态机漏洞发现 SOP (标准作业程序)<a class="anchor" href="#-%e7%8a%b6%e6%80%81%e6%9c%ba%e6%bc%8f%e6%b4%9e%e5%8f%91%e7%8e%b0-sop-%e6%a0%87%e5%87%86%e4%bd%9c%e4%b8%9a%e7%a8%8b%e5%ba%8f">#</a></h3>
+<h4 id="第一阶段全量状态测绘-mapping-the-happy-path">第一阶段：全量状态测绘 (Mapping the Happy Path)<a class="anchor" href="#%e7%ac%ac%e4%b8%80%e9%98%b6%e6%ae%b5%e5%85%a8%e9%87%8f%e7%8a%b6%e6%80%81%e6%b5%8b%e7%bb%98-mapping-the-happy-path">#</a></h4>
 <p>不要一上来就想着搞破坏！黑客的第一步是把自己伪装成一个极其听话的“好用户”。</p>
 <ol>
 <li>
@@ -156,7 +334,7 @@
 <p><strong>绘制拓扑图：</strong> 回到 Burp，把刚才这套流程产生的所有核心 URL 提取出来，在脑子里（或纸上）画一条线： <code>A (/login)</code> ➡️ <code>B (/role-selector)</code> ➡️ <code>C (/home)</code></p>
 </li>
 </ol>
-<h4 id="第二阶段锚定权力交接点-identify-state-transitions">第二阶段：锚定“权力交接点” (Identify State Transitions)<a hidden class="anchor" aria-hidden="true" href="#第二阶段锚定权力交接点-identify-state-transitions">#</a></h4>
+<h4 id="第二阶段锚定权力交接点-identify-state-transitions">第二阶段：锚定“权力交接点” (Identify State Transitions)<a class="anchor" href="#%e7%ac%ac%e4%ba%8c%e9%98%b6%e6%ae%b5%e9%94%9a%e5%ae%9a%e6%9d%83%e5%8a%9b%e4%ba%a4%e6%8e%a5%e7%82%b9-identify-state-transitions">#</a></h4>
 <p>这是最考验深度思考的一步。你需要看着 HTTP History 里的数据包，找出<strong>系统是在哪一刻决定你的权限的</strong>。</p>
 <ol>
 <li>
@@ -166,7 +344,7 @@
 <p><strong>追踪权限的降级/确认：</strong> 仔细看 <code>B (/role-selector)</code> 的请求和响应。系统是不是在这个环节，把你刚才拿到的通用身份证，打上了“普通员工”的钢印？</p>
 </li>
 </ol>
-<h4 id="第三阶段实施强制阻断与孤岛测试-the-drop--skip">第三阶段：实施“强制阻断”与“孤岛测试” (The Drop &amp; Skip)<a hidden class="anchor" aria-hidden="true" href="#第三阶段实施强制阻断与孤岛测试-the-drop--skip">#</a></h4>
+<h4 id="第三阶段实施强制阻断与孤岛测试-the-drop--skip">第三阶段：实施“强制阻断”与“孤岛测试” (The Drop &amp; Skip)<a class="anchor" href="#%e7%ac%ac%e4%b8%89%e9%98%b6%e6%ae%b5%e5%ae%9e%e6%96%bd%e5%bc%ba%e5%88%b6%e9%98%bb%e6%96%ad%e4%b8%8e%e5%ad%a4%e5%b2%9b%e6%b5%8b%e8%af%95-the-drop--skip">#</a></h4>
 <p>一旦你发现权力的授予（A）和权力的限制（B）是分两步走的，<strong>巨大的漏洞机会就出现了</strong>。
 开发者往往会默认“用户一定会乖乖从 A 走到 B”。你的任务就是打破这个默认设定。</p>
 <ol>
@@ -180,7 +358,7 @@
 <p><strong>孤岛状态评估：</strong> 此时，你的浏览器停留在了一个“半路出家”的孤岛状态。你手里拿着 A 阶段发给你的、还没来得及被 B 阶段降级的“原生 Token”。</p>
 </li>
 </ol>
-<h4 id="第四阶段盲测高权限接口-blind-authorization-testing">第四阶段：盲测高权限接口 (Blind Authorization Testing)<a hidden class="anchor" aria-hidden="true" href="#第四阶段盲测高权限接口-blind-authorization-testing">#</a></h4>
+<h4 id="第四阶段盲测高权限接口-blind-authorization-testing">第四阶段：盲测高权限接口 (Blind Authorization Testing)<a class="anchor" href="#%e7%ac%ac%e5%9b%9b%e9%98%b6%e6%ae%b5%e7%9b%b2%e6%b5%8b%e9%ab%98%e6%9d%83%e9%99%90%e6%8e%a5%e5%8f%a3-blind-authorization-testing">#</a></h4>
 <ol>
 <li>
 <p><strong>直接突袭：</strong> 关闭拦截。带着你这把“原生 Token”，直接在浏览器地址栏强行输入最高权限的路径（比如 <code>/admin</code>、<code>/console</code>、<code>/delete</code> 等你在第一阶段测绘时可能注意到的，或者靠字典猜出来的敏感路径）。</p>
@@ -189,95 +367,98 @@
 <p><strong>确认战果：</strong> 如果服务器放行了，说明你成功卡出了一个“初始高权限状态”。漏洞挖掘成功！</p>
 </li>
 </ol>
-
-
-  </div>
-
-  <footer class="post-footer">
-    <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/sql%E6%B3%A8%E5%85%A5/">SQL注入</a></li>
-      <li><a href="http://localhost:1313/tags/%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98/">靶场实战</a></li>
-      <li><a href="http://localhost:1313/tags/burpsuite/">BurpSuite</a></li>
-    </ul>
-  </footer>
+</div>
 </article>
-    </main>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/-%E5%A6%82%E4%BD%95%E8%AE%AD%E7%BB%83%E8%87%AA%E5%B7%B1%E6%89%93%E7%A0%B4%E5%9B%BA%E5%AE%9A%E6%80%9D%E7%BB%B4/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>如何训练自己打破“固定思维”</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/-%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%E9%82%AE%E4%BB%B6%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86/" class="flex align-center">
+      <span>这里写你这篇文章的真实标题</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
     
-<footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/">Z-tianyuan 的技术自留地</a></span> · 
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#-状态机漏洞发现-sop-标准作业程序">🕵️‍♂️ 状态机漏洞发现 SOP (标准作业程序)</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
 
-    <span>
-        Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
-</footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
-    </svg>
-</a>
 
-<script>
-    let menu = document.getElementById('menu');
-    if (menu) {
-        
-        const scrollPosition = localStorage.getItem("menu-scroll-position");
-        if (scrollPosition) {
-            menu.scrollLeft = parseInt(scrollPosition, 10);
-        }
-        
-        menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
 
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
-        });
-    });
+    </div>
+  </aside>
+  
+ 
+  </main>
 
-</script>
-<script>
-    var mybutton = document.getElementById("top-link");
-    window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
-        } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
-        }
-    };
-
-</script>
-<script>
-    document.getElementById("theme-toggle").addEventListener("click", () => {
-        const html = document.querySelector("html");
-        if (html.dataset.theme === "dark") {
-            html.dataset.theme = 'light';
-            localStorage.setItem("pref-theme", 'light');
-        } else {
-            html.dataset.theme = 'dark';
-            localStorage.setItem("pref-theme", 'dark');
-        }
-    })
-
-</script>
+  
 </body>
-
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

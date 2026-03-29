@@ -1,23 +1,23 @@
 ---
-title: "首页"
+title: "Welcome"
 type: "docs"
 ---
 
 <div style="text-align: center; margin-top: 15vh; margin-bottom: 20vh;">
-  <img src="/img/avatar.png" alt="Avatar" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+  <img src="/img/avatar.png" alt="Avatar" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 8px rgba(0,0,0,0.5);">
   
-  <h1 style="margin-top: 20px; font-size: 2.5em;">Z-tianyuan</h1>
+  <h1 style="margin-top: 20px; font-size: 2.5em; color: #fff;">Z-tianyuan</h1>
   
-  <p style="color: #666; font-size: 1.2em; margin-bottom: 20px;">
+  <p style="color: #aaa; font-size: 1.2em; margin-bottom: 20px;">
     🚀 网络工程大三在读 | 🛡️ 专注网络威胁检测与漏洞挖掘 | 🤖 AI 模型探索中
   </p>
   
   <div style="font-size: 1.1em;">
-    <a href="https://github.com/Z-tianyuan" target="_blank" style="margin: 0 10px; text-decoration: none; color: #007bff;">GitHub</a> | 
-    <a href="mailto:你的邮箱@example.com" style="margin: 0 10px; text-decoration: none; color: #007bff;">Email联系</a>
+    <a href="https://github.com/Z-tianyuan" target="_blank" style="margin: 0 10px; text-decoration: none; color: #4da6ff;">GitHub</a> | 
+    <a href="mailto:你的邮箱@example.com" style="margin: 0 10px; text-decoration: none; color: #4da6ff;">Email联系</a>
   </div>
 </div>
 
-<hr>
+<hr style="border-color: #333;">
 
-<h2 style="text-align: center; margin-top: 40px;">📂 最新技术沉淀</h2>
+<h2 style="text-align: center; margin-top: 40px; color: #fff;">📂 左侧选择文章开始阅读 👈</h2>

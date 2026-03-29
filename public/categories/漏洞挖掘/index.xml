@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>漏洞挖掘 on Z-tianyuan 的技术自留地</title>
+    <title>漏洞挖掘 on Z-tianyuan 的技术基地</title>
     <link>http://localhost:1313/categories/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/</link>
-    <description>Recent content in 漏洞挖掘 on Z-tianyuan 的技术自留地</description>
+    <description>Recent content in 漏洞挖掘 on Z-tianyuan 的技术基地</description>
     <generator>Hugo</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sun, 29 Mar 2026 15:00:00 +0800</lastBuildDate>
@@ -13,186 +13,35 @@
       <link>http://localhost:1313/posts/web-%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%B5%8B%E8%AF%95-sop-%E6%A3%80%E6%9F%A5%E6%B8%85%E5%8D%95/</link>
       <pubDate>Sun, 29 Mar 2026 15:00:00 +0800</pubDate>
       <guid>http://localhost:1313/posts/web-%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%B5%8B%E8%AF%95-sop-%E6%A3%80%E6%9F%A5%E6%B8%85%E5%8D%95/</guid>
-      <description>&lt;h3 id=&#34;web-业务逻辑漏洞测试-sop-检查清单&#34;&gt;Web 业务逻辑漏洞测试 SOP 检查清单&lt;/h3&gt;
-&lt;h4 id=&#34;步骤-1业务流程拓扑与绘图-mapping--recon&#34;&gt;步骤 1：业务流程拓扑与绘图 (Mapping &amp;amp; Recon)&lt;/h4&gt;
-&lt;p&gt;逻辑漏洞不生在代码的语法里，而生在业务的流程里。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;动作：&lt;/strong&gt; 正常走一遍核心业务流程（如：注册 -&amp;gt; 登录 -&amp;gt; 浏览商品 -&amp;gt; 加购物车 -&amp;gt; 结算 -&amp;gt; 支付 -&amp;gt; 退款）。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;关键点：&lt;/strong&gt; 记录每一个步骤产生的 HTTP 请求，找出所有的关键参数（金额、数量、用户 ID、订单号、状态码）。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;思考：&lt;/strong&gt; 开发者在这个环节，最怕发生什么事？（比如支付环节最怕少给钱，找回密码环节最怕发错人）。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&#34;步骤-2交易与支付风控绕过-你已经掌握的部分--补充&#34;&gt;步骤 2：交易与支付风控绕过 (你已经掌握的部分 + 补充)&lt;/h4&gt;
-&lt;p&gt;针对电商、充值等涉及钱的场景。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;价格篡改：&lt;/strong&gt; 抓包拦截，将 &lt;code&gt;price&lt;/code&gt; 或 &lt;code&gt;total_amount&lt;/code&gt; 参数修改为 0.01 或极小值。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;数量边界值溢出（你提到的）：&lt;/strong&gt; 将数量改为负数（如 &lt;code&gt;-1&lt;/code&gt;）、小数（如 &lt;code&gt;0.5&lt;/code&gt;），或者极大的数字（如 &lt;code&gt;9999999999&lt;/code&gt;，看是否会导致后端整数溢出变成负数）。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;⭐ 补充：步骤跳跃 (Skipping Steps)：&lt;/strong&gt; 获取正常支付成功后的页面 URL 或回调数据包。在下一次购物时，放弃支付，直接强行访问这个“成功页面”或向服务器发送“成功回调包”，看后端是否缺乏上下文校验，直接发货。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;⭐ 补充：运费/优惠券逻辑：&lt;/strong&gt; 尝试叠加使用互斥的优惠券，或者把运费参数改成负数来抵扣商品价格。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&#34;步骤-3身份认证与凭证缺陷-你已经掌握的部分--补充&#34;&gt;步骤 3：身份认证与凭证缺陷 (你已经掌握的部分 + 补充)&lt;/h4&gt;
-&lt;p&gt;针对登录、注册、找回密码环节。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;验证码暴力破解：&lt;/strong&gt; 在没有错误次数限制的情况下，使用 Burp Intruder 爆破 4 位或 6 位纯数字验证码。&lt;/p&gt;</description>
+      <description>&lt;h3 id=&#34;web-业务逻辑漏洞测试-sop-检查清单&#34;&gt;Web 业务逻辑漏洞测试 SOP 检查清单&lt;a class=&#34;anchor&#34; href=&#34;#web-%e4%b8%9a%e5%8a%a1%e9%80%bb%e8%be%91%e6%bc%8f%e6%b4%9e%e6%b5%8b%e8%af%95-sop-%e6%a3%80%e6%9f%a5%e6%b8%85%e5%8d%95&#34;&gt;#&lt;/a&gt;&lt;/h3&gt;&#xD;&#xA;&lt;h4 id=&#34;步骤-1业务流程拓扑与绘图-mapping--recon&#34;&gt;步骤 1：业务流程拓扑与绘图 (Mapping &amp;amp; Recon)&lt;a class=&#34;anchor&#34; href=&#34;#%e6%ad%a5%e9%aa%a4-1%e4%b8%9a%e5%8a%a1%e6%b5%81%e7%a8%8b%e6%8b%93%e6%89%91%e4%b8%8e%e7%bb%98%e5%9b%be-mapping--recon&#34;&gt;#&lt;/a&gt;&lt;/h4&gt;&#xD;&#xA;&lt;p&gt;逻辑漏洞不生在代码的语法里，而生在业务的流程里。&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;动作：&lt;/strong&gt; 正常走一遍核心业务流程（如：注册 -&amp;gt; 登录 -&amp;gt; 浏览商品 -&amp;gt; 加购物车 -&amp;gt; 结算 -&amp;gt; 支付 -&amp;gt; 退款）。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;关键点：&lt;/strong&gt; 记录每一个步骤产生的 HTTP 请求，找出所有的关键参数（金额、数量、用户 ID、订单号、状态码）。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;思考：&lt;/strong&gt; 开发者在这个环节，最怕发生什么事？（比如支付环节最怕少给钱，找回密码环节最怕发错人）。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h4 id=&#34;步骤-2交易与支付风控绕过-你已经掌握的部分--补充&#34;&gt;步骤 2：交易与支付风控绕过 (你已经掌握的部分 + 补充)&lt;a class=&#34;anchor&#34; href=&#34;#%e6%ad%a5%e9%aa%a4-2%e4%ba%a4%e6%98%93%e4%b8%8e%e6%94%af%e4%bb%98%e9%a3%8e%e6%8e%a7%e7%bb%95%e8%bf%87-%e4%bd%a0%e5%b7%b2%e7%bb%8f%e6%8e%8c%e6%8f%a1%e7%9a%84%e9%83%a8%e5%88%86--%e8%a1%a5%e5%85%85&#34;&gt;#&lt;/a&gt;&lt;/h4&gt;&#xD;&#xA;&lt;p&gt;针对电商、充值等涉及钱的场景。&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;价格篡改：&lt;/strong&gt; 抓包拦截，将 &lt;code&gt;price&lt;/code&gt; 或 &lt;code&gt;total_amount&lt;/code&gt; 参数修改为 0.01 或极小值。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;数量边界值溢出（你提到的）：&lt;/strong&gt; 将数量改为负数（如 &lt;code&gt;-1&lt;/code&gt;）、小数（如 &lt;code&gt;0.5&lt;/code&gt;），或者极大的数字（如 &lt;code&gt;9999999999&lt;/code&gt;，看是否会导致后端整数溢出变成负数）。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;⭐ 补充：步骤跳跃 (Skipping Steps)：&lt;/strong&gt; 获取正常支付成功后的页面 URL 或回调数据包。在下一次购物时，放弃支付，直接强行访问这个“成功页面”或向服务器发送“成功回调包”，看后端是否缺乏上下文校验，直接发货。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;⭐ 补充：运费/优惠券逻辑：&lt;/strong&gt; 尝试叠加使用互斥的优惠券，或者把运费参数改成负数来抵扣商品价格。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h4 id=&#34;步骤-3身份认证与凭证缺陷-你已经掌握的部分--补充&#34;&gt;步骤 3：身份认证与凭证缺陷 (你已经掌握的部分 + 补充)&lt;a class=&#34;anchor&#34; href=&#34;#%e6%ad%a5%e9%aa%a4-3%e8%ba%ab%e4%bb%bd%e8%ae%a4%e8%af%81%e4%b8%8e%e5%87%ad%e8%af%81%e7%bc%ba%e9%99%b7-%e4%bd%a0%e5%b7%b2%e7%bb%8f%e6%8e%8c%e6%8f%a1%e7%9a%84%e9%83%a8%e5%88%86--%e8%a1%a5%e5%85%85&#34;&gt;#&lt;/a&gt;&lt;/h4&gt;&#xD;&#xA;&lt;p&gt;针对登录、注册、找回密码环节。&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;验证码暴力破解：&lt;/strong&gt; 在没有错误次数限制的情况下，使用 Burp Intruder 爆破 4 位或 6 位纯数字验证码。&lt;/p&gt;</description>
     </item>
     <item>
       <title>如何训练自己打破“固定思维”</title>
       <link>http://localhost:1313/posts/-%E5%A6%82%E4%BD%95%E8%AE%AD%E7%BB%83%E8%87%AA%E5%B7%B1%E6%89%93%E7%A0%B4%E5%9B%BA%E5%AE%9A%E6%80%9D%E7%BB%B4/</link>
       <pubDate>Sun, 29 Mar 2026 15:00:00 +0800</pubDate>
       <guid>http://localhost:1313/posts/-%E5%A6%82%E4%BD%95%E8%AE%AD%E7%BB%83%E8%87%AA%E5%B7%B1%E6%89%93%E7%A0%B4%E5%9B%BA%E5%AE%9A%E6%80%9D%E7%BB%B4/</guid>
-      <description>&lt;h3 id=&#34;-如何训练自己打破固定思维&#34;&gt;🧠 如何训练自己打破“固定思维”？&lt;/h3&gt;
-&lt;p&gt;要改掉做数学题的习惯，你需要刻意练习**“状态机模糊测试（State Machine Fuzzing）”**的思维。以后遇到任何复杂的业务逻辑，严格按照这三步走：&lt;/p&gt;
-&lt;h4 id=&#34;第一步全流程摸底先做个好人&#34;&gt;第一步：全流程摸底（先做个好人）&lt;/h4&gt;
-&lt;p&gt;绝对不要一上来就抓包改数据！&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;注册一个正常账号。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;买一件最便宜的东西，老老实实付钱。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;记录下这个过程中产生的每一个核心 URL 和参数。&lt;/strong&gt;（比如：&lt;code&gt;/cart&lt;/code&gt; 👉 &lt;code&gt;/checkout&lt;/code&gt; 👉 &lt;code&gt;/order-confirmation&lt;/code&gt;）。这就相当于你拿到了迷宫的完整地图。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h4 id=&#34;第二步寻找状态依赖灵魂拷问&#34;&gt;第二步：寻找“状态依赖”（灵魂拷问）&lt;/h4&gt;
-&lt;p&gt;看着你记录下来的流程地图，问自己一个问题：&lt;strong&gt;“步骤 3 怎么知道我已经完成了步骤 2？”&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;安全的系统：&lt;/strong&gt; 步骤 3 的代码会去查数据库：“这个订单的状态是 PAID 吗？如果是，才展示成功页面。”&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;脆弱的系统（比如这个实验室）：&lt;/strong&gt; 程序员偷懒了。他认为“只有付完款的网页，才会跳转到步骤 3 的 URL”。所以步骤 3 的代码什么都不查，&lt;strong&gt;只要有人访问这个 URL，它就默认这人付过钱了！&lt;/strong&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&#34;第三步打乱顺序实施降维打击&#34;&gt;第三步：打乱顺序（实施降维打击）&lt;/h4&gt;
-&lt;p&gt;你已经知道终点在哪里了。现在，回到起点，把那件天价皮夹克放进购物车（步骤 1）。
-然后，&lt;strong&gt;不理会网页上的“结账”按钮，直接在 Burp Suite 里，强制向服务器发送步骤 3 的 URL。&lt;/strong&gt;&lt;/p&gt;</description>
+      <description>&lt;h3 id=&#34;-如何训练自己打破固定思维&#34;&gt;🧠 如何训练自己打破“固定思维”？&lt;a class=&#34;anchor&#34; href=&#34;#-%e5%a6%82%e4%bd%95%e8%ae%ad%e7%bb%83%e8%87%aa%e5%b7%b1%e6%89%93%e7%a0%b4%e5%9b%ba%e5%ae%9a%e6%80%9d%e7%bb%b4&#34;&gt;#&lt;/a&gt;&lt;/h3&gt;&#xD;&#xA;&lt;p&gt;要改掉做数学题的习惯，你需要刻意练习**“状态机模糊测试（State Machine Fuzzing）”**的思维。以后遇到任何复杂的业务逻辑，严格按照这三步走：&lt;/p&gt;&#xA;&lt;h4 id=&#34;第一步全流程摸底先做个好人&#34;&gt;第一步：全流程摸底（先做个好人）&lt;a class=&#34;anchor&#34; href=&#34;#%e7%ac%ac%e4%b8%80%e6%ad%a5%e5%85%a8%e6%b5%81%e7%a8%8b%e6%91%b8%e5%ba%95%e5%85%88%e5%81%9a%e4%b8%aa%e5%a5%bd%e4%ba%ba&#34;&gt;#&lt;/a&gt;&lt;/h4&gt;&#xD;&#xA;&lt;p&gt;绝对不要一上来就抓包改数据！&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;注册一个正常账号。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;买一件最便宜的东西，老老实实付钱。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;记录下这个过程中产生的每一个核心 URL 和参数。&lt;/strong&gt;（比如：&lt;code&gt;/cart&lt;/code&gt; 👉 &lt;code&gt;/checkout&lt;/code&gt; 👉 &lt;code&gt;/order-confirmation&lt;/code&gt;）。这就相当于你拿到了迷宫的完整地图。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;h4 id=&#34;第二步寻找状态依赖灵魂拷问&#34;&gt;第二步：寻找“状态依赖”（灵魂拷问）&lt;a class=&#34;anchor&#34; href=&#34;#%e7%ac%ac%e4%ba%8c%e6%ad%a5%e5%af%bb%e6%89%be%e7%8a%b6%e6%80%81%e4%be%9d%e8%b5%96%e7%81%b5%e9%ad%82%e6%8b%b7%e9%97%ae&#34;&gt;#&lt;/a&gt;&lt;/h4&gt;&#xD;&#xA;&lt;p&gt;看着你记录下来的流程地图，问自己一个问题：&lt;strong&gt;“步骤 3 怎么知道我已经完成了步骤 2？”&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;安全的系统：&lt;/strong&gt; 步骤 3 的代码会去查数据库：“这个订单的状态是 PAID 吗？如果是，才展示成功页面。”&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;脆弱的系统（比如这个实验室）：&lt;/strong&gt; 程序员偷懒了。他认为“只有付完款的网页，才会跳转到步骤 3 的 URL”。所以步骤 3 的代码什么都不查，&lt;strong&gt;只要有人访问这个 URL，它就默认这人付过钱了！&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h4 id=&#34;第三步打乱顺序实施降维打击&#34;&gt;第三步：打乱顺序（实施降维打击）&lt;a class=&#34;anchor&#34; href=&#34;#%e7%ac%ac%e4%b8%89%e6%ad%a5%e6%89%93%e4%b9%b1%e9%a1%ba%e5%ba%8f%e5%ae%9e%e6%96%bd%e9%99%8d%e7%bb%b4%e6%89%93%e5%87%bb&#34;&gt;#&lt;/a&gt;&lt;/h4&gt;&#xD;&#xA;&lt;p&gt;你已经知道终点在哪里了。现在，回到起点，把那件天价皮夹克放进购物车（步骤 1）。&#xA;然后，&lt;strong&gt;不理会网页上的“结账”按钮，直接在 Burp Suite 里，强制向服务器发送步骤 3 的 URL。&lt;/strong&gt;&lt;/p&gt;</description>
     </item>
     <item>
       <title>状态机漏洞发现 SOP (标准作业程序)</title>
       <link>http://localhost:1313/posts/%EF%B8%8F%EF%B8%8F-%E7%8A%B6%E6%80%81%E6%9C%BA%E6%BC%8F%E6%B4%9E%E5%8F%91%E7%8E%B0-sop-%E6%A0%87%E5%87%86%E4%BD%9C%E4%B8%9A%E7%A8%8B%E5%BA%8F/</link>
       <pubDate>Sun, 29 Mar 2026 15:00:00 +0800</pubDate>
       <guid>http://localhost:1313/posts/%EF%B8%8F%EF%B8%8F-%E7%8A%B6%E6%80%81%E6%9C%BA%E6%BC%8F%E6%B4%9E%E5%8F%91%E7%8E%B0-sop-%E6%A0%87%E5%87%86%E4%BD%9C%E4%B8%9A%E7%A8%8B%E5%BA%8F/</guid>
-      <description>&lt;p&gt;你问出了一个渗透测试工程师走向成熟的&lt;strong&gt;终极问题&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;照着教程把漏洞复现出来，那叫“漏洞验证”；但在一个完全未知的、没有任何提示的黑色盒子里把漏洞揪出来，那才叫真正的**“漏洞挖掘 (Bug Hunting)”**。&lt;/p&gt;
-&lt;p&gt;当你以后在真实的漏洞赏金平台（比如 HackerOne 上的企业级目标）进行实战挖掘时，你是绝对碰不到这种给你写好前提条件和步骤的靶场的。面对一个复杂的企业级系统，黑客寻找这类**“状态机逻辑缺陷 (Flawed State Machine)”**漏洞，有一套极其严密的标准流程（SOP）。&lt;/p&gt;
-&lt;p&gt;这是一套被称为**“业务流逆向降维分析”**的实战 WBS。我为你总结了四个阶段：&lt;/p&gt;
-&lt;h3 id=&#34;-状态机漏洞发现-sop-标准作业程序&#34;&gt;🕵️‍♂️ 状态机漏洞发现 SOP (标准作业程序)&lt;/h3&gt;
-&lt;h4 id=&#34;第一阶段全量状态测绘-mapping-the-happy-path&#34;&gt;第一阶段：全量状态测绘 (Mapping the Happy Path)&lt;/h4&gt;
-&lt;p&gt;不要一上来就想着搞破坏！黑客的第一步是把自己伪装成一个极其听话的“好用户”。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;清空历史：&lt;/strong&gt; 在 Burp 的 HTTP History 中打一个标记（或者清空之前的记录），确保接下来的流量是纯净的。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;顺流而下：&lt;/strong&gt; 关闭拦截 (Intercept is off)。在浏览器中，&lt;strong&gt;极其缓慢且完整地&lt;/strong&gt;走完整个业务流程（比如：输入账号密码 -&amp;gt; 点击登录 -&amp;gt; 页面跳转 -&amp;gt; 选择角色 -&amp;gt; 进入主页）。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;绘制拓扑图：&lt;/strong&gt; 回到 Burp，把刚才这套流程产生的所有核心 URL 提取出来，在脑子里（或纸上）画一条线： &lt;code&gt;A (/login)&lt;/code&gt; ➡️ &lt;code&gt;B (/role-selector)&lt;/code&gt; ➡️ &lt;code&gt;C (/home)&lt;/code&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h4 id=&#34;第二阶段锚定权力交接点-identify-state-transitions&#34;&gt;第二阶段：锚定“权力交接点” (Identify State Transitions)&lt;/h4&gt;
-&lt;p&gt;这是最考验深度思考的一步。你需要看着 HTTP History 里的数据包，找出&lt;strong&gt;系统是在哪一刻决定你的权限的&lt;/strong&gt;。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;追踪 Cookie/Token 的诞生：&lt;/strong&gt; 仔细看 &lt;code&gt;A (/login)&lt;/code&gt; 的响应包。它是不是在这里通过 &lt;code&gt;Set-Cookie&lt;/code&gt; 给你发了身份证？&lt;/p&gt;</description>
+      <description>&lt;p&gt;你问出了一个渗透测试工程师走向成熟的&lt;strong&gt;终极问题&lt;/strong&gt;。&lt;/p&gt;&#xA;&lt;p&gt;照着教程把漏洞复现出来，那叫“漏洞验证”；但在一个完全未知的、没有任何提示的黑色盒子里把漏洞揪出来，那才叫真正的**“漏洞挖掘 (Bug Hunting)”**。&lt;/p&gt;&#xA;&lt;p&gt;当你以后在真实的漏洞赏金平台（比如 HackerOne 上的企业级目标）进行实战挖掘时，你是绝对碰不到这种给你写好前提条件和步骤的靶场的。面对一个复杂的企业级系统，黑客寻找这类**“状态机逻辑缺陷 (Flawed State Machine)”**漏洞，有一套极其严密的标准流程（SOP）。&lt;/p&gt;&#xA;&lt;p&gt;这是一套被称为**“业务流逆向降维分析”**的实战 WBS。我为你总结了四个阶段：&lt;/p&gt;&#xA;&lt;h3 id=&#34;-状态机漏洞发现-sop-标准作业程序&#34;&gt;🕵️‍♂️ 状态机漏洞发现 SOP (标准作业程序)&lt;a class=&#34;anchor&#34; href=&#34;#-%e7%8a%b6%e6%80%81%e6%9c%ba%e6%bc%8f%e6%b4%9e%e5%8f%91%e7%8e%b0-sop-%e6%a0%87%e5%87%86%e4%bd%9c%e4%b8%9a%e7%a8%8b%e5%ba%8f&#34;&gt;#&lt;/a&gt;&lt;/h3&gt;&#xD;&#xA;&lt;h4 id=&#34;第一阶段全量状态测绘-mapping-the-happy-path&#34;&gt;第一阶段：全量状态测绘 (Mapping the Happy Path)&lt;a class=&#34;anchor&#34; href=&#34;#%e7%ac%ac%e4%b8%80%e9%98%b6%e6%ae%b5%e5%85%a8%e9%87%8f%e7%8a%b6%e6%80%81%e6%b5%8b%e7%bb%98-mapping-the-happy-path&#34;&gt;#&lt;/a&gt;&lt;/h4&gt;&#xD;&#xA;&lt;p&gt;不要一上来就想着搞破坏！黑客的第一步是把自己伪装成一个极其听话的“好用户”。&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;清空历史：&lt;/strong&gt; 在 Burp 的 HTTP History 中打一个标记（或者清空之前的记录），确保接下来的流量是纯净的。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;顺流而下：&lt;/strong&gt; 关闭拦截 (Intercept is off)。在浏览器中，&lt;strong&gt;极其缓慢且完整地&lt;/strong&gt;走完整个业务流程（比如：输入账号密码 -&amp;gt; 点击登录 -&amp;gt; 页面跳转 -&amp;gt; 选择角色 -&amp;gt; 进入主页）。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;绘制拓扑图：&lt;/strong&gt; 回到 Burp，把刚才这套流程产生的所有核心 URL 提取出来，在脑子里（或纸上）画一条线： &lt;code&gt;A (/login)&lt;/code&gt; ➡️ &lt;code&gt;B (/role-selector)&lt;/code&gt; ➡️ &lt;code&gt;C (/home)&lt;/code&gt;&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;h4 id=&#34;第二阶段锚定权力交接点-identify-state-transitions&#34;&gt;第二阶段：锚定“权力交接点” (Identify State Transitions)&lt;a class=&#34;anchor&#34; href=&#34;#%e7%ac%ac%e4%ba%8c%e9%98%b6%e6%ae%b5%e9%94%9a%e5%ae%9a%e6%9d%83%e5%8a%9b%e4%ba%a4%e6%8e%a5%e7%82%b9-identify-state-transitions&#34;&gt;#&lt;/a&gt;&lt;/h4&gt;&#xD;&#xA;&lt;p&gt;这是最考验深度思考的一步。你需要看着 HTTP History 里的数据包，找出&lt;strong&gt;系统是在哪一刻决定你的权限的&lt;/strong&gt;。&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;追踪 Cookie/Token 的诞生：&lt;/strong&gt; 仔细看 &lt;code&gt;A (/login)&lt;/code&gt; 的响应包。它是不是在这里通过 &lt;code&gt;Set-Cookie&lt;/code&gt; 给你发了身份证？&lt;/p&gt;</description>
     </item>
     <item>
       <title>这里写你这篇文章的真实标题</title>
       <link>http://localhost:1313/posts/-%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%E9%82%AE%E4%BB%B6%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86/</link>
       <pubDate>Sun, 29 Mar 2026 15:00:00 +0800</pubDate>
       <guid>http://localhost:1313/posts/-%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%E9%82%AE%E4%BB%B6%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86/</guid>
-      <description>&lt;h3 id=&#34;-第一部分漏洞的核心原理&#34;&gt;🧠 第一部分：漏洞的核心原理&lt;/h3&gt;
-&lt;p&gt;这个漏洞之所以能成立，是因为目标网站的后端系统存在**“精神分裂”**——处理注册流程的两个核心组件，对数据的校验标准不一致。&lt;/p&gt;
-&lt;h4 id=&#34;1-宽容的发件员邮件处理服务&#34;&gt;1. 宽容的“发件员”（邮件处理服务）&lt;/h4&gt;
-&lt;p&gt;当你在网页上提交注册邮箱时，负责发送验证邮件的代码逻辑非常简单粗暴。它只认死理：&lt;strong&gt;“只要这是一个格式合法的邮箱，我就往它 @ 后面的那个顶级域名发邮件。”&lt;/strong&gt; 它&lt;strong&gt;没有限制长度&lt;/strong&gt;。所以当你提交 &lt;code&gt;238个a@dontwannacry.com.你的实验域名.net&lt;/code&gt; 时，它一看后缀是你的实验域名，就乖乖把邮件发到了你的客户端里。&lt;/p&gt;
-&lt;h4 id=&#34;2-严格且粗暴的档案管理员数据库&#34;&gt;2. 严格且粗暴的“档案管理员”（数据库）&lt;/h4&gt;
-&lt;p&gt;发件员发完邮件后，要把你的信息存入后台数据库（比如 MySQL 的 &lt;code&gt;users&lt;/code&gt; 表）。
-在设计数据库时，程序员给 &lt;code&gt;email&lt;/code&gt; 这个字段设定了最大长度，通常是 &lt;code&gt;VARCHAR(255)&lt;/code&gt;。&lt;/p&gt;
-&lt;p&gt;当超过 255 个字符的数据涌进来时，老版本的数据库（或者未开启严格模式的数据库）&lt;strong&gt;不会报错拦截&lt;/strong&gt;，而是会采取一种极其粗暴的默认行为：&lt;strong&gt;“既然装不下，那我就把第 255 个字符后面的所有东西，全部拿剪刀咔嚓剪掉！”&lt;/strong&gt;&lt;/p&gt;
-&lt;h4 id=&#34;3-致命的身份核验权限逻辑&#34;&gt;3. 致命的“身份核验”（权限逻辑）&lt;/h4&gt;
-&lt;p&gt;网站的权限判断逻辑是：用户登录后，去数据库里查他的 &lt;code&gt;email&lt;/code&gt; 字段，如果以 &lt;code&gt;@dontwannacry.com&lt;/code&gt; 结尾，就给他 Admin 权限。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;💥 漏洞闭环：&lt;/strong&gt; 你用超长邮箱骗过了“发件员”拿到了激活链接；随后“档案管理员”挥舞剪刀，把你邮箱后缀的实验域名剪掉了，只把前 255 个字符（刚好以 &lt;code&gt;@dontwannacry.com&lt;/code&gt; 结尾）存进了数据库。
-当你登录时，权限系统一看数据库里的记录，当场肃然起敬：“欢迎您，内部管理员！”&lt;/p&gt;
-&lt;h3 id=&#34;-第二部分如何挖掘出这个漏洞黑客视角的详细过程&#34;&gt;🕵️‍♂️ 第二部分：如何挖掘出这个漏洞？（黑客视角的详细过程）&lt;/h3&gt;
-&lt;p&gt;你可能会问：“原版教程是直接把答案喂给我了，但如果这是一个完全陌生的网站，我怎么知道要往框里填 255 个字符？”&lt;/p&gt;
-&lt;p&gt;真正的挖掘过程，是一个严密的**“假设 -&amp;gt; 测试 -&amp;gt; 观察 -&amp;gt; 利用”**的循环。以下是标准的渗透测试思路：&lt;/p&gt;
-&lt;h4 id=&#34;step-1-确立目标与信息收集-侦察阶段&#34;&gt;Step 1: 确立目标与信息收集 (侦察阶段)&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;观察现象：&lt;/strong&gt; 你在网站上随便乱点，可能在某处（比如 JS 文件、或者是之前的目录扫描）发现了一个 &lt;code&gt;/admin&lt;/code&gt; 路径。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;触碰边界：&lt;/strong&gt; 你尝试访问 &lt;code&gt;/admin&lt;/code&gt;，网页弹出一个无情的错误提示：&lt;code&gt;Admin interface only available if logged in as a @dontwannacry.com user&lt;/code&gt;。&lt;/p&gt;</description>
+      <description>&lt;h3 id=&#34;-第一部分漏洞的核心原理&#34;&gt;🧠 第一部分：漏洞的核心原理&lt;a class=&#34;anchor&#34; href=&#34;#-%e7%ac%ac%e4%b8%80%e9%83%a8%e5%88%86%e6%bc%8f%e6%b4%9e%e7%9a%84%e6%a0%b8%e5%bf%83%e5%8e%9f%e7%90%86&#34;&gt;#&lt;/a&gt;&lt;/h3&gt;&#xD;&#xA;&lt;p&gt;这个漏洞之所以能成立，是因为目标网站的后端系统存在**“精神分裂”**——处理注册流程的两个核心组件，对数据的校验标准不一致。&lt;/p&gt;&#xA;&lt;h4 id=&#34;1-宽容的发件员邮件处理服务&#34;&gt;1. 宽容的“发件员”（邮件处理服务）&lt;a class=&#34;anchor&#34; href=&#34;#1-%e5%ae%bd%e5%ae%b9%e7%9a%84%e5%8f%91%e4%bb%b6%e5%91%98%e9%82%ae%e4%bb%b6%e5%a4%84%e7%90%86%e6%9c%8d%e5%8a%a1&#34;&gt;#&lt;/a&gt;&lt;/h4&gt;&#xD;&#xA;&lt;p&gt;当你在网页上提交注册邮箱时，负责发送验证邮件的代码逻辑非常简单粗暴。它只认死理：&lt;strong&gt;“只要这是一个格式合法的邮箱，我就往它 @ 后面的那个顶级域名发邮件。”&lt;/strong&gt; 它&lt;strong&gt;没有限制长度&lt;/strong&gt;。所以当你提交 &lt;code&gt;238个a@dontwannacry.com.你的实验域名.net&lt;/code&gt; 时，它一看后缀是你的实验域名，就乖乖把邮件发到了你的客户端里。&lt;/p&gt;&#xA;&lt;h4 id=&#34;2-严格且粗暴的档案管理员数据库&#34;&gt;2. 严格且粗暴的“档案管理员”（数据库）&lt;a class=&#34;anchor&#34; href=&#34;#2-%e4%b8%a5%e6%a0%bc%e4%b8%94%e7%b2%97%e6%9a%b4%e7%9a%84%e6%a1%a3%e6%a1%88%e7%ae%a1%e7%90%86%e5%91%98%e6%95%b0%e6%8d%ae%e5%ba%93&#34;&gt;#&lt;/a&gt;&lt;/h4&gt;&#xD;&#xA;&lt;p&gt;发件员发完邮件后，要把你的信息存入后台数据库（比如 MySQL 的 &lt;code&gt;users&lt;/code&gt; 表）。&#xA;在设计数据库时，程序员给 &lt;code&gt;email&lt;/code&gt; 这个字段设定了最大长度，通常是 &lt;code&gt;VARCHAR(255)&lt;/code&gt;。&lt;/p&gt;&#xA;&lt;p&gt;当超过 255 个字符的数据涌进来时，老版本的数据库（或者未开启严格模式的数据库）&lt;strong&gt;不会报错拦截&lt;/strong&gt;，而是会采取一种极其粗暴的默认行为：&lt;strong&gt;“既然装不下，那我就把第 255 个字符后面的所有东西，全部拿剪刀咔嚓剪掉！”&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;h4 id=&#34;3-致命的身份核验权限逻辑&#34;&gt;3. 致命的“身份核验”（权限逻辑）&lt;a class=&#34;anchor&#34; href=&#34;#3-%e8%87%b4%e5%91%bd%e7%9a%84%e8%ba%ab%e4%bb%bd%e6%a0%b8%e9%aa%8c%e6%9d%83%e9%99%90%e9%80%bb%e8%be%91&#34;&gt;#&lt;/a&gt;&lt;/h4&gt;&#xD;&#xA;&lt;p&gt;网站的权限判断逻辑是：用户登录后，去数据库里查他的 &lt;code&gt;email&lt;/code&gt; 字段，如果以 &lt;code&gt;@dontwannacry.com&lt;/code&gt; 结尾，就给他 Admin 权限。&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;💥 漏洞闭环：&lt;/strong&gt; 你用超长邮箱骗过了“发件员”拿到了激活链接；随后“档案管理员”挥舞剪刀，把你邮箱后缀的实验域名剪掉了，只把前 255 个字符（刚好以 &lt;code&gt;@dontwannacry.com&lt;/code&gt; 结尾）存进了数据库。&#xA;当你登录时，权限系统一看数据库里的记录，当场肃然起敬：“欢迎您，内部管理员！”&lt;/p&gt;&#xA;&lt;h3 id=&#34;-第二部分如何挖掘出这个漏洞黑客视角的详细过程&#34;&gt;🕵️‍♂️ 第二部分：如何挖掘出这个漏洞？（黑客视角的详细过程）&lt;a class=&#34;anchor&#34; href=&#34;#-%e7%ac%ac%e4%ba%8c%e9%83%a8%e5%88%86%e5%a6%82%e4%bd%95%e6%8c%96%e6%8e%98%e5%87%ba%e8%bf%99%e4%b8%aa%e6%bc%8f%e6%b4%9e%e9%bb%91%e5%ae%a2%e8%a7%86%e8%a7%92%e7%9a%84%e8%af%a6%e7%bb%86%e8%bf%87%e7%a8%8b&#34;&gt;#&lt;/a&gt;&lt;/h3&gt;&#xD;&#xA;&lt;p&gt;你可能会问：“原版教程是直接把答案喂给我了，但如果这是一个完全陌生的网站，我怎么知道要往框里填 255 个字符？”&lt;/p&gt;&#xA;&lt;p&gt;真正的挖掘过程，是一个严密的**“假设 -&amp;gt; 测试 -&amp;gt; 观察 -&amp;gt; 利用”**的循环。以下是标准的渗透测试思路：&lt;/p&gt;&#xA;&lt;h4 id=&#34;step-1-确立目标与信息收集-侦察阶段&#34;&gt;Step 1: 确立目标与信息收集 (侦察阶段)&lt;a class=&#34;anchor&#34; href=&#34;#step-1-%e7%a1%ae%e7%ab%8b%e7%9b%ae%e6%a0%87%e4%b8%8e%e4%bf%a1%e6%81%af%e6%94%b6%e9%9b%86-%e4%be%a6%e5%af%9f%e9%98%b6%e6%ae%b5&#34;&gt;#&lt;/a&gt;&lt;/h4&gt;&#xD;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;观察现象：&lt;/strong&gt; 你在网站上随便乱点，可能在某处（比如 JS 文件、或者是之前的目录扫描）发现了一个 &lt;code&gt;/admin&lt;/code&gt; 路径。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;触碰边界：&lt;/strong&gt; 你尝试访问 &lt;code&gt;/admin&lt;/code&gt;，网页弹出一个无情的错误提示：&lt;code&gt;Admin interface only available if logged in as a @dontwannacry.com user&lt;/code&gt;。&lt;/p&gt;</description>
     </item>
     <item>
       <title>进阶版的 SQL 注入标准化操作路径 (SOP)</title>
       <link>http://localhost:1313/posts/sql-%E6%B3%A8%E5%85%A5%E6%A0%87%E5%87%86%E5%8C%96%E6%93%8D%E4%BD%9C%E8%B7%AF%E5%BE%84-sop/</link>
       <pubDate>Sun, 29 Mar 2026 15:00:00 +0800</pubDate>
       <guid>http://localhost:1313/posts/sql-%E6%B3%A8%E5%85%A5%E6%A0%87%E5%87%86%E5%8C%96%E6%93%8D%E4%BD%9C%E8%B7%AF%E5%BE%84-sop/</guid>
-      <description>&lt;h3 id=&#34;进阶版的-sql-注入标准化操作路径-sop&#34;&gt;进阶版的 SQL 注入标准化操作路径 (SOP)&lt;/h3&gt;
-&lt;p&gt;为了让你在脱离教程后不再迷茫，你需要把上面的思路重组成一个&lt;strong&gt;无死角的测试漏斗&lt;/strong&gt;。遇到任何网站，按照这5步走：&lt;/p&gt;
-&lt;h4 id=&#34;步骤-1全方位寻找注入点-信息收集&#34;&gt;步骤 1：全方位寻找注入点 (信息收集)&lt;/h4&gt;
-&lt;p&gt;不要只盯着网页上的输入框或URL。在Burp Suite里，任何由客户端传给服务器的数据都可能是注入点。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;显性输入：&lt;/strong&gt; URL参数 (GET)、表单提交 (POST)。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;隐性输入：&lt;/strong&gt; HTTP请求头（如 &lt;code&gt;User-Agent&lt;/code&gt;、&lt;code&gt;Referer&lt;/code&gt;）、&lt;code&gt;Cookie&lt;/code&gt; 的值。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&#34;步骤-2测试闭合与判断数据类型-fuzzing&#34;&gt;步骤 2：测试闭合与判断数据类型 (Fuzzing)&lt;/h4&gt;
-&lt;p&gt;找到参数后，先不要急着写恶意代码，先破坏它原有的SQL语句结构，看看网站会不会“报错”或“异常”。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;数字型还是字符型？&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;输入 &lt;code&gt;id=1&#39;&lt;/code&gt; 或 &lt;code&gt;id=1&amp;quot;&lt;/code&gt; 或 &lt;code&gt;id=1\&lt;/code&gt;: 观察页面是否报错或内容消失。这就叫“寻找闭合符”。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;输入 &lt;code&gt;id=1 and 1=1&lt;/code&gt; (正常) 和 &lt;code&gt;id=1 and 1=2&lt;/code&gt; (异常): 如果表现不同，说明存在数字型注入。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&#34;步骤-3确定数据库类型与注入策略-定级&#34;&gt;步骤 3：确定数据库类型与注入策略 (定级)&lt;/h4&gt;
-&lt;p&gt;根据网站在第二步的反馈，选择最有效的注入手法，优先级从高到低：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;联合查询注入 (Union Based)：&lt;/strong&gt; 页面能直接显示数据库里的数据内容（最简单直接）。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;报错注入 (Error Based)：&lt;/strong&gt; 页面虽然不显示正常数据，但会把 SQL 语法报错的详细信息（甚至带出数据）吐在页面上。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;布尔盲注 (Boolean Blind)：&lt;/strong&gt; 页面不报错，也不显示数据，但“输入对的逻辑”和“输入错的逻辑”，页面的长相或状态码不一样。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;时间盲注 (Time-based Blind)：&lt;/strong&gt; 无论输入对错，页面长得一模一样。只能通过加入 &lt;code&gt;sleep(5)&lt;/code&gt; 这样的指令，看服务器是不是真的卡了5秒才响应来判断注入是否存在（最耗时，难度最高）。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h4 id=&#34;步骤-4层层剥茧提取数据-利用&#34;&gt;步骤 4：层层剥茧提取数据 (利用)&lt;/h4&gt;
-&lt;p&gt;确定了策略后，严格按照这个顺序拼接Payload获取信息：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;查当前数据库名 &lt;code&gt;database()&lt;/code&gt; 和用户 &lt;code&gt;user()&lt;/code&gt;。&lt;/p&gt;</description>
+      <description>&lt;h3 id=&#34;进阶版的-sql-注入标准化操作路径-sop&#34;&gt;进阶版的 SQL 注入标准化操作路径 (SOP)&lt;a class=&#34;anchor&#34; href=&#34;#%e8%bf%9b%e9%98%b6%e7%89%88%e7%9a%84-sql-%e6%b3%a8%e5%85%a5%e6%a0%87%e5%87%86%e5%8c%96%e6%93%8d%e4%bd%9c%e8%b7%af%e5%be%84-sop&#34;&gt;#&lt;/a&gt;&lt;/h3&gt;&#xD;&#xA;&lt;p&gt;为了让你在脱离教程后不再迷茫，你需要把上面的思路重组成一个&lt;strong&gt;无死角的测试漏斗&lt;/strong&gt;。遇到任何网站，按照这5步走：&lt;/p&gt;&#xA;&lt;h4 id=&#34;步骤-1全方位寻找注入点-信息收集&#34;&gt;步骤 1：全方位寻找注入点 (信息收集)&lt;a class=&#34;anchor&#34; href=&#34;#%e6%ad%a5%e9%aa%a4-1%e5%85%a8%e6%96%b9%e4%bd%8d%e5%af%bb%e6%89%be%e6%b3%a8%e5%85%a5%e7%82%b9-%e4%bf%a1%e6%81%af%e6%94%b6%e9%9b%86&#34;&gt;#&lt;/a&gt;&lt;/h4&gt;&#xD;&#xA;&lt;p&gt;不要只盯着网页上的输入框或URL。在Burp Suite里，任何由客户端传给服务器的数据都可能是注入点。&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;显性输入：&lt;/strong&gt; URL参数 (GET)、表单提交 (POST)。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;隐性输入：&lt;/strong&gt; HTTP请求头（如 &lt;code&gt;User-Agent&lt;/code&gt;、&lt;code&gt;Referer&lt;/code&gt;）、&lt;code&gt;Cookie&lt;/code&gt; 的值。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h4 id=&#34;步骤-2测试闭合与判断数据类型-fuzzing&#34;&gt;步骤 2：测试闭合与判断数据类型 (Fuzzing)&lt;a class=&#34;anchor&#34; href=&#34;#%e6%ad%a5%e9%aa%a4-2%e6%b5%8b%e8%af%95%e9%97%ad%e5%90%88%e4%b8%8e%e5%88%a4%e6%96%ad%e6%95%b0%e6%8d%ae%e7%b1%bb%e5%9e%8b-fuzzing&#34;&gt;#&lt;/a&gt;&lt;/h4&gt;&#xD;&#xA;&lt;p&gt;找到参数后，先不要急着写恶意代码，先破坏它原有的SQL语句结构，看看网站会不会“报错”或“异常”。&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;数字型还是字符型？&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;输入 &lt;code&gt;id=1&#39;&lt;/code&gt; 或 &lt;code&gt;id=1&amp;quot;&lt;/code&gt; 或 &lt;code&gt;id=1\&lt;/code&gt;: 观察页面是否报错或内容消失。这就叫“寻找闭合符”。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;输入 &lt;code&gt;id=1 and 1=1&lt;/code&gt; (正常) 和 &lt;code&gt;id=1 and 1=2&lt;/code&gt; (异常): 如果表现不同，说明存在数字型注入。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h4 id=&#34;步骤-3确定数据库类型与注入策略-定级&#34;&gt;步骤 3：确定数据库类型与注入策略 (定级)&lt;a class=&#34;anchor&#34; href=&#34;#%e6%ad%a5%e9%aa%a4-3%e7%a1%ae%e5%ae%9a%e6%95%b0%e6%8d%ae%e5%ba%93%e7%b1%bb%e5%9e%8b%e4%b8%8e%e6%b3%a8%e5%85%a5%e7%ad%96%e7%95%a5-%e5%ae%9a%e7%ba%a7&#34;&gt;#&lt;/a&gt;&lt;/h4&gt;&#xD;&#xA;&lt;p&gt;根据网站在第二步的反馈，选择最有效的注入手法，优先级从高到低：&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;联合查询注入 (Union Based)：&lt;/strong&gt; 页面能直接显示数据库里的数据内容（最简单直接）。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;报错注入 (Error Based)：&lt;/strong&gt; 页面虽然不显示正常数据，但会把 SQL 语法报错的详细信息（甚至带出数据）吐在页面上。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;布尔盲注 (Boolean Blind)：&lt;/strong&gt; 页面不报错，也不显示数据，但“输入对的逻辑”和“输入错的逻辑”，页面的长相或状态码不一样。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;strong&gt;时间盲注 (Time-based Blind)：&lt;/strong&gt; 无论输入对错，页面长得一模一样。只能通过加入 &lt;code&gt;sleep(5)&lt;/code&gt; 这样的指令，看服务器是不是真的卡了5秒才响应来判断注入是否存在（最耗时，难度最高）。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;h4 id=&#34;步骤-4层层剥茧提取数据-利用&#34;&gt;步骤 4：层层剥茧提取数据 (利用)&lt;a class=&#34;anchor&#34; href=&#34;#%e6%ad%a5%e9%aa%a4-4%e5%b1%82%e5%b1%82%e5%89%a5%e8%8c%a7%e6%8f%90%e5%8f%96%e6%95%b0%e6%8d%ae-%e5%88%a9%e7%94%a8&#34;&gt;#&lt;/a&gt;&lt;/h4&gt;&#xD;&#xA;&lt;p&gt;确定了策略后，严格按照这个顺序拼接Payload获取信息：&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;查当前数据库名 &lt;code&gt;database()&lt;/code&gt; 和用户 &lt;code&gt;user()&lt;/code&gt;。&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

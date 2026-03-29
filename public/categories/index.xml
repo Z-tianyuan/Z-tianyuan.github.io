@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Categories on Z-tianyuan 的技术自留地</title>
+    <title>Categories on Z-tianyuan 的技术基地</title>
     <link>http://localhost:1313/categories/</link>
-    <description>Recent content in Categories on Z-tianyuan 的技术自留地</description>
+    <description>Recent content in Categories on Z-tianyuan 的技术基地</description>
     <generator>Hugo</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sun, 29 Mar 2026 15:00:00 +0800</lastBuildDate>
