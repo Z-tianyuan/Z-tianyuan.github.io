@@ -3,8 +3,8 @@ languageCode = 'zh-cn'
 title = 'Z-tianyuan 的技术基地'
 theme = 'hugo-book'
 
-# 开启搜索功能（这是这个主题的强项，会在左上角自动生成搜索框）
 [params]
   BookSearch = true
-  # 默认折叠左侧的目录树，让界面更清爽
   BookSection = '*'
+  # 这行是重点：强制开启极客暗黑模式！
+  BookTheme = 'dark'
