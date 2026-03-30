@@ -6,5 +6,10 @@ theme = 'hugo-book'
 [params]
   BookSearch = true
   BookSection = '*'
-  # 这行是重点：强制开启极客暗黑模式！
   BookTheme = 'dark'
+
+  BookCustomCSS = ['_custom.scss']
+
+# 下面这三行是关键：允许渲染我们写的名片 HTML 代码！
+[markup.goldmark.renderer]
+  unsafe = true

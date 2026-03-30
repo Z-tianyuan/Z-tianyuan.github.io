@@ -1,5 +1,19 @@
-+++
-date = '{{ .Date }}'
-draft = true
-title = '{{ replace .File.ContentBaseName "-" " " | title }}'
-+++
+---
+title: "{{ replace .Name "-" " " | title }}"
+date: {{ .Date }}
+draft: false
+categories: ["漏洞挖掘"]
+tags: ["Web安全", "实战复现"]
+---
+
+## 🎯 漏洞概述
+*这里用一句话描述你发现了什么漏洞，比如：某某业务存在逻辑越权漏洞...*
+
+---
+
+## 🔍 挖掘过程与复现步骤
+1. **信息收集：** 2. **构造 Payload：**
+3. **成功利用：** ---
+
+## 🛡️ 修复建议
+*站在防守方的角度，给开发人员的建议...*
