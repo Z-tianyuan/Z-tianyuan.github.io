@@ -2,6 +2,7 @@ baseURL = 'https://Z-tianyuan.github.io/'
 languageCode = 'zh-cn'
 title = 'Z-tianyuan 的技术基地'
 theme = 'hugo-book'
+buildFuture = true
 
 [params]
   BookSearch = true
