@@ -1,6 +1,7 @@
 ---
 title: "业务逻辑漏洞的类型"
 date: 2026-03-30T11:26:39+08:00
+draft: false
 # bookComments: false
 # bookSearchExclude: false
 # bookPostThumbnail: thumbnail.*

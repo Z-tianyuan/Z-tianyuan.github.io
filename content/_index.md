@@ -31,21 +31,21 @@ aside.book-menu, aside.book-toc, header.book-header, footer.book-footer {
 
 <div class="my-splash-screen">
 
-  <img src="/img/avatar.jpg" alt="Z-tianyuan Avatar" style="width: 160px; height: 160px; border-radius: 50%; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,0.6); margin-bottom: 25px; border: 4px solid #444;">
+<img src="/img/avatar.jpg" alt="Z-tianyuan Avatar" style="width: 160px; height: 160px; border-radius: 50%; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,0.6); margin-bottom: 25px; border: 4px solid #444;">
 
-  <h1 style="font-size: 3.5rem; margin-bottom: 15px; color: #fff; font-weight: bold; letter-spacing: 2px; border: none;">Z-tianyuan</h1>
+<h1 style="font-size: 3.5rem; margin-bottom: 15px; color: #fff; font-weight: bold; letter-spacing: 2px; border: none;">Z-tianyuan</h1>
 
-  <p style="color: #bbb; font-size: 1.25rem; line-height: 1.8; margin-bottom: 40px; max-width: 700px; text-align: center;">
+<p style="color: #bbb; font-size: 1.25rem; line-height: 1.8; margin-bottom: 40px; max-width: 700px; text-align: center;">
     你好，我是 Z-tianyuan。<br>
     网络工程大三在读 / 🛡️ 专注网络威胁检测与漏洞挖掘 / 🤖 AI 模型探索中
   </p>
 
-  <div style="font-size: 1.2rem; margin-bottom: 50px;">
+<div style="font-size: 1.2rem; margin-bottom: 50px;">
     <a href="https://github.com/Z-tianyuan" target="_blank" style="margin: 0 15px; color: #5cb85c; text-decoration: none; border-bottom: 2px dashed #5cb85c; padding-bottom: 2px;">GitHub 主页</a>
     <a href="mailto:你的邮箱@example.com" style="margin: 0 15px; color: #5cb85c; text-decoration: none; border-bottom: 2px dashed #5cb85c; padding-bottom: 2px;">Email 联系</a>
   </div>
 
-  <div>
+<div>
     <a href="/posts/" style="display: inline-block; padding: 12px 35px; font-size: 1.1rem; font-weight: bold; color: #fff; background-color: #007bff; border-radius: 30px; text-decoration: none; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
       👉 进入我的实战知识库
     </a>
