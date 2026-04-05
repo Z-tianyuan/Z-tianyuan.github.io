@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "content/posts/my-first-bug-bounty.md",
+                "file": "content/posts/sql-injection-bypass-record.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "my-first-bug-bounty"
+              "title": "sql-injection-bypass-record"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "content/posts/my-first-bug-bounty.md",
+                "file": "content/posts/sql-injection-bypass-record.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "my-first-bug-bounty 的反向链接列表"
+              "title": "sql-injection-bypass-record 的反向链接列表"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "content/posts/my-first-bug-bounty.md",
+                "file": "content/posts/sql-injection-bypass-record.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "my-first-bug-bounty 的出链列表"
+              "title": "sql-injection-bypass-record 的出链列表"
             }
           },
           {
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "content/posts/my-first-bug-bounty.md",
+                "file": "content/posts/sql-injection-bypass-record.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "my-first-bug-bounty 的大纲"
+              "title": "sql-injection-bypass-record 的大纲"
             }
           },
           {
@@ -196,17 +196,17 @@
   },
   "active": "fbc55de56f4a48a8",
   "lastOpenFiles": [
+    "content/posts/业务逻辑漏洞抓捕的整理表格.md",
+    "content/posts/业务逻辑漏洞的类型.md",
     "content/posts/黑客对于逻辑漏洞的探究过程.md",
     "content/posts/访问控制漏洞与权限升级.md",
     "content/posts/访问控制漏洞狩猎（SOP）.md",
     "content/posts/🧠 如何训练自己打破“固定思维”？.md",
     "content/posts/🧠 第一部分：邮件逻辑漏洞的核心原理.md",
     "content/posts/🕵️‍♂️ 状态机漏洞发现 SOP (标准作业程序).md",
-    "content/posts/业务逻辑漏洞抓捕的整理表格.md",
     "content/posts/SSRF漏洞挖掘.md",
     "_templates/Hugo挖洞SOP模板.md",
     "_templates",
-    "content/posts/my-first-bug-bounty.md",
     "content/posts/Web 业务逻辑漏洞测试 SOP 检查清单.md",
     "content/posts/sql-injection-bypass-record.md",
     "content/posts/访问控制漏洞的探索路径.md",
