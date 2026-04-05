@@ -1,0 +1,210 @@
+{
+  "main": {
+    "id": "e484a2f2c4f44176",
+    "type": "split",
+    "children": [
+      {
+        "id": "11179632ff4f2f6b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "fbc55de56f4a48a8",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "content/posts/访问控制漏洞狩猎（SOP）.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "访问控制漏洞狩猎（SOP）"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "14c22e66d7cef278",
+    "type": "split",
+    "children": [
+      {
+        "id": "4167ecf48a37d7bd",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1ec661674640ff5e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "43492348ecb295b7",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "9e63f0a236368b77",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "7c1a9f19fb70551f",
+    "type": "split",
+    "children": [
+      {
+        "id": "fc026623e1f3ae24",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0d770ad5680bbe1e",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "content/posts/访问控制漏洞狩猎（SOP）.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "访问控制漏洞狩猎（SOP） 的反向链接列表"
+            }
+          },
+          {
+            "id": "de7334cd2e129c3c",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "content/posts/访问控制漏洞狩猎（SOP）.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "访问控制漏洞狩猎（SOP） 的出链列表"
+            }
+          },
+          {
+            "id": "3cc0c1136035b77d",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "cbc1e204d2725ffa",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "添加笔记属性"
+            }
+          },
+          {
+            "id": "9eefe9f5e31185fc",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "content/posts/访问控制漏洞狩猎（SOP）.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "访问控制漏洞狩猎（SOP） 的大纲"
+            }
+          },
+          {
+            "id": "2203efdbab4f7335",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
+          }
+        ],
+        "currentTab": 5
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false,
+      "obsidian-git:Open Git source control": false
+    }
+  },
+  "active": "fbc55de56f4a48a8",
+  "lastOpenFiles": [
+    "content/posts/访问控制漏洞与权限升级.md",
+    "content/posts/my-first-bug-bounty.md",
+    "content/posts/Web 业务逻辑漏洞测试 SOP 检查清单.md",
+    "content/posts/sql-injection-bypass-record.md",
+    "content/posts/业务逻辑漏洞抓捕的整理表格.md",
+    "content/posts/黑客对于逻辑漏洞的探究过程.md",
+    "content/posts/访问控制漏洞狩猎（SOP）.md",
+    "content/posts/访问控制漏洞的探索路径.md",
+    "content/posts/未命名.md",
+    "未命名.canvas"
+  ]
+}
