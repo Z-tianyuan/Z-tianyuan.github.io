@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "content/posts/访问控制漏洞的探索路径.md",
+                "file": "content/posts/未命名.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "访问控制漏洞的探索路径"
+              "title": "未命名"
             }
           }
         ]
@@ -196,6 +196,8 @@
   },
   "active": "fbc55de56f4a48a8",
   "lastOpenFiles": [
+    "content/posts/访问控制漏洞的探索路径.md",
+    "content/posts/未命名.md",
     "content/posts/访问控制漏洞狩猎（SOP）.md",
     "content/posts/sql-injection-bypass-record.md",
     "content/posts/业务逻辑漏洞抓捕的整理表格.md",
@@ -209,7 +211,6 @@
     "_templates/Hugo挖洞SOP模板.md",
     "_templates",
     "content/posts/Web 业务逻辑漏洞测试 SOP 检查清单.md",
-    "content/posts/访问控制漏洞的探索路径.md",
     "未命名.canvas"
   ]
 }
