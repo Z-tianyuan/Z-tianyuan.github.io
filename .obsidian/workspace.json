@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "content/posts/未命名.md",
+                "file": "content/posts/随记.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "未命名"
+              "title": "随记"
             }
           }
         ],
@@ -212,7 +212,7 @@
   "active": "f53a422140890492",
   "lastOpenFiles": [
     "content/posts/ai 沙箱的测试.md",
-    "content/posts/未命名.md",
+    "content/posts/随记.md",
     "content/posts/简历项目模板.md",
     "content/posts/README.md",
     "Pasted image 20260412163338.png",
