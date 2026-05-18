@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="黑客视角的“万能挖掘心法”#明白了上面这 5 大流派，你在面对一个全新网站时，就不再是瞎猫碰死耗子了。请把你接下来的挖掘动作标准化为以下 4 步 SOP (标准作业程序)：
+🕵️ 第一步：画地图（侦察与资产梳理）#不急于动手： 先把自己当成一个最普通、甚至有点笨的用户。注册两个账号（A和B），完整走一遍所有功能。
+绘制“快乐路径 (Happy Path)”： 记录下正常走完一个流程（如购买、发帖、重置密码）需要经过哪几个接口？带了哪些参数？
+🧠 第二步：找假设（寻找程序员的盲区）#仔细审视你抓到的每一个数据包，问自己一个核心问题：“程序员在这里做出了什么天真的假设？”
+假设用户只能选下拉框里的数字？
+假设用户肯定付了钱才会访问下载页面？
+假设验证码肯定是对的？
+假设 price 绝对不会是负数？
+🔨 第三步：搞破坏（打破规则的 Fuzzing）#针对上面的每一个假设，进行极其变态的测试：
+改数值： 变负数、变极大值、变小数、变 0。
+改身份： 把数据包里的 userId=101 改成 userId=1（尝试越权）。
+乱穿插： 把步骤 3 的请求放到步骤 1 前面发。丢弃某些看似无关紧要的参数。
+塞垃圾： 填入超长字符串、塞入特殊符号、改变数据格式（比如把字符串换成 JSON 数组 []）。
+💡 第四步：看反应（捕捉异常状态）#别只看 200 或 500： 逻辑漏洞往往不会报错！你要看的是业务状态的变化。
+钱少了还是多了？
+别人的资料我能不能看到？
+页面有没有截断我的超长输入？
+有没有意外收到确认邮件？ 123
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#2e3440">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://Z-tianyuan.github.io/posts/%E9%BB%91%E5%AE%A2%E5%AF%B9%E4%BA%8E%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%8E%A2%E7%A9%B6%E8%BF%87%E7%A8%8B/">
+  <meta property="og:site_name" content="Z-tianyuan 的技术基地">
+  <meta property="og:title" content="黑客对于逻辑漏洞的探究过程">
+  <meta property="og:description" content="黑客视角的“万能挖掘心法”#明白了上面这 5 大流派，你在面对一个全新网站时，就不再是瞎猫碰死耗子了。请把你接下来的挖掘动作标准化为以下 4 步 SOP (标准作业程序)：
+🕵️ 第一步：画地图（侦察与资产梳理）#不急于动手： 先把自己当成一个最普通、甚至有点笨的用户。注册两个账号（A和B），完整走一遍所有功能。
+绘制“快乐路径 (Happy Path)”： 记录下正常走完一个流程（如购买、发帖、重置密码）需要经过哪几个接口？带了哪些参数？
+🧠 第二步：找假设（寻找程序员的盲区）#仔细审视你抓到的每一个数据包，问自己一个核心问题：“程序员在这里做出了什么天真的假设？”
+假设用户只能选下拉框里的数字？
+假设用户肯定付了钱才会访问下载页面？
+假设验证码肯定是对的？
+假设 price 绝对不会是负数？
+🔨 第三步：搞破坏（打破规则的 Fuzzing）#针对上面的每一个假设，进行极其变态的测试：
+改数值： 变负数、变极大值、变小数、变 0。
+改身份： 把数据包里的 userId=101 改成 userId=1（尝试越权）。
+乱穿插： 把步骤 3 的请求放到步骤 1 前面发。丢弃某些看似无关紧要的参数。
+塞垃圾： 填入超长字符串、塞入特殊符号、改变数据格式（比如把字符串换成 JSON 数组 []）。
+💡 第四步：看反应（捕捉异常状态）#别只看 200 或 500： 逻辑漏洞往往不会报错！你要看的是业务状态的变化。
+钱少了还是多了？
+别人的资料我能不能看到？
+页面有没有截断我的超长输入？
+有没有意外收到确认邮件？ 123">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-03-30T14:48:00+08:00">
+    <meta property="article:modified_time" content="2026-03-30T14:48:00+08:00">
+
+
+  <meta itemprop="name" content="黑客对于逻辑漏洞的探究过程">
+  <meta itemprop="description" content="黑客视角的“万能挖掘心法”#明白了上面这 5 大流派，你在面对一个全新网站时，就不再是瞎猫碰死耗子了。请把你接下来的挖掘动作标准化为以下 4 步 SOP (标准作业程序)：
+🕵️ 第一步：画地图（侦察与资产梳理）#不急于动手： 先把自己当成一个最普通、甚至有点笨的用户。注册两个账号（A和B），完整走一遍所有功能。
+绘制“快乐路径 (Happy Path)”： 记录下正常走完一个流程（如购买、发帖、重置密码）需要经过哪几个接口？带了哪些参数？
+🧠 第二步：找假设（寻找程序员的盲区）#仔细审视你抓到的每一个数据包，问自己一个核心问题：“程序员在这里做出了什么天真的假设？”
+假设用户只能选下拉框里的数字？
+假设用户肯定付了钱才会访问下载页面？
+假设验证码肯定是对的？
+假设 price 绝对不会是负数？
+🔨 第三步：搞破坏（打破规则的 Fuzzing）#针对上面的每一个假设，进行极其变态的测试：
+改数值： 变负数、变极大值、变小数、变 0。
+改身份： 把数据包里的 userId=101 改成 userId=1（尝试越权）。
+乱穿插： 把步骤 3 的请求放到步骤 1 前面发。丢弃某些看似无关紧要的参数。
+塞垃圾： 填入超长字符串、塞入特殊符号、改变数据格式（比如把字符串换成 JSON 数组 []）。
+💡 第四步：看反应（捕捉异常状态）#别只看 200 或 500： 逻辑漏洞往往不会报错！你要看的是业务状态的变化。
+钱少了还是多了？
+别人的资料我能不能看到？
+页面有没有截断我的超长输入？
+有没有意外收到确认邮件？ 123">
+  <meta itemprop="datePublished" content="2026-03-30T14:48:00+08:00">
+  <meta itemprop="dateModified" content="2026-03-30T14:48:00+08:00">
+  <meta itemprop="wordCount" content="60">
+
+<title>黑客对于逻辑漏洞的探究过程 | Z-tianyuan 的技术基地</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://Z-tianyuan.github.io/posts/%E9%BB%91%E5%AE%A2%E5%AF%B9%E4%BA%8E%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%8E%A2%E7%A9%B6%E8%BF%87%E7%A8%8B/">
+<link rel="stylesheet" href="/book.min.7eb6069de6354813be5a768bcbad6638d662b9da39f57aff88fc87665f0416a0.css" integrity="sha256-frYGneY1SBO&#43;WnaLy61mONZiudo59Xr/iPyHZl8EFqA=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.5f93f058dfbb158028a7d05c5a0f54fc59b1db4f20f9a0276696a02b095b0f7b.js" integrity="sha256-X5PwWN&#43;7FYAop9BcWg9U/Fmx208g&#43;aAnZpagKwlbD3s=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>Z-tianyuan 的技术基地</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a>
+      Posts</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E7%AC%AC%E5%8D%81%E4%B8%80%E5%91%A8%E5%AD%A6%E4%B9%A0%E5%A4%8D%E7%9B%98/" class="">
+      第十一周学习复盘 (2026-05-11 - 2026-05-17)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E9%9A%8F%E8%AE%B0/" class="">
+      随记</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E7%AE%80%E5%8E%86%E9%A1%B9%E7%9B%AE%E6%A8%A1%E6%9D%BF/" class="">
+      简历项目模板</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ai-%E6%B2%99%E7%AE%B1%E7%9A%84%E6%B5%8B%E8%AF%95/" class="">
+      ai 沙箱的测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E6%95%B4%E7%90%86%E5%9B%9B%E4%B8%AA%E6%98%9F%E6%9C%9F%E5%AD%A6%E4%B9%A0%E7%9A%84%E7%9F%A5%E8%AF%86/" class="">
+      整理四个星期学习的知识</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E5%AE%9E%E6%88%98-oob-%E7%9B%B2%E6%89%93-ssrf-sop/" class="">
+      实战 OOB 盲打 SSRF (SOP)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E6%BC%8F%E6%B4%9E%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E7%AD%94/" class="">
+      SSRF漏洞过程中的问题解答</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E8%B7%AF%E5%BE%84sop/" class="">
+      SSRF漏洞挖掘路径（SOP）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf-%E6%88%98%E6%9C%AF%E5%A4%8D%E4%B9%A0/" class="">
+      SSRF 战术复习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E7%A0%B4%E5%B1%80%E6%96%B9%E6%B3%95/" class="">
+      ssrf破局方法</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/web%E9%87%8C%E9%9D%A2%E7%9A%84%E6%A0%B8%E5%BF%83%E7%9F%A5%E8%AF%86%E7%82%B9/" class="">
+      web里面的核心知识点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E6%8A%80%E6%9C%AF%E5%91%98%E7%9A%84%E7%9B%B2%E7%82%B9/" class="">
+      技术员的盲点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf-%E6%8E%A2%E7%A9%B6%E4%B8%8E%E6%8C%96%E6%8E%98%E8%BF%87%E7%A8%8Bsrc-%E7%9B%AE%E6%A0%87/" class="">
+      SSRF 探究与挖掘过程（SRC 目标）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" class="">
+      SSRF漏洞挖掘</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%BC%8F%E6%B4%9E%E7%8B%A9%E7%8C%8Esop/" class="">
+      访问控制漏洞狩猎（SOP）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%8E%A2%E7%B4%A2%E8%B7%AF%E5%BE%84/" class="">
+      访问控制漏洞的探索路径</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%BC%8F%E6%B4%9E%E4%B8%8E%E6%9D%83%E9%99%90%E5%8D%87%E7%BA%A7/" class="">
+      访问控制漏洞与权限升级</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E9%BB%91%E5%AE%A2%E5%AF%B9%E4%BA%8E%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%8E%A2%E7%A9%B6%E8%BF%87%E7%A8%8B/" class="active">
+      黑客对于逻辑漏洞的探究过程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%8A%93%E6%8D%95%E7%9A%84%E6%95%B4%E7%90%86%E8%A1%A8%E6%A0%BC/" class="">
+      业务逻辑漏洞抓捕的整理表格</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%B1%BB%E5%9E%8B/" class="">
+      业务逻辑漏洞的类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/web-%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%B5%8B%E8%AF%95-sop-%E6%A3%80%E6%9F%A5%E6%B8%85%E5%8D%95/" class="">
+      Web 业务逻辑漏洞测试 SOP 检查清单</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/-%E5%A6%82%E4%BD%95%E8%AE%AD%E7%BB%83%E8%87%AA%E5%B7%B1%E6%89%93%E7%A0%B4%E5%9B%BA%E5%AE%9A%E6%80%9D%E7%BB%B4/" class="">
+      如何训练自己打破“固定思维”</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%EF%B8%8F%EF%B8%8F-%E7%8A%B6%E6%80%81%E6%9C%BA%E6%BC%8F%E6%B4%9E%E5%8F%91%E7%8E%B0-sop-%E6%A0%87%E5%87%86%E4%BD%9C%E4%B8%9A%E7%A8%8B%E5%BA%8F/" class="">
+      状态机漏洞发现 SOP (标准作业程序)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/-%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%E9%82%AE%E4%BB%B6%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86/" class="">
+      这里写你这篇文章的真实标题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/sql-%E6%B3%A8%E5%85%A5%E6%A0%87%E5%87%86%E5%8C%96%E6%93%8D%E4%BD%9C%E8%B7%AF%E5%BE%84-sop/" class="">
+      进阶版的 SQL 注入标准化操作路径 (SOP)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/sql-injection-bypass-record/" class="">
+      记一次布尔盲注漏洞的绕过与复现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/readme/" class="">
+      Readme</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a>
+      Github项目s</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/github%E9%A1%B9%E7%9B%AE/%E7%AC%AC%E4%B8%80%E5%A4%A9/" class="">
+      第一天</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/github%E9%A1%B9%E7%9B%AE/github%E9%AD%94%E6%94%B9/" class="">
+      github魔改</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>黑客对于逻辑漏洞的探究过程</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#黑客视角的万能挖掘心法">黑客视角的“万能挖掘心法”</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    黑客对于逻辑漏洞的探究过程
+  </h1>
+  
+  <div class="flex align-center text-small book-post-date">
+    <img src="/icons/calendar.svg" class="book-icon" alt="Calendar" />
+    <span>March 30, 2026</span>
+  </div>
+
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h3 id="黑客视角的万能挖掘心法">黑客视角的“万能挖掘心法”<a class="anchor" href="#%e9%bb%91%e5%ae%a2%e8%a7%86%e8%a7%92%e7%9a%84%e4%b8%87%e8%83%bd%e6%8c%96%e6%8e%98%e5%bf%83%e6%b3%95">#</a></h3>
+<p>明白了上面这 5 大流派，你在面对一个全新网站时，就不再是瞎猫碰死耗子了。请把你接下来的挖掘动作标准化为以下 <strong>4 步 SOP (标准作业程序)</strong>：</p>
+<h4 id="-第一步画地图侦察与资产梳理">🕵️ 第一步：画地图（侦察与资产梳理）<a class="anchor" href="#-%e7%ac%ac%e4%b8%80%e6%ad%a5%e7%94%bb%e5%9c%b0%e5%9b%be%e4%be%a6%e5%af%9f%e4%b8%8e%e8%b5%84%e4%ba%a7%e6%a2%b3%e7%90%86">#</a></h4>
+<ul>
+<li>
+<p><strong>不急于动手：</strong> 先把自己当成一个最普通、甚至有点笨的用户。注册两个账号（A和B），完整走一遍所有功能。</p>
+</li>
+<li>
+<p><strong>绘制“快乐路径 (Happy Path)”：</strong> 记录下正常走完一个流程（如购买、发帖、重置密码）需要经过哪几个接口？带了哪些参数？</p>
+</li>
+</ul>
+<h4 id="-第二步找假设寻找程序员的盲区">🧠 第二步：找假设（寻找程序员的盲区）<a class="anchor" href="#-%e7%ac%ac%e4%ba%8c%e6%ad%a5%e6%89%be%e5%81%87%e8%ae%be%e5%af%bb%e6%89%be%e7%a8%8b%e5%ba%8f%e5%91%98%e7%9a%84%e7%9b%b2%e5%8c%ba">#</a></h4>
+<p>仔细审视你抓到的每一个数据包，问自己一个核心问题：<strong>“程序员在这里做出了什么天真的假设？”</strong></p>
+<ul>
+<li>
+<p><em>假设用户只能选下拉框里的数字？</em></p>
+</li>
+<li>
+<p><em>假设用户肯定付了钱才会访问下载页面？</em></p>
+</li>
+<li>
+<p><em>假设验证码肯定是对的？</em></p>
+</li>
+<li>
+<p><em>假设 <code>price</code> 绝对不会是负数？</em></p>
+</li>
+</ul>
+<h4 id="-第三步搞破坏打破规则的-fuzzing">🔨 第三步：搞破坏（打破规则的 Fuzzing）<a class="anchor" href="#-%e7%ac%ac%e4%b8%89%e6%ad%a5%e6%90%9e%e7%a0%b4%e5%9d%8f%e6%89%93%e7%a0%b4%e8%a7%84%e5%88%99%e7%9a%84-fuzzing">#</a></h4>
+<p>针对上面的每一个假设，进行极其变态的测试：</p>
+<ol>
+<li>
+<p><strong>改数值：</strong> 变负数、变极大值、变小数、变 0。</p>
+</li>
+<li>
+<p><strong>改身份：</strong> 把数据包里的 <code>userId=101</code> 改成 <code>userId=1</code>（尝试越权）。</p>
+</li>
+<li>
+<p><strong>乱穿插：</strong> 把步骤 3 的请求放到步骤 1 前面发。丢弃某些看似无关紧要的参数。</p>
+</li>
+<li>
+<p><strong>塞垃圾：</strong> 填入超长字符串、塞入特殊符号、改变数据格式（比如把字符串换成 JSON 数组 <code>[]</code>）。</p>
+</li>
+</ol>
+<h4 id="-第四步看反应捕捉异常状态">💡 第四步：看反应（捕捉异常状态）<a class="anchor" href="#-%e7%ac%ac%e5%9b%9b%e6%ad%a5%e7%9c%8b%e5%8f%8d%e5%ba%94%e6%8d%95%e6%8d%89%e5%bc%82%e5%b8%b8%e7%8a%b6%e6%80%81">#</a></h4>
+<ul>
+<li>
+<p><strong>别只看 200 或 500：</strong> 逻辑漏洞往往不会报错！你要看的是<strong>业务状态的变化</strong>。</p>
+</li>
+<li>
+<p><em>钱少了还是多了？</em></p>
+</li>
+<li>
+<p><em>别人的资料我能不能看到？</em></p>
+</li>
+<li>
+<p><em>页面有没有截断我的超长输入？</em></p>
+</li>
+<li>
+<p><em>有没有意外收到确认邮件？</em>
+123</p>
+</li>
+</ul>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%BC%8F%E6%B4%9E%E4%B8%8E%E6%9D%83%E9%99%90%E5%8D%87%E7%BA%A7/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>访问控制漏洞与权限升级</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%8A%93%E6%8D%95%E7%9A%84%E6%95%B4%E7%90%86%E8%A1%A8%E6%A0%BC/" class="flex align-center">
+      <span>业务逻辑漏洞抓捕的整理表格</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#黑客视角的万能挖掘心法">黑客视角的“万能挖掘心法”</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

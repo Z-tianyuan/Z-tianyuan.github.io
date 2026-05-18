@@ -2,17 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Z-tianyuan 的技术基地</title>
-    <link>http://localhost:1313/categories/</link>
+    <link>https://Z-tianyuan.github.io/categories/</link>
     <description>Recent content in Categories on Z-tianyuan 的技术基地</description>
     <generator>Hugo</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 29 Mar 2026 15:00:00 +0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 18 May 2026 10:00:00 +0800</lastBuildDate>
+    <atom:link href="https://Z-tianyuan.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>学习复盘</title>
+      <link>https://Z-tianyuan.github.io/categories/%E5%AD%A6%E4%B9%A0%E5%A4%8D%E7%9B%98/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://Z-tianyuan.github.io/categories/%E5%AD%A6%E4%B9%A0%E5%A4%8D%E7%9B%98/</guid>
+      <description></description>
+    </item>
     <item>
       <title>漏洞挖掘</title>
-      <link>http://localhost:1313/categories/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/</link>
-      <pubDate>Sun, 29 Mar 2026 15:00:00 +0800</pubDate>
-      <guid>http://localhost:1313/categories/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/</guid>
+      <link>https://Z-tianyuan.github.io/categories/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/</link>
+      <pubDate>Sun, 12 Apr 2026 16:22:28 +0800</pubDate>
+      <guid>https://Z-tianyuan.github.io/categories/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/</guid>
       <description></description>
     </item>
   </channel>

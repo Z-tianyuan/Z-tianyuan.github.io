@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="好的，我把今天做的三件事彻底讲透。
+一、扫描链路验证
+做了什么： 用 Nuclei 扫本地 HTTP 服务，把 JSON 结果喂给 ai_filter.py。
+原理：
+┌────────────┐ ┌──────────────────┐ ┌───────────┐ │ Nuclei │ ──► │ results/*.jsonl │ ──► │ qwen3:8b │ │ 发送探测包 │ │ 每条是一行JSON │ │ 逐条分析 │ └────────────┘ └──────────────────┘ └───────────┘ │ ┌──────▼──────┐ │ 真实 / 误报 │ └─────────────┘
+为什么这么设计： Nuclei 输出的每条 JSON 包含完整的 request（发了什么请求）和 response（服务器回了什么），这恰好是 LLM 做判断所需的全部上下文。不需要额外捞数据。
+使用方法：
+1. 扫目标，输出 JSONL#nuclei -target http://目标 -t 模板目录 -jsonl -silent -o results/scan.jsonl
+2. 跑 AI 过滤#cd /d/NucleiAI &amp;&amp; python tests/test_filter.py
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#2e3440">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://Z-tianyuan.github.io/github%E9%A1%B9%E7%9B%AE/%E7%AC%AC%E4%B8%80%E5%A4%A9/">
+  <meta property="og:site_name" content="Z-tianyuan 的技术基地">
+  <meta property="og:title" content="第一天">
+  <meta property="og:description" content="好的，我把今天做的三件事彻底讲透。
+一、扫描链路验证
+做了什么： 用 Nuclei 扫本地 HTTP 服务，把 JSON 结果喂给 ai_filter.py。
+原理：
+┌────────────┐ ┌──────────────────┐ ┌───────────┐ │ Nuclei │ ──► │ results/*.jsonl │ ──► │ qwen3:8b │ │ 发送探测包 │ │ 每条是一行JSON │ │ 逐条分析 │ └────────────┘ └──────────────────┘ └───────────┘ │ ┌──────▼──────┐ │ 真实 / 误报 │ └─────────────┘
+为什么这么设计： Nuclei 输出的每条 JSON 包含完整的 request（发了什么请求）和 response（服务器回了什么），这恰好是 LLM 做判断所需的全部上下文。不需要额外捞数据。
+使用方法：
+1. 扫目标，输出 JSONL#nuclei -target http://目标 -t 模板目录 -jsonl -silent -o results/scan.jsonl
+2. 跑 AI 过滤#cd /d/NucleiAI &amp;&amp; python tests/test_filter.py">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="github项目">
+    <meta property="article:published_time" content="2026-05-13T18:08:54+08:00">
+    <meta property="article:modified_time" content="2026-05-13T18:08:54+08:00">
+
+
+  <meta itemprop="name" content="第一天">
+  <meta itemprop="description" content="好的，我把今天做的三件事彻底讲透。
+一、扫描链路验证
+做了什么： 用 Nuclei 扫本地 HTTP 服务，把 JSON 结果喂给 ai_filter.py。
+原理：
+┌────────────┐ ┌──────────────────┐ ┌───────────┐ │ Nuclei │ ──► │ results/*.jsonl │ ──► │ qwen3:8b │ │ 发送探测包 │ │ 每条是一行JSON │ │ 逐条分析 │ └────────────┘ └──────────────────┘ └───────────┘ │ ┌──────▼──────┐ │ 真实 / 误报 │ └─────────────┘
+为什么这么设计： Nuclei 输出的每条 JSON 包含完整的 request（发了什么请求）和 response（服务器回了什么），这恰好是 LLM 做判断所需的全部上下文。不需要额外捞数据。
+使用方法：
+1. 扫目标，输出 JSONL#nuclei -target http://目标 -t 模板目录 -jsonl -silent -o results/scan.jsonl
+2. 跑 AI 过滤#cd /d/NucleiAI &amp;&amp; python tests/test_filter.py">
+  <meta itemprop="datePublished" content="2026-05-13T18:08:54+08:00">
+  <meta itemprop="dateModified" content="2026-05-13T18:08:54+08:00">
+  <meta itemprop="wordCount" content="302">
+
+<title>第一天 | Z-tianyuan 的技术基地</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://Z-tianyuan.github.io/github%E9%A1%B9%E7%9B%AE/%E7%AC%AC%E4%B8%80%E5%A4%A9/">
+<link rel="stylesheet" href="/book.min.7eb6069de6354813be5a768bcbad6638d662b9da39f57aff88fc87665f0416a0.css" integrity="sha256-frYGneY1SBO&#43;WnaLy61mONZiudo59Xr/iPyHZl8EFqA=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.5f93f058dfbb158028a7d05c5a0f54fc59b1db4f20f9a0276696a02b095b0f7b.js" integrity="sha256-X5PwWN&#43;7FYAop9BcWg9U/Fmx208g&#43;aAnZpagKwlbD3s=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-github项目">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>Z-tianyuan 的技术基地</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a>
+      Posts</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E7%AC%AC%E5%8D%81%E4%B8%80%E5%91%A8%E5%AD%A6%E4%B9%A0%E5%A4%8D%E7%9B%98/" class="">
+      第十一周学习复盘 (2026-05-11 - 2026-05-17)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E9%9A%8F%E8%AE%B0/" class="">
+      随记</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E7%AE%80%E5%8E%86%E9%A1%B9%E7%9B%AE%E6%A8%A1%E6%9D%BF/" class="">
+      简历项目模板</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ai-%E6%B2%99%E7%AE%B1%E7%9A%84%E6%B5%8B%E8%AF%95/" class="">
+      ai 沙箱的测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E6%95%B4%E7%90%86%E5%9B%9B%E4%B8%AA%E6%98%9F%E6%9C%9F%E5%AD%A6%E4%B9%A0%E7%9A%84%E7%9F%A5%E8%AF%86/" class="">
+      整理四个星期学习的知识</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E5%AE%9E%E6%88%98-oob-%E7%9B%B2%E6%89%93-ssrf-sop/" class="">
+      实战 OOB 盲打 SSRF (SOP)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E6%BC%8F%E6%B4%9E%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E7%AD%94/" class="">
+      SSRF漏洞过程中的问题解答</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E8%B7%AF%E5%BE%84sop/" class="">
+      SSRF漏洞挖掘路径（SOP）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf-%E6%88%98%E6%9C%AF%E5%A4%8D%E4%B9%A0/" class="">
+      SSRF 战术复习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E7%A0%B4%E5%B1%80%E6%96%B9%E6%B3%95/" class="">
+      ssrf破局方法</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/web%E9%87%8C%E9%9D%A2%E7%9A%84%E6%A0%B8%E5%BF%83%E7%9F%A5%E8%AF%86%E7%82%B9/" class="">
+      web里面的核心知识点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E6%8A%80%E6%9C%AF%E5%91%98%E7%9A%84%E7%9B%B2%E7%82%B9/" class="">
+      技术员的盲点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf-%E6%8E%A2%E7%A9%B6%E4%B8%8E%E6%8C%96%E6%8E%98%E8%BF%87%E7%A8%8Bsrc-%E7%9B%AE%E6%A0%87/" class="">
+      SSRF 探究与挖掘过程（SRC 目标）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" class="">
+      SSRF漏洞挖掘</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%BC%8F%E6%B4%9E%E7%8B%A9%E7%8C%8Esop/" class="">
+      访问控制漏洞狩猎（SOP）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%8E%A2%E7%B4%A2%E8%B7%AF%E5%BE%84/" class="">
+      访问控制漏洞的探索路径</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%BC%8F%E6%B4%9E%E4%B8%8E%E6%9D%83%E9%99%90%E5%8D%87%E7%BA%A7/" class="">
+      访问控制漏洞与权限升级</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E9%BB%91%E5%AE%A2%E5%AF%B9%E4%BA%8E%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%8E%A2%E7%A9%B6%E8%BF%87%E7%A8%8B/" class="">
+      黑客对于逻辑漏洞的探究过程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%8A%93%E6%8D%95%E7%9A%84%E6%95%B4%E7%90%86%E8%A1%A8%E6%A0%BC/" class="">
+      业务逻辑漏洞抓捕的整理表格</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%B1%BB%E5%9E%8B/" class="">
+      业务逻辑漏洞的类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/web-%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%B5%8B%E8%AF%95-sop-%E6%A3%80%E6%9F%A5%E6%B8%85%E5%8D%95/" class="">
+      Web 业务逻辑漏洞测试 SOP 检查清单</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/-%E5%A6%82%E4%BD%95%E8%AE%AD%E7%BB%83%E8%87%AA%E5%B7%B1%E6%89%93%E7%A0%B4%E5%9B%BA%E5%AE%9A%E6%80%9D%E7%BB%B4/" class="">
+      如何训练自己打破“固定思维”</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%EF%B8%8F%EF%B8%8F-%E7%8A%B6%E6%80%81%E6%9C%BA%E6%BC%8F%E6%B4%9E%E5%8F%91%E7%8E%B0-sop-%E6%A0%87%E5%87%86%E4%BD%9C%E4%B8%9A%E7%A8%8B%E5%BA%8F/" class="">
+      状态机漏洞发现 SOP (标准作业程序)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/-%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%E9%82%AE%E4%BB%B6%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86/" class="">
+      这里写你这篇文章的真实标题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/sql-%E6%B3%A8%E5%85%A5%E6%A0%87%E5%87%86%E5%8C%96%E6%93%8D%E4%BD%9C%E8%B7%AF%E5%BE%84-sop/" class="">
+      进阶版的 SQL 注入标准化操作路径 (SOP)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/sql-injection-bypass-record/" class="">
+      记一次布尔盲注漏洞的绕过与复现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/readme/" class="">
+      Readme</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a>
+      Github项目s</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/github%E9%A1%B9%E7%9B%AE/%E7%AC%AC%E4%B8%80%E5%A4%A9/" class="active">
+      第一天</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/github%E9%A1%B9%E7%9B%AE/github%E9%AD%94%E6%94%B9/" class="">
+      github魔改</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>第一天</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><p>好的，我把今天做的三件事彻底讲透。</p>
+<hr>
+<p>一、扫描链路验证</p>
+<p>做了什么： 用 Nuclei 扫本地 HTTP 服务，把 JSON 结果喂给 ai_filter.py。</p>
+<p>原理：</p>
+<p>┌────────────┐      ┌──────────────────┐      ┌───────────┐
+│ Nuclei     │    ──►  │ results/*.jsonl   │            ──►  │ qwen3:8b  │
+│ 发送探测包  │             │ 每条是一行JSON     │                  │ 逐条分析   │
+└────────────┘      └──────────────────┘      └───────────┘
+│
+┌──────▼──────┐
+│ 真实 / 误报  │
+└─────────────┘</p>
+<p>为什么这么设计： Nuclei 输出的每条 JSON 包含完整的 request（发了什么请求）和 response（服务器回了什么），这恰好是 LLM
+做判断所需的全部上下文。不需要额外捞数据。</p>
+<p>使用方法：</p>
+<h1 id="1-扫目标输出-jsonl">1. 扫目标，输出 JSONL<a class="anchor" href="#1-%e6%89%ab%e7%9b%ae%e6%a0%87%e8%be%93%e5%87%ba-jsonl">#</a></h1>
+<p>nuclei -target http://目标 -t 模板目录 -jsonl -silent -o results/scan.jsonl</p>
+<h1 id="2-跑-ai-过滤">2. 跑 AI 过滤<a class="anchor" href="#2-%e8%b7%91-ai-%e8%bf%87%e6%bb%a4">#</a></h1>
+<p>cd /d/NucleiAI &amp;&amp; python tests/test_filter.py</p>
+<hr>
+<p>二、Prompt 改进</p>
+<p>做了什么： 重写了 ai_filter.py 里的 system prompt，让 LLM 先分类、再研判。</p>
+<p>改进前的问题：
+旧 prompt: &ldquo;判断这个漏洞是否真实存在&rdquo;
+问题: 技术检测类结果（如&quot;检测到 Python&quot;）被当作漏洞去判断 → AI 困惑 → 全判误报</p>
+<p>改进后的逻辑：
+新 prompt 三步走:
+第一步: 看 tags 字段，判断类型
+tech/discovery  → 技术识别类
+vuln/cve/rce    → 漏洞利用类
+exposure/misconfig → 配置暴露类</p>
+<pre><code>第二步: 套用不同类型的判断标准
+        技术识别: 只要响应里确实有对应特征 → 不是误报
+        漏洞利用: 检查请求/响应是否证明漏洞真正被触发
+        配置暴露: 检查返回的是真实配置还是登录页/404
+
+第三步: 输出结构化 JSON {finding_type, is_false_positive, confidence, reason}
+</code></pre>
+<p>关键代码（ai_filter.py 第 83-86 行）：</p>
+<h1 id="兜底保护-技术识别类就算-ai-判错了也自动修正">兜底保护: 技术识别类就算 AI 判错了也自动修正<a class="anchor" href="#%e5%85%9c%e5%ba%95%e4%bf%9d%e6%8a%a4-%e6%8a%80%e6%9c%af%e8%af%86%e5%88%ab%e7%b1%bb%e5%b0%b1%e7%ae%97-ai-%e5%88%a4%e9%94%99%e4%ba%86%e4%b9%9f%e8%87%aa%e5%8a%a8%e4%bf%ae%e6%ad%a3">#</a></h1>
+<p>if verdict.get(&ldquo;finding_type&rdquo;) == &ldquo;tech&rdquo; and verdict.get(&ldquo;is_false_positive&rdquo;):
+verdict[&ldquo;is_false_positive&rdquo;] = False
+verdict[&ldquo;reason&rdquo;] = &ldquo;[自动修正] 技术识别类结果不标记为误报&rdquo;</p>
+<p>为什么这么设计： 不能让 AI 独裁。代码里加了一层规则兜底——技术识别类结果永不当误报。这就是「AI +
+规则引擎」混合架构的核心思想。</p>
+<hr>
+<p>三、自定义模板</p>
+<p>做了什么： 手写了 5 个 YAML 模板，每个展示一种匹配技���。</p>
+<p>模板的本质：
+id: 唯一标识
+info:
+name: 漏洞名称
+severity: info|low|medium|high|critical
+tags: [分类标签]          ← 这个给 AI 判断类型用</p>
+<p>http:                        ← 定义请求
+- method: GET
+path: &ldquo;/xxx&rdquo;</p>
+<p>matchers:                    ← 定义判定逻辑
+- type: word               ← 五种匹配方式之一
+part: body               ← 在响应的哪个部分找
+words: [&ldquo;关键词&rdquo;]</p>
+<p>五种匹配方式对比：</p>
+<p>┌────────┬────────────────┬────────────────────────────────────────────────────────────┐
+│  技法  │     做什么     │                         什么时候用                         │
+├────────┼────────────────┼────────────────────────────────────────────────────────────┤
+│ word   │ 响应里找关键词 │ 特征明确，如 &ldquo;admin&rdquo;、&ldquo;password&rdquo;                           │
+├────────┼────────────────┼────────────────────────────────────────────────────────────┤
+│ regex  │ 正则表达式     │ 动态内容，如版本号 Python/3.\d+.\d+                      │
+├────────┼────────────────┼────────────────────────────────────────────────────────────┤
+│ status │ HTTP 状态码    │ 判断页面是否存在，如 200 vs 404                            │
+├────────┼────────────────┼────────────────────────────────────────────────────────────┤
+│ dsl    │ 复杂组合表达式 │ 需要 status_code==200 AND len(body)&gt;1000 AND contains(&hellip;) │
+├────────┼────────────────┼────────────────────────────────────────────────────────────┤
+│ binary │ 二进制匹配     │ 文件头、图片等非文本内容                                   │
+└────────┴────────────────┴────────────────────────────────────────────────────────────┘</p>
+<p>为什么 5 个全命中： 每个模板的匹配条件都精准对应了 Python HTTP 服务的实际响应内容——Server 头包含 Python、body 包含
+Directory listing、status_code 是 200。</p>
+<hr>
+<p>今天三件事的关系</p>
+<p>自定义模板 ──定义检测规则──► Nuclei 扫描 ──输出JSON结果──► AI 过滤引擎
+│
+tags 字段决定判断标准
+(你今天写的模板 tags 里有 demo/tech 等)</p>
+<p>一句话总结今天：你搭建了一条从「定义规则 → 自动扫描 → AI 研判」的完整链路，现在缺的只是把这条链路装进 Web 界面里。</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+<div>
+
+</div>
+
+<div>
+
+</div>
+
+</div>
+
+
+
+  
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/posts/readme/" class="flex align-center">
+        <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+        <span>Readme</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/github%E9%A1%B9%E7%9B%AE/github%E9%AD%94%E6%94%B9/" class="flex align-center">
+        <span>github魔改</span>
+        <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+ 
+        
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

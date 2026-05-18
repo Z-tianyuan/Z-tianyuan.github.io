@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>漏洞分析 on Z-tianyuan 的技术基地</title>
+    <link>https://Z-tianyuan.github.io/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/</link>
+    <description>Recent content in 漏洞分析 on Z-tianyuan 的技术基地</description>
+    <generator>Hugo</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 30 Mar 2026 11:39:25 +0800</lastBuildDate>
+    <atom:link href="https://Z-tianyuan.github.io/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>业务逻辑漏洞抓捕的整理表格</title>
+      <link>https://Z-tianyuan.github.io/posts/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%8A%93%E6%8D%95%E7%9A%84%E6%95%B4%E7%90%86%E8%A1%A8%E6%A0%BC/</link>
+      <pubDate>Mon, 30 Mar 2026 11:39:25 +0800</pubDate>
+      <guid>https://Z-tianyuan.github.io/posts/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%8A%93%E6%8D%95%E7%9A%84%E6%95%B4%E7%90%86%E8%A1%A8%E6%A0%BC/</guid>
+      <description>&lt;table&gt;&#xA;  &lt;thead&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;th style=&#34;text-align: center&#34;&gt;业务逻辑漏洞类型&lt;/th&gt;&#xA;          &lt;th&gt;存在问题&lt;/th&gt;&#xA;          &lt;th&gt;技术&lt;/th&gt;&#xA;          &lt;th&gt;绕过方法&lt;/th&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/thead&gt;&#xA;  &lt;tbody&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td style=&#34;text-align: center&#34;&gt;客户端信任漏洞&lt;/td&gt;&#xA;          &lt;td&gt;主要是这个技术人员在对这个前端代码的实现过程中，将需要处理的数据直接放在前端post的包中，这就导致攻击者可以通过抓取post包，来修改需要的东西的价格，数量等等&lt;/td&gt;&#xA;          &lt;td&gt;burp抓包&lt;/td&gt;&#xA;          &lt;td&gt;通过burp抓包直接将你输入的商品或者别的东西进行改变，使得你最后得到的结果跟这个网页想要的样子不同&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td style=&#34;text-align: center&#34;&gt;状态机与工作流绕过&lt;/td&gt;&#xA;          &lt;td&gt;按照原本的逻辑是A-B-C，其中B相当于一个验证过程，但是这个开发人员在设计这个代码的时候没有设定一定要通过B的测试之后才可以进入C&lt;/td&gt;&#xA;          &lt;td&gt;更改url&lt;/td&gt;&#xA;          &lt;td&gt;通过进入网站的自测，发现A-B-C这个过程，可以通过在A的过程中直接给一个转向C的url，这样就会绕过B对于自己账号和状态的检测&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td style=&#34;text-align: center&#34;&gt;边界破坏与数据类型处理&lt;/td&gt;&#xA;          &lt;td&gt;技术员对于选择的边界没有考虑充足，认为没有人会达到那个临界值，所以没有设置限制，还有对于一些字符串与网站数据库的标准不相同，导致需要验明身份的地方被裁剪&lt;/td&gt;&#xA;          &lt;td&gt;python脚本，burp抓包&lt;/td&gt;&#xA;          &lt;td&gt;通过python脚本对需要测试的物品不断的增添数量直到这个边界被触发，导致出现错误或者负数，还有数据库的问题就是对于原本的标准长度是多少，然后在需要的地方添加多余的字符直到裁剪掉原本需要系统去验证的真实身份&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td style=&#34;text-align: center&#34;&gt;业务规则滥用&lt;/td&gt;&#xA;          &lt;td&gt;技术员在对于网站中的对于优惠或者其他东西的代码没有设置准确的限制，导致这些代码可以多次使用，或者本业务中存在可以无限套娃样式的操作，&lt;/td&gt;&#xA;          &lt;td&gt;burp抓包和python脚本&lt;/td&gt;&#xA;          &lt;td&gt;通过python脚本对可以返还钱的商品和优惠卷的使用，达到无限套娃，不断的将自己的余额提高，还有就是通过抓包对于商品多次使用优惠卷&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td style=&#34;text-align: center&#34;&gt;密码学与认证滥用&lt;/td&gt;&#xA;          &lt;td&gt;技术员在设计的时候对于用户的验证没有设置限制，导致出现将密码的加密预言机直接暴露在网页中，或者没有对于post包中的传回参数进行仔细的验证&lt;/td&gt;&#xA;          &lt;td&gt;burp抓包&lt;/td&gt;&#xA;          &lt;td&gt;通过对于暴露在外的加密预言机可以直接对自己需要的代码和语句直接编译成这个网站熟悉的样子，这样只需要将自己的身份变为管理员等然后通过其转化就行，然后就是对于post包的尝试，你可以更改post包中的用户id直接将其验证代码发送到别的账户中&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/tbody&gt;&#xA;&lt;/table&gt;</description>
+    </item>
+  </channel>
+</rss>

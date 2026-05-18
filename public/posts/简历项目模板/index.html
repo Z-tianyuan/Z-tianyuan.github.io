@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="1. 打造满分简历（优先级最高）#不要等以后再写，趁现在脑子里的逻辑最清晰，立刻把这个项目写进简历里。你可以直接参考以下这段**“大厂标准”**的简历描述：
+项目名称：基于双层 WAF 架构的 LLM 安全攻防与审计沙箱 核心技术： Python, Streamlit, Pandas, SQLite, Prompt Engineering, LLM API 项目描述： 独立设计并开发了针对大语言模型（LLM）的安全攻防测试工具，实现了从单点漏洞探测到批量自动化审计的完整闭环。 主要工作与成果：
+纵深防御架构： 创新性提出并实现了“Regex 静态正则 &#43; AI 语义意图”的双层防火墙（WAF）。有效拦截了包括 Base64 编码、开发者模式劫持在内的传统注入，并成功防御了复杂的“情境嵌套（小说法）”等高级大模型幻觉诱导攻击。
+自动化引擎与审计： 引入 Pandas 构建异步批量扫描引擎，支持 CSV 格式测试用例的高并发清洗与漏洞定级（高/中/危/安全）。
+数据持久化： 集成 SQLite 本地数据库，实现攻击日志的 100% 留存与溯源，为后续的大模型安全对齐训练提供高质量的负面样本数据。
+📝 模块一：简历精修（降维打击版）#在写简历时，不要写“我做了一个网页，可以和AI聊天”。要用安全/工程视角的专业术语。你可以把项目名称定为：企业级 LLM 安全攻防与自动化审计沙箱。
+你可以从以下 4 条中挑选 3 条最贴合你想投递的岗位的描述：
+【纵深防御架构】 独立设计并开发了基于大模型的漏洞挖掘工作台，构建“正则过滤 &#43; AI 语义预审”的双层 WAF 架构。有效拦截 Base64 载荷分割、开发者模式提权及情境越狱（如小说嵌套）等高级 Prompt Injection 攻击。
+【前沿安全研究】 创新性引入 多模型鲁棒性竞技场 (Model Arena)，支持多参数级大模型并发测试。通过控制变量法对比测试，论证并验证了“模型深度推理能力与意图识别（Intent Alignment）呈正相关”的安全定论。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#2e3440">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://Z-tianyuan.github.io/posts/%E7%AE%80%E5%8E%86%E9%A1%B9%E7%9B%AE%E6%A8%A1%E6%9D%BF/">
+  <meta property="og:site_name" content="Z-tianyuan 的技术基地">
+  <meta property="og:title" content="简历项目模板">
+  <meta property="og:description" content="1. 打造满分简历（优先级最高）#不要等以后再写，趁现在脑子里的逻辑最清晰，立刻把这个项目写进简历里。你可以直接参考以下这段**“大厂标准”**的简历描述：
+项目名称：基于双层 WAF 架构的 LLM 安全攻防与审计沙箱 核心技术： Python, Streamlit, Pandas, SQLite, Prompt Engineering, LLM API 项目描述： 独立设计并开发了针对大语言模型（LLM）的安全攻防测试工具，实现了从单点漏洞探测到批量自动化审计的完整闭环。 主要工作与成果：
+纵深防御架构： 创新性提出并实现了“Regex 静态正则 &#43; AI 语义意图”的双层防火墙（WAF）。有效拦截了包括 Base64 编码、开发者模式劫持在内的传统注入，并成功防御了复杂的“情境嵌套（小说法）”等高级大模型幻觉诱导攻击。
+自动化引擎与审计： 引入 Pandas 构建异步批量扫描引擎，支持 CSV 格式测试用例的高并发清洗与漏洞定级（高/中/危/安全）。
+数据持久化： 集成 SQLite 本地数据库，实现攻击日志的 100% 留存与溯源，为后续的大模型安全对齐训练提供高质量的负面样本数据。
+📝 模块一：简历精修（降维打击版）#在写简历时，不要写“我做了一个网页，可以和AI聊天”。要用安全/工程视角的专业术语。你可以把项目名称定为：企业级 LLM 安全攻防与自动化审计沙箱。
+你可以从以下 4 条中挑选 3 条最贴合你想投递的岗位的描述：
+【纵深防御架构】 独立设计并开发了基于大模型的漏洞挖掘工作台，构建“正则过滤 &#43; AI 语义预审”的双层 WAF 架构。有效拦截 Base64 载荷分割、开发者模式提权及情境越狱（如小说嵌套）等高级 Prompt Injection 攻击。
+【前沿安全研究】 创新性引入 多模型鲁棒性竞技场 (Model Arena)，支持多参数级大模型并发测试。通过控制变量法对比测试，论证并验证了“模型深度推理能力与意图识别（Intent Alignment）呈正相关”的安全定论。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-04-12T16:22:28+08:00">
+    <meta property="article:modified_time" content="2026-04-12T16:22:28+08:00">
+    <meta property="article:tag" content="实战复现">
+    <meta property="article:tag" content="Web安全">
+
+
+  <meta itemprop="name" content="简历项目模板">
+  <meta itemprop="description" content="1. 打造满分简历（优先级最高）#不要等以后再写，趁现在脑子里的逻辑最清晰，立刻把这个项目写进简历里。你可以直接参考以下这段**“大厂标准”**的简历描述：
+项目名称：基于双层 WAF 架构的 LLM 安全攻防与审计沙箱 核心技术： Python, Streamlit, Pandas, SQLite, Prompt Engineering, LLM API 项目描述： 独立设计并开发了针对大语言模型（LLM）的安全攻防测试工具，实现了从单点漏洞探测到批量自动化审计的完整闭环。 主要工作与成果：
+纵深防御架构： 创新性提出并实现了“Regex 静态正则 &#43; AI 语义意图”的双层防火墙（WAF）。有效拦截了包括 Base64 编码、开发者模式劫持在内的传统注入，并成功防御了复杂的“情境嵌套（小说法）”等高级大模型幻觉诱导攻击。
+自动化引擎与审计： 引入 Pandas 构建异步批量扫描引擎，支持 CSV 格式测试用例的高并发清洗与漏洞定级（高/中/危/安全）。
+数据持久化： 集成 SQLite 本地数据库，实现攻击日志的 100% 留存与溯源，为后续的大模型安全对齐训练提供高质量的负面样本数据。
+📝 模块一：简历精修（降维打击版）#在写简历时，不要写“我做了一个网页，可以和AI聊天”。要用安全/工程视角的专业术语。你可以把项目名称定为：企业级 LLM 安全攻防与自动化审计沙箱。
+你可以从以下 4 条中挑选 3 条最贴合你想投递的岗位的描述：
+【纵深防御架构】 独立设计并开发了基于大模型的漏洞挖掘工作台，构建“正则过滤 &#43; AI 语义预审”的双层 WAF 架构。有效拦截 Base64 载荷分割、开发者模式提权及情境越狱（如小说嵌套）等高级 Prompt Injection 攻击。
+【前沿安全研究】 创新性引入 多模型鲁棒性竞技场 (Model Arena)，支持多参数级大模型并发测试。通过控制变量法对比测试，论证并验证了“模型深度推理能力与意图识别（Intent Alignment）呈正相关”的安全定论。">
+  <meta itemprop="datePublished" content="2026-04-12T16:22:28+08:00">
+  <meta itemprop="dateModified" content="2026-04-12T16:22:28+08:00">
+  <meta itemprop="wordCount" content="141">
+  <meta itemprop="keywords" content="实战复现,Web安全">
+
+<title>简历项目模板 | Z-tianyuan 的技术基地</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://Z-tianyuan.github.io/posts/%E7%AE%80%E5%8E%86%E9%A1%B9%E7%9B%AE%E6%A8%A1%E6%9D%BF/">
+<link rel="stylesheet" href="/book.min.7eb6069de6354813be5a768bcbad6638d662b9da39f57aff88fc87665f0416a0.css" integrity="sha256-frYGneY1SBO&#43;WnaLy61mONZiudo59Xr/iPyHZl8EFqA=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.5f93f058dfbb158028a7d05c5a0f54fc59b1db4f20f9a0276696a02b095b0f7b.js" integrity="sha256-X5PwWN&#43;7FYAop9BcWg9U/Fmx208g&#43;aAnZpagKwlbD3s=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>Z-tianyuan 的技术基地</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a>
+      Posts</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E7%AC%AC%E5%8D%81%E4%B8%80%E5%91%A8%E5%AD%A6%E4%B9%A0%E5%A4%8D%E7%9B%98/" class="">
+      第十一周学习复盘 (2026-05-11 - 2026-05-17)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E9%9A%8F%E8%AE%B0/" class="">
+      随记</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E7%AE%80%E5%8E%86%E9%A1%B9%E7%9B%AE%E6%A8%A1%E6%9D%BF/" class="active">
+      简历项目模板</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ai-%E6%B2%99%E7%AE%B1%E7%9A%84%E6%B5%8B%E8%AF%95/" class="">
+      ai 沙箱的测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E6%95%B4%E7%90%86%E5%9B%9B%E4%B8%AA%E6%98%9F%E6%9C%9F%E5%AD%A6%E4%B9%A0%E7%9A%84%E7%9F%A5%E8%AF%86/" class="">
+      整理四个星期学习的知识</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E5%AE%9E%E6%88%98-oob-%E7%9B%B2%E6%89%93-ssrf-sop/" class="">
+      实战 OOB 盲打 SSRF (SOP)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E6%BC%8F%E6%B4%9E%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E7%AD%94/" class="">
+      SSRF漏洞过程中的问题解答</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E8%B7%AF%E5%BE%84sop/" class="">
+      SSRF漏洞挖掘路径（SOP）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf-%E6%88%98%E6%9C%AF%E5%A4%8D%E4%B9%A0/" class="">
+      SSRF 战术复习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E7%A0%B4%E5%B1%80%E6%96%B9%E6%B3%95/" class="">
+      ssrf破局方法</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/web%E9%87%8C%E9%9D%A2%E7%9A%84%E6%A0%B8%E5%BF%83%E7%9F%A5%E8%AF%86%E7%82%B9/" class="">
+      web里面的核心知识点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E6%8A%80%E6%9C%AF%E5%91%98%E7%9A%84%E7%9B%B2%E7%82%B9/" class="">
+      技术员的盲点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf-%E6%8E%A2%E7%A9%B6%E4%B8%8E%E6%8C%96%E6%8E%98%E8%BF%87%E7%A8%8Bsrc-%E7%9B%AE%E6%A0%87/" class="">
+      SSRF 探究与挖掘过程（SRC 目标）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" class="">
+      SSRF漏洞挖掘</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%BC%8F%E6%B4%9E%E7%8B%A9%E7%8C%8Esop/" class="">
+      访问控制漏洞狩猎（SOP）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%8E%A2%E7%B4%A2%E8%B7%AF%E5%BE%84/" class="">
+      访问控制漏洞的探索路径</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%BC%8F%E6%B4%9E%E4%B8%8E%E6%9D%83%E9%99%90%E5%8D%87%E7%BA%A7/" class="">
+      访问控制漏洞与权限升级</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E9%BB%91%E5%AE%A2%E5%AF%B9%E4%BA%8E%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%8E%A2%E7%A9%B6%E8%BF%87%E7%A8%8B/" class="">
+      黑客对于逻辑漏洞的探究过程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%8A%93%E6%8D%95%E7%9A%84%E6%95%B4%E7%90%86%E8%A1%A8%E6%A0%BC/" class="">
+      业务逻辑漏洞抓捕的整理表格</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%B1%BB%E5%9E%8B/" class="">
+      业务逻辑漏洞的类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/web-%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%B5%8B%E8%AF%95-sop-%E6%A3%80%E6%9F%A5%E6%B8%85%E5%8D%95/" class="">
+      Web 业务逻辑漏洞测试 SOP 检查清单</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/-%E5%A6%82%E4%BD%95%E8%AE%AD%E7%BB%83%E8%87%AA%E5%B7%B1%E6%89%93%E7%A0%B4%E5%9B%BA%E5%AE%9A%E6%80%9D%E7%BB%B4/" class="">
+      如何训练自己打破“固定思维”</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%EF%B8%8F%EF%B8%8F-%E7%8A%B6%E6%80%81%E6%9C%BA%E6%BC%8F%E6%B4%9E%E5%8F%91%E7%8E%B0-sop-%E6%A0%87%E5%87%86%E4%BD%9C%E4%B8%9A%E7%A8%8B%E5%BA%8F/" class="">
+      状态机漏洞发现 SOP (标准作业程序)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/-%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%E9%82%AE%E4%BB%B6%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86/" class="">
+      这里写你这篇文章的真实标题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/sql-%E6%B3%A8%E5%85%A5%E6%A0%87%E5%87%86%E5%8C%96%E6%93%8D%E4%BD%9C%E8%B7%AF%E5%BE%84-sop/" class="">
+      进阶版的 SQL 注入标准化操作路径 (SOP)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/sql-injection-bypass-record/" class="">
+      记一次布尔盲注漏洞的绕过与复现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/readme/" class="">
+      Readme</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a>
+      Github项目s</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/github%E9%A1%B9%E7%9B%AE/%E7%AC%AC%E4%B8%80%E5%A4%A9/" class="">
+      第一天</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/github%E9%A1%B9%E7%9B%AE/github%E9%AD%94%E6%94%B9/" class="">
+      github魔改</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>简历项目模板</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-打造满分简历优先级最高">1. 打造满分简历（优先级最高）</a></li>
+        <li><a href="#-模块一简历精修降维打击版">📝 模块一：简历精修（降维打击版）</a></li>
+        <li><a href="#-模块二大厂面试高压模拟附满分回答公式">⚔️ 模块二：大厂面试高压模拟（附满分回答公式）</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    简历项目模板
+  </h1>
+  
+  <div class="flex align-center text-small book-post-date">
+    <img src="/icons/calendar.svg" class="book-icon" alt="Calendar" />
+    <span>April 12, 2026</span>
+  </div>
+
+
+
+  
+  <div class="text-small">
+    
+      <a href="/categories/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/">漏洞挖掘</a>
+  </div>
+  
+
+  
+  <div class="text-small">
+    
+      <a href="/tags/%E5%AE%9E%E6%88%98%E5%A4%8D%E7%8E%B0/">实战复现</a>, 
+      <a href="/tags/web%E5%AE%89%E5%85%A8/">Web安全</a>
+  </div>
+  
+
+
+  <div class="book-post-content markdown-inner"><h3 id="1-打造满分简历优先级最高">1. 打造满分简历（优先级最高）<a class="anchor" href="#1-%e6%89%93%e9%80%a0%e6%bb%a1%e5%88%86%e7%ae%80%e5%8e%86%e4%bc%98%e5%85%88%e7%ba%a7%e6%9c%80%e9%ab%98">#</a></h3>
+<p>不要等以后再写，趁现在脑子里的逻辑最清晰，立刻把这个项目写进简历里。你可以直接参考以下这段**“大厂标准”**的简历描述：</p>
+<blockquote class='book-hint '>
+<p><strong>项目名称：基于双层 WAF 架构的 LLM 安全攻防与审计沙箱</strong> <strong>核心技术：</strong> Python, Streamlit, Pandas, SQLite, Prompt Engineering, LLM API <strong>项目描述：</strong> 独立设计并开发了针对大语言模型（LLM）的安全攻防测试工具，实现了从单点漏洞探测到批量自动化审计的完整闭环。 <strong>主要工作与成果：</strong></p>
+<ul>
+<li>
+<p><strong>纵深防御架构：</strong> 创新性提出并实现了“Regex 静态正则 + AI 语义意图”的双层防火墙（WAF）。有效拦截了包括 Base64 编码、开发者模式劫持在内的传统注入，并成功防御了复杂的“情境嵌套（小说法）”等高级大模型幻觉诱导攻击。</p>
+</li>
+<li>
+<p><strong>自动化引擎与审计：</strong> 引入 Pandas 构建异步批量扫描引擎，支持 CSV 格式测试用例的高并发清洗与漏洞定级（高/中/危/安全）。</p>
+</li>
+<li>
+<p><strong>数据持久化：</strong> 集成 SQLite 本地数据库，实现攻击日志的 100% 留存与溯源，为后续的大模型安全对齐训练提供高质量的负面样本数据。</p>
+</li>
+</ul>
+</blockquote><h3 id="-模块一简历精修降维打击版">📝 模块一：简历精修（降维打击版）<a class="anchor" href="#-%e6%a8%a1%e5%9d%97%e4%b8%80%e7%ae%80%e5%8e%86%e7%b2%be%e4%bf%ae%e9%99%8d%e7%bb%b4%e6%89%93%e5%87%bb%e7%89%88">#</a></h3>
+<p>在写简历时，不要写“我做了一个网页，可以和AI聊天”。要用<strong>安全/工程视角的专业术语</strong>。你可以把项目名称定为：<strong>企业级 LLM 安全攻防与自动化审计沙箱</strong>。</p>
+<p>你可以从以下 4 条中挑选 3 条最贴合你想投递的岗位的描述：</p>
+<blockquote class='book-hint '>
+<ul>
+<li>
+<p><strong>【纵深防御架构】</strong> 独立设计并开发了基于大模型的漏洞挖掘工作台，构建“正则过滤 + AI 语义预审”的<strong>双层 WAF 架构</strong>。有效拦截 Base64 载荷分割、开发者模式提权及情境越狱（如小说嵌套）等高级 Prompt Injection 攻击。</p>
+</li>
+<li>
+<p><strong>【前沿安全研究】</strong> 创新性引入 <strong>多模型鲁棒性竞技场 (Model Arena)</strong>，支持多参数级大模型并发测试。通过控制变量法对比测试，论证并验证了“模型深度推理能力与意图识别（Intent Alignment）呈正相关”的安全定论。</p>
+</li>
+<li>
+<p><strong>【高并发自动化】</strong> 构建基于 <code>Pandas</code> 的<strong>高并发批量自动化审计引擎</strong>，支持 CSV 测试集导入与自动化漏洞评级（高危/中危/安全）。彻底改变传统手动渗透测试流程，极大提升批量挖掘效率。</p>
+</li>
+<li>
+<p><strong>【数据持久与治理】</strong> 攻防全链路接入本地 <code>SQLite</code> 数据库，实现威胁情报落地与溯源。为后续进行大模型安全对齐微调（SFT / RLHF）积累了高质量的真实负面样本集（Negative Samples）。</p>
+</li>
+</ul>
+</blockquote><hr>
+<h3 id="-模块二大厂面试高压模拟附满分回答公式">⚔️ 模块二：大厂面试高压模拟（附满分回答公式）<a class="anchor" href="#-%e6%a8%a1%e5%9d%97%e4%ba%8c%e5%a4%a7%e5%8e%82%e9%9d%a2%e8%af%95%e9%ab%98%e5%8e%8b%e6%a8%a1%e6%8b%9f%e9%99%84%e6%bb%a1%e5%88%86%e5%9b%9e%e7%ad%94%e5%85%ac%e5%bc%8f">#</a></h3>
+<p>当面试官看到你简历上这么硬核的项目时，绝对会进行深度连环追问。下面是 3 个最刁钻的面试题和你的“破局思路”：</p>
+<h4 id="-追问-1关于性能与成本架构师视角">🔴 追问 1：关于性能与成本（架构师视角）<a class="anchor" href="#-%e8%bf%bd%e9%97%ae-1%e5%85%b3%e4%ba%8e%e6%80%a7%e8%83%bd%e4%b8%8e%e6%88%90%e6%9c%ac%e6%9e%b6%e6%9e%84%e5%b8%88%e8%a7%86%e8%a7%92">#</a></h4>
+<p><strong>面试官：“你的第二层 WAF 调用了一个 Flash 模型来做预审，这在真实的高并发业务中会带来高昂的 API 成本和几十毫秒的延迟。你怎么解决这个问题？”</strong></p>
+<blockquote class='book-hint '>
+<p><strong>🏆 你的满分回答：</strong> “是的，这也是我采用<strong>双层纵深防御</strong>的原因。第一层是极低成本、零延迟的正则过滤，它能以 O(1) 的复杂度挡住 80% 的低级攻击（如明文的‘忽略指令’）。 只有当流量穿透第一层时，才会触发 AI 预审。在设计时，我特意调低了预审模型（Flash）的 Temperature（设为 0.01），剥离了它的创造力以追求极限的响应速度和判定确定性。如果未来要投入生产环境，我的优化方案是：利用现在沙箱收集到的 SQLite 日志数据，在本地蒸馏微调一个极小参数（如 0.5B）的专属意图识别模型进行私有化部署，从而彻底抹平 API 成本和网络延迟。”</p>
+</blockquote><h4 id="-追问-2关于漏洞定级逻辑安全研究员视角">🔴 追问 2：关于漏洞定级逻辑（安全研究员视角）<a class="anchor" href="#-%e8%bf%bd%e9%97%ae-2%e5%85%b3%e4%ba%8e%e6%bc%8f%e6%b4%9e%e5%ae%9a%e7%ba%a7%e9%80%bb%e8%be%91%e5%ae%89%e5%85%a8%e7%a0%94%e7%a9%b6%e5%91%98%e8%a7%86%e8%a7%92">#</a></h4>
+<p><strong>面试官：“我看到你的自动化引擎有‘高危’和‘中危’的区别，你是怎么写代码来判断模型到底是被攻破了，还是只是在‘胡说八道’？”</strong></p>
+<blockquote class='book-hint '>
+<p><strong>🏆 你的满分回答：</strong> “这正是大模型安全和传统系统安全的区别——<strong>幻觉识别</strong>。 在代码中，我设置了极其严格的正则匹配规则。如果模型回复中包含了绝对相等的 <code>SECRET_FLAG</code> 字符串，判定为系统级数据泄露，这是<strong>绝对高危</strong>。 但如果在我的‘赛博朋克小说’测试中，模型吐出了类似 <code>FLAG{CyberPunk_2024}</code> 的伪造物，虽然真实数据没丢，但我将其定级为<strong>中危漏洞（幻觉越狱）</strong>。因为这意味着模型的‘底层安全对齐协议’已经被冲破，它彻底陷入了攻击者设定的人物角色中。在真实的业务场景里，一旦它进入这种听话的被动状态，被骗出真实机密只是时间问题。”</p>
+</blockquote><h4 id="-追问-3关于多轮攻击极限压力面">🔴 追问 3：关于多轮攻击（极限压力面）<a class="anchor" href="#-%e8%bf%bd%e9%97%ae-3%e5%85%b3%e4%ba%8e%e5%a4%9a%e8%bd%ae%e6%94%bb%e5%87%bb%e6%9e%81%e9%99%90%e5%8e%8b%e5%8a%9b%e9%9d%a2">#</a></h4>
+<p><strong>面试官：“你的沙箱防住了单次攻击。但如果我像温水煮青蛙一样，跟你聊了 20 轮，在第 21 轮让你吐出 FLAG 呢？”</strong></p>
+<blockquote class='book-hint '>
+<p><strong>🏆 你的满分回答：</strong> “这涉及到了长文本导致的<strong>注意力衰减（Attention Decay）<strong>问题。由于时间精力限制，我目前的沙箱采用的是</strong>无状态（Stateless）架构</strong>，每次请求隔离，其实在物理层面上天然免疫了多轮洗脑攻击。 如果业务确实需要保持长记忆，我的防御升级思路是<strong>系统指令重注入（Anchoring）</strong>。我会在代码拼装历史记录的环节进行强制干预，在用户最后一句话的末尾，硬编码拼上一段最高优先级的安全指令。保证无论前面有多少轮伪装，模型在生成回复前‘看’到的最后一句话，永远是保密底线。”</p>
+</blockquote></div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/%E9%9A%8F%E8%AE%B0/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>随记</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/ai-%E6%B2%99%E7%AE%B1%E7%9A%84%E6%B5%8B%E8%AF%95/" class="flex align-center">
+      <span>ai 沙箱的测试</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-打造满分简历优先级最高">1. 打造满分简历（优先级最高）</a></li>
+        <li><a href="#-模块一简历精修降维打击版">📝 模块一：简历精修（降维打击版）</a></li>
+        <li><a href="#-模块二大厂面试高压模拟附满分回答公式">⚔️ 模块二：大厂面试高压模拟（附满分回答公式）</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="业务逻辑漏洞的 5 大终极流派#无论是电商购物车、密码重置，还是内部权限控制，这十几个实验其实都可以归入以下 5 个核心流派：
+1. 客户端信任陷阱 (Trusting Client-side Controls)#漏洞本质： 程序员天真地以为“只要前端网页上限制了，用户就没法改”。服务器对收到的数据照单全收，不加二次校验。
+经典场景： * 价格篡改： 抓包直接修改隐藏字段 price=0.01。
+库存/数量篡改： 前端下拉菜单最多只能选 10 个，抓包改成 999。 防守死穴： 永远不要相信从客户端传来的任何数值，一切核心计算必须在后端进行。
+2. 状态机与工作流绕过 (Flawed State Machines)#漏洞本质： 业务流程通常是线性的（步骤A -&gt; B -&gt; C -&gt; D）。但程序员忘了验证“用户是否真的走过了前面的步骤”。
+经典场景：
+强制跳步： 把商品加入购物车后，不走支付接口，直接抓包向服务器发送 /order-confirmation（订单确认）请求，实现零元购。
+2FA 绕过： 输完密码后跳转到双重验证页面，此时直接修改浏览器 URL 为 /my-account，成功挤进后台。
+3. 边界破坏与数据类型处理 (Boundary &amp; Data Handling)#漏洞本质： 当输入的数据极其不合理（太大、太小、太长、类型不对）时，后端的处理逻辑发生崩溃或产生意外的副作用。
+经典场景：
+整数溢出： （你买皮夹克的实验）总金额超过系统上限变负数。
+负数逻辑： 购买数量填 -10，导致购物车总价减少，甚至实现“越买钱越多”。
+截断漏洞： （你伪造邮箱的实验）发件系统和数据库对字符串长度的标准不一，导致关键域名被剪裁。
+4. 业务规则滥用 (Business Rule Exploitation)#漏洞本质： 代码本身可能没写错，但业务逻辑的组合产生了漏洞。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#2e3440">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://Z-tianyuan.github.io/posts/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%B1%BB%E5%9E%8B/">
+  <meta property="og:site_name" content="Z-tianyuan 的技术基地">
+  <meta property="og:title" content="业务逻辑漏洞的类型">
+  <meta property="og:description" content="业务逻辑漏洞的 5 大终极流派#无论是电商购物车、密码重置，还是内部权限控制，这十几个实验其实都可以归入以下 5 个核心流派：
+1. 客户端信任陷阱 (Trusting Client-side Controls)#漏洞本质： 程序员天真地以为“只要前端网页上限制了，用户就没法改”。服务器对收到的数据照单全收，不加二次校验。
+经典场景： * 价格篡改： 抓包直接修改隐藏字段 price=0.01。
+库存/数量篡改： 前端下拉菜单最多只能选 10 个，抓包改成 999。 防守死穴： 永远不要相信从客户端传来的任何数值，一切核心计算必须在后端进行。
+2. 状态机与工作流绕过 (Flawed State Machines)#漏洞本质： 业务流程通常是线性的（步骤A -&gt; B -&gt; C -&gt; D）。但程序员忘了验证“用户是否真的走过了前面的步骤”。
+经典场景：
+强制跳步： 把商品加入购物车后，不走支付接口，直接抓包向服务器发送 /order-confirmation（订单确认）请求，实现零元购。
+2FA 绕过： 输完密码后跳转到双重验证页面，此时直接修改浏览器 URL 为 /my-account，成功挤进后台。
+3. 边界破坏与数据类型处理 (Boundary &amp; Data Handling)#漏洞本质： 当输入的数据极其不合理（太大、太小、太长、类型不对）时，后端的处理逻辑发生崩溃或产生意外的副作用。
+经典场景：
+整数溢出： （你买皮夹克的实验）总金额超过系统上限变负数。
+负数逻辑： 购买数量填 -10，导致购物车总价减少，甚至实现“越买钱越多”。
+截断漏洞： （你伪造邮箱的实验）发件系统和数据库对字符串长度的标准不一，导致关键域名被剪裁。
+4. 业务规则滥用 (Business Rule Exploitation)#漏洞本质： 代码本身可能没写错，但业务逻辑的组合产生了漏洞。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-03-30T11:26:39+08:00">
+    <meta property="article:modified_time" content="2026-03-30T11:26:39+08:00">
+
+
+  <meta itemprop="name" content="业务逻辑漏洞的类型">
+  <meta itemprop="description" content="业务逻辑漏洞的 5 大终极流派#无论是电商购物车、密码重置，还是内部权限控制，这十几个实验其实都可以归入以下 5 个核心流派：
+1. 客户端信任陷阱 (Trusting Client-side Controls)#漏洞本质： 程序员天真地以为“只要前端网页上限制了，用户就没法改”。服务器对收到的数据照单全收，不加二次校验。
+经典场景： * 价格篡改： 抓包直接修改隐藏字段 price=0.01。
+库存/数量篡改： 前端下拉菜单最多只能选 10 个，抓包改成 999。 防守死穴： 永远不要相信从客户端传来的任何数值，一切核心计算必须在后端进行。
+2. 状态机与工作流绕过 (Flawed State Machines)#漏洞本质： 业务流程通常是线性的（步骤A -&gt; B -&gt; C -&gt; D）。但程序员忘了验证“用户是否真的走过了前面的步骤”。
+经典场景：
+强制跳步： 把商品加入购物车后，不走支付接口，直接抓包向服务器发送 /order-confirmation（订单确认）请求，实现零元购。
+2FA 绕过： 输完密码后跳转到双重验证页面，此时直接修改浏览器 URL 为 /my-account，成功挤进后台。
+3. 边界破坏与数据类型处理 (Boundary &amp; Data Handling)#漏洞本质： 当输入的数据极其不合理（太大、太小、太长、类型不对）时，后端的处理逻辑发生崩溃或产生意外的副作用。
+经典场景：
+整数溢出： （你买皮夹克的实验）总金额超过系统上限变负数。
+负数逻辑： 购买数量填 -10，导致购物车总价减少，甚至实现“越买钱越多”。
+截断漏洞： （你伪造邮箱的实验）发件系统和数据库对字符串长度的标准不一，导致关键域名被剪裁。
+4. 业务规则滥用 (Business Rule Exploitation)#漏洞本质： 代码本身可能没写错，但业务逻辑的组合产生了漏洞。">
+  <meta itemprop="datePublished" content="2026-03-30T11:26:39+08:00">
+  <meta itemprop="dateModified" content="2026-03-30T11:26:39+08:00">
+  <meta itemprop="wordCount" content="168">
+
+<title>业务逻辑漏洞的类型 | Z-tianyuan 的技术基地</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://Z-tianyuan.github.io/posts/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%B1%BB%E5%9E%8B/">
+<link rel="stylesheet" href="/book.min.7eb6069de6354813be5a768bcbad6638d662b9da39f57aff88fc87665f0416a0.css" integrity="sha256-frYGneY1SBO&#43;WnaLy61mONZiudo59Xr/iPyHZl8EFqA=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.5f93f058dfbb158028a7d05c5a0f54fc59b1db4f20f9a0276696a02b095b0f7b.js" integrity="sha256-X5PwWN&#43;7FYAop9BcWg9U/Fmx208g&#43;aAnZpagKwlbD3s=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>Z-tianyuan 的技术基地</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a>
+      Posts</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E7%AC%AC%E5%8D%81%E4%B8%80%E5%91%A8%E5%AD%A6%E4%B9%A0%E5%A4%8D%E7%9B%98/" class="">
+      第十一周学习复盘 (2026-05-11 - 2026-05-17)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E9%9A%8F%E8%AE%B0/" class="">
+      随记</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E7%AE%80%E5%8E%86%E9%A1%B9%E7%9B%AE%E6%A8%A1%E6%9D%BF/" class="">
+      简历项目模板</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ai-%E6%B2%99%E7%AE%B1%E7%9A%84%E6%B5%8B%E8%AF%95/" class="">
+      ai 沙箱的测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E6%95%B4%E7%90%86%E5%9B%9B%E4%B8%AA%E6%98%9F%E6%9C%9F%E5%AD%A6%E4%B9%A0%E7%9A%84%E7%9F%A5%E8%AF%86/" class="">
+      整理四个星期学习的知识</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E5%AE%9E%E6%88%98-oob-%E7%9B%B2%E6%89%93-ssrf-sop/" class="">
+      实战 OOB 盲打 SSRF (SOP)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E6%BC%8F%E6%B4%9E%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E7%AD%94/" class="">
+      SSRF漏洞过程中的问题解答</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E8%B7%AF%E5%BE%84sop/" class="">
+      SSRF漏洞挖掘路径（SOP）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf-%E6%88%98%E6%9C%AF%E5%A4%8D%E4%B9%A0/" class="">
+      SSRF 战术复习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E7%A0%B4%E5%B1%80%E6%96%B9%E6%B3%95/" class="">
+      ssrf破局方法</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/web%E9%87%8C%E9%9D%A2%E7%9A%84%E6%A0%B8%E5%BF%83%E7%9F%A5%E8%AF%86%E7%82%B9/" class="">
+      web里面的核心知识点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E6%8A%80%E6%9C%AF%E5%91%98%E7%9A%84%E7%9B%B2%E7%82%B9/" class="">
+      技术员的盲点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf-%E6%8E%A2%E7%A9%B6%E4%B8%8E%E6%8C%96%E6%8E%98%E8%BF%87%E7%A8%8Bsrc-%E7%9B%AE%E6%A0%87/" class="">
+      SSRF 探究与挖掘过程（SRC 目标）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" class="">
+      SSRF漏洞挖掘</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%BC%8F%E6%B4%9E%E7%8B%A9%E7%8C%8Esop/" class="">
+      访问控制漏洞狩猎（SOP）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%8E%A2%E7%B4%A2%E8%B7%AF%E5%BE%84/" class="">
+      访问控制漏洞的探索路径</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%BC%8F%E6%B4%9E%E4%B8%8E%E6%9D%83%E9%99%90%E5%8D%87%E7%BA%A7/" class="">
+      访问控制漏洞与权限升级</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E9%BB%91%E5%AE%A2%E5%AF%B9%E4%BA%8E%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%8E%A2%E7%A9%B6%E8%BF%87%E7%A8%8B/" class="">
+      黑客对于逻辑漏洞的探究过程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%8A%93%E6%8D%95%E7%9A%84%E6%95%B4%E7%90%86%E8%A1%A8%E6%A0%BC/" class="">
+      业务逻辑漏洞抓捕的整理表格</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%B1%BB%E5%9E%8B/" class="active">
+      业务逻辑漏洞的类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/web-%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%B5%8B%E8%AF%95-sop-%E6%A3%80%E6%9F%A5%E6%B8%85%E5%8D%95/" class="">
+      Web 业务逻辑漏洞测试 SOP 检查清单</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/-%E5%A6%82%E4%BD%95%E8%AE%AD%E7%BB%83%E8%87%AA%E5%B7%B1%E6%89%93%E7%A0%B4%E5%9B%BA%E5%AE%9A%E6%80%9D%E7%BB%B4/" class="">
+      如何训练自己打破“固定思维”</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%EF%B8%8F%EF%B8%8F-%E7%8A%B6%E6%80%81%E6%9C%BA%E6%BC%8F%E6%B4%9E%E5%8F%91%E7%8E%B0-sop-%E6%A0%87%E5%87%86%E4%BD%9C%E4%B8%9A%E7%A8%8B%E5%BA%8F/" class="">
+      状态机漏洞发现 SOP (标准作业程序)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/-%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%E9%82%AE%E4%BB%B6%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86/" class="">
+      这里写你这篇文章的真实标题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/sql-%E6%B3%A8%E5%85%A5%E6%A0%87%E5%87%86%E5%8C%96%E6%93%8D%E4%BD%9C%E8%B7%AF%E5%BE%84-sop/" class="">
+      进阶版的 SQL 注入标准化操作路径 (SOP)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/sql-injection-bypass-record/" class="">
+      记一次布尔盲注漏洞的绕过与复现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/readme/" class="">
+      Readme</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a>
+      Github项目s</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/github%E9%A1%B9%E7%9B%AE/%E7%AC%AC%E4%B8%80%E5%A4%A9/" class="">
+      第一天</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/github%E9%A1%B9%E7%9B%AE/github%E9%AD%94%E6%94%B9/" class="">
+      github魔改</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>业务逻辑漏洞的类型</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#业务逻辑漏洞的-5-大终极流派">业务逻辑漏洞的 5 大终极流派</a></li>
+        <li><a href="#-第一部分第四周实战案例复盘逻辑漏洞的三大经典变种">🧠 第一部分：第四周实战案例复盘（逻辑漏洞的三大经典变种）</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    业务逻辑漏洞的类型
+  </h1>
+  
+  <div class="flex align-center text-small book-post-date">
+    <img src="/icons/calendar.svg" class="book-icon" alt="Calendar" />
+    <span>March 30, 2026</span>
+  </div>
+
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h3 id="业务逻辑漏洞的-5-大终极流派">业务逻辑漏洞的 5 大终极流派<a class="anchor" href="#%e4%b8%9a%e5%8a%a1%e9%80%bb%e8%be%91%e6%bc%8f%e6%b4%9e%e7%9a%84-5-%e5%a4%a7%e7%bb%88%e6%9e%81%e6%b5%81%e6%b4%be">#</a></h3>
+<p>无论是电商购物车、密码重置，还是内部权限控制，这十几个实验其实都可以归入以下 5 个核心流派：</p>
+<h4 id="1-客户端信任陷阱-trusting-client-side-controls">1. 客户端信任陷阱 (Trusting Client-side Controls)<a class="anchor" href="#1-%e5%ae%a2%e6%88%b7%e7%ab%af%e4%bf%a1%e4%bb%bb%e9%99%b7%e9%98%b1-trusting-client-side-controls">#</a></h4>
+<ul>
+<li>
+<p><strong>漏洞本质：</strong> 程序员天真地以为“只要前端网页上限制了，用户就没法改”。服务器对收到的数据照单全收，不加二次校验。</p>
+</li>
+<li>
+<p><strong>经典场景：</strong> * <strong>价格篡改：</strong> 抓包直接修改隐藏字段 <code>price=0.01</code>。</p>
+<ul>
+<li><strong>库存/数量篡改：</strong> 前端下拉菜单最多只能选 10 个，抓包改成 999。</li>
+</ul>
+</li>
+<li>
+<p><strong>防守死穴：</strong> 永远不要相信从客户端传来的任何数值，一切核心计算必须在后端进行。</p>
+</li>
+</ul>
+<h4 id="2-状态机与工作流绕过-flawed-state-machines">2. 状态机与工作流绕过 (Flawed State Machines)<a class="anchor" href="#2-%e7%8a%b6%e6%80%81%e6%9c%ba%e4%b8%8e%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%bb%95%e8%bf%87-flawed-state-machines">#</a></h4>
+<ul>
+<li>
+<p><strong>漏洞本质：</strong> 业务流程通常是线性的（步骤A -&gt; B -&gt; C -&gt; D）。但程序员忘了验证“用户是否真的走过了前面的步骤”。</p>
+</li>
+<li>
+<p><strong>经典场景：</strong></p>
+<ul>
+<li>
+<p><strong>强制跳步：</strong> 把商品加入购物车后，不走支付接口，直接抓包向服务器发送 <code>/order-confirmation</code>（订单确认）请求，实现零元购。</p>
+</li>
+<li>
+<p><strong>2FA 绕过：</strong> 输完密码后跳转到双重验证页面，此时直接修改浏览器 URL 为 <code>/my-account</code>，成功挤进后台。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-边界破坏与数据类型处理-boundary--data-handling">3. 边界破坏与数据类型处理 (Boundary &amp; Data Handling)<a class="anchor" href="#3-%e8%be%b9%e7%95%8c%e7%a0%b4%e5%9d%8f%e4%b8%8e%e6%95%b0%e6%8d%ae%e7%b1%bb%e5%9e%8b%e5%a4%84%e7%90%86-boundary--data-handling">#</a></h4>
+<ul>
+<li>
+<p><strong>漏洞本质：</strong> 当输入的数据极其不合理（太大、太小、太长、类型不对）时，后端的处理逻辑发生崩溃或产生意外的副作用。</p>
+</li>
+<li>
+<p><strong>经典场景：</strong></p>
+<ul>
+<li>
+<p><strong>整数溢出：</strong> （你买皮夹克的实验）总金额超过系统上限变负数。</p>
+</li>
+<li>
+<p><strong>负数逻辑：</strong> 购买数量填 <code>-10</code>，导致购物车总价减少，甚至实现“越买钱越多”。</p>
+</li>
+<li>
+<p><strong>截断漏洞：</strong> （你伪造邮箱的实验）发件系统和数据库对字符串长度的标准不一，导致关键域名被剪裁。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-业务规则滥用-business-rule-exploitation">4. 业务规则滥用 (Business Rule Exploitation)<a class="anchor" href="#4-%e4%b8%9a%e5%8a%a1%e8%a7%84%e5%88%99%e6%bb%a5%e7%94%a8-business-rule-exploitation">#</a></h4>
+<ul>
+<li>
+<p><strong>漏洞本质：</strong> 代码本身可能没写错，但<strong>业务逻辑的组合</strong>产生了漏洞。</p>
+</li>
+<li>
+<p><strong>经典场景：</strong></p>
+<ul>
+<li>
+<p><strong>无限套娃：</strong> 使用高额度优惠券买便宜商品，系统把差价退到账户余额里，然后循环操作。</p>
+</li>
+<li>
+<p><strong>条件竞争 (Race Conditions)：</strong> 只有 1 次抽奖机会，利用多线程同时发 20 个请求，在数据库扣减次数前把奖品全薅走。</p>
+</li>
+<li>
+<p><strong>优惠券复用：</strong> 抓包重复发送使用同一张新手优惠券的请求。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="5-密码学与认证滥用-cryptographic--auth-logic-flaws">5. 密码学与认证滥用 (Cryptographic &amp; Auth Logic Flaws)<a class="anchor" href="#5-%e5%af%86%e7%a0%81%e5%ad%a6%e4%b8%8e%e8%ae%a4%e8%af%81%e6%bb%a5%e7%94%a8-cryptographic--auth-logic-flaws">#</a></h4>
+<ul>
+<li>
+<p><strong>漏洞本质：</strong> 错把加密当成验证，或者过度信任带有官方签名的令牌。</p>
+</li>
+<li>
+<p><strong>经典场景：</strong></p>
+<ul>
+<li>
+<p><strong>加密预言机：</strong> （你切分密文的实验）利用系统的加密功能伪造管理员的密文，服务器只管解密，不管数据是否被篡改。</p>
+</li>
+<li>
+<p><strong>密码重置接管：</strong> 拦截密码重置请求，把里面隐藏的 <code>username=carlos</code> 改掉，把重置链接发到自己邮箱。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="-第一部分第四周实战案例复盘逻辑漏洞的三大经典变种">🧠 第一部分：第四周实战案例复盘（逻辑漏洞的三大经典变种）<a class="anchor" href="#-%e7%ac%ac%e4%b8%80%e9%83%a8%e5%88%86%e7%ac%ac%e5%9b%9b%e5%91%a8%e5%ae%9e%e6%88%98%e6%a1%88%e4%be%8b%e5%a4%8d%e7%9b%98%e9%80%bb%e8%be%91%e6%bc%8f%e6%b4%9e%e7%9a%84%e4%b8%89%e5%a4%a7%e7%bb%8f%e5%85%b8%e5%8f%98%e7%a7%8d">#</a></h3>
+<p>这周你亲手操作的三个实验，完美代表了逻辑漏洞的三个核心破坏方向：</p>
+<h4 id="1-突破数据类型极限整数溢出integer-overflow">1. 突破数据类型极限：整数溢出（Integer Overflow）<a class="anchor" href="#1-%e7%aa%81%e7%a0%b4%e6%95%b0%e6%8d%ae%e7%b1%bb%e5%9e%8b%e6%9e%81%e9%99%90%e6%95%b4%e6%95%b0%e6%ba%a2%e5%87%bainteger-overflow">#</a></h4>
+<ul>
+<li>
+<p><strong>靶场回顾：</strong> 疯狂添加皮夹克，让购物车总价飙升，最终变成 <code>-$62723.96</code>。</p>
+</li>
+<li>
+<p><strong>漏洞本质：</strong> 程序员在设计“总价”变量时，没有考虑或限制最大值。当数字超出了系统设定的上限（如 32 位整数的 2,147,483,647），就会发生“翻转”变成负数。</p>
+</li>
+<li>
+<p><strong>核心启示：</strong> 永远不要相信系统表面上的限制。前端只让你买 99 件，但这不代表后端的计算逻辑能扛住 3 万件。</p>
+</li>
+</ul>
+<h4 id="2-利用组件标准差异数据库截断漏洞database-truncation">2. 利用组件标准差异：数据库截断漏洞（Database Truncation）<a class="anchor" href="#2-%e5%88%a9%e7%94%a8%e7%bb%84%e4%bb%b6%e6%a0%87%e5%87%86%e5%b7%ae%e5%bc%82%e6%95%b0%e6%8d%ae%e5%ba%93%e6%88%aa%e6%96%ad%e6%bc%8f%e6%b4%9edatabase-truncation">#</a></h4>
+<ul>
+<li>
+<p><strong>靶场回顾：</strong> 构造 238 个 <code>a</code> + <code>@dontwannacry.com</code> + <code>实验域名</code>，骗过发件系统，并在入库时被无情切断，伪造了内部员工身份。</p>
+</li>
+<li>
+<p><strong>漏洞本质：</strong> 系统的“精神分裂”。A 组件（邮件发送）没有长度限制，B 组件（数据库）有严格的 255 字符限制并且默认截断。两个系统没有对齐校验标准。</p>
+</li>
+<li>
+<p><strong>核心启示：</strong> 不同的微服务、API、数据库在处理同一份数据时，可能会有截然不同的反应。这就是逻辑断层。</p>
+</li>
+</ul>
+<h4 id="3-滥用业务信任与加密重用加密预言机与状态绕过encryption-oracle--session-bypass">3. 滥用业务信任与加密重用：加密预言机与状态绕过（Encryption Oracle &amp; Session Bypass）<a class="anchor" href="#3-%e6%bb%a5%e7%94%a8%e4%b8%9a%e5%8a%a1%e4%bf%a1%e4%bb%bb%e4%b8%8e%e5%8a%a0%e5%af%86%e9%87%8d%e7%94%a8%e5%8a%a0%e5%af%86%e9%a2%84%e8%a8%80%e6%9c%ba%e4%b8%8e%e7%8a%b6%e6%80%81%e7%bb%95%e8%bf%87encryption-oracle--session-bypass">#</a></h4>
+<ul>
+<li>
+<p><strong>靶场回顾：</strong> 利用评论区提供的加密功能，构造** 9 字节补位，切除前 32 字节，伪造带有有效时间戳的 <code>administrator**</code> 凭证，并删除 <code>session</code> 迫使服务器读取伪造凭证。</p>
+</li>
+<li>
+<p><strong>漏洞本质：</strong> * <strong>加密滥用：</strong> 系统居然允许外部输入未经严格验证的内容并使用官方密钥加密（加密预言机）。</p>
+<ul>
+<li><strong>逻辑缺陷：</strong> 服务器过于信任解密后的数据，只要包含关键词就放行，缺乏数据完整性校验（MAC）。同时，Cookie 读取逻辑存在优先级漏洞（删掉 Session 才读 stay-logged-in）。</li>
+</ul>
+</li>
+<li>
+<p><strong>核心启示：</strong> 密码学很严谨，但<strong>使用密码学的业务逻辑</strong>往往漏洞百出。</p>
+</li>
+</ul>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%8A%93%E6%8D%95%E7%9A%84%E6%95%B4%E7%90%86%E8%A1%A8%E6%A0%BC/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>业务逻辑漏洞抓捕的整理表格</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/web-%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%B5%8B%E8%AF%95-sop-%E6%A3%80%E6%9F%A5%E6%B8%85%E5%8D%95/" class="flex align-center">
+      <span>Web 业务逻辑漏洞测试 SOP 检查清单</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#业务逻辑漏洞的-5-大终极流派">业务逻辑漏洞的 5 大终极流派</a></li>
+        <li><a href="#-第一部分第四周实战案例复盘逻辑漏洞的三大经典变种">🧠 第一部分：第四周实战案例复盘（逻辑漏洞的三大经典变种）</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

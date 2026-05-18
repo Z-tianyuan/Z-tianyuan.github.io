@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="这是一个极其经典的 “开发语言与操作系统的解析差异”！也是黑客最喜欢利用的盲区。
+保安（黑名单过滤器）的死板逻辑： 程序员写了一段简单的代码来防御 SSRF：“如果用户输入的 URL 里包含了 127.0.0.1 或者 localhost 这几个具体的字符串，我就拦截（400 报错）。”
+快递员（底层操作系统）的聪明补全： 当你输入 http://127.1/ 时，保安看了一眼，心里想：“嗯，没有 127.0.0.1 这个字符串，放行！” 但是，当这个请求交到底层操作系统（比如 Linux 的网络组件）去实际发送网络请求时，操作系统的网络协议栈极其聪明（或者说极其宽容）。它规定：如果一个 IP 地址缺少了中间的段，它会自动用 0 帮你补齐！
+你输入 127.1，系统自动补全为 127.0.0.1
+你输入 10.1，系统自动补全为 10.0.0.1
+结论： 你利用了字符串匹配的死板，骗过了第一层保安，然后利用了底层的自动补全，成功让服务器访问了自己！
+我们来看看你的终极 Payload 在服务器内部引发了怎样的“认知分裂”： Payload: http://localhost:80%2523@stock.weliketoshop.net
+(注：%2523 就是 # 的双重 URL 编码，这和你上一个实验写 Python 脚本对 a 进行双重编码的原理一模一样。系统解码一次后，它变成了 %23)
+保安的视角（校验白名单）： 保安拿着 URL：http://localhost:80%23@stock.weliketoshop.net 保安的逻辑比较死板，他想：“我知道 @ 符号前面是账号密码，后面才是真正的主机名。所以我直接看 @ 后面的内容就行了。” 保安一看 @ 后面是 stock.weliketoshop.net，完美符合白名单！ 保安判定：安全放行！
+司机的视角（发起真正请求）： 司机接过了保安放行的 URL。但是司机的底层库更聪明（或者说更复杂）。 司机看到 URL 里有一个 %23 (或者被进一步解码成了 #)。 司机心想：“哎呀，这有个 # 号！网络协议规定 # 后面的东西全是没用的注释（Fragment），我统统不要了！” 于是，司机直接把 # 以及它后面所有的东西（包括那个 @stock.weliketoshop.net）全部砍掉了。 司机真正发起的请求地址变成了：http://localhost:80 司机判定：全速开往本地管理员控制台！
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#2e3440">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://Z-tianyuan.github.io/posts/%E6%8A%80%E6%9C%AF%E5%91%98%E7%9A%84%E7%9B%B2%E7%82%B9/">
+  <meta property="og:site_name" content="Z-tianyuan 的技术基地">
+  <meta property="og:title" content="技术员的盲点">
+  <meta property="og:description" content="这是一个极其经典的 “开发语言与操作系统的解析差异”！也是黑客最喜欢利用的盲区。
+保安（黑名单过滤器）的死板逻辑： 程序员写了一段简单的代码来防御 SSRF：“如果用户输入的 URL 里包含了 127.0.0.1 或者 localhost 这几个具体的字符串，我就拦截（400 报错）。”
+快递员（底层操作系统）的聪明补全： 当你输入 http://127.1/ 时，保安看了一眼，心里想：“嗯，没有 127.0.0.1 这个字符串，放行！” 但是，当这个请求交到底层操作系统（比如 Linux 的网络组件）去实际发送网络请求时，操作系统的网络协议栈极其聪明（或者说极其宽容）。它规定：如果一个 IP 地址缺少了中间的段，它会自动用 0 帮你补齐！
+你输入 127.1，系统自动补全为 127.0.0.1
+你输入 10.1，系统自动补全为 10.0.0.1
+结论： 你利用了字符串匹配的死板，骗过了第一层保安，然后利用了底层的自动补全，成功让服务器访问了自己！
+我们来看看你的终极 Payload 在服务器内部引发了怎样的“认知分裂”： Payload: http://localhost:80%2523@stock.weliketoshop.net
+(注：%2523 就是 # 的双重 URL 编码，这和你上一个实验写 Python 脚本对 a 进行双重编码的原理一模一样。系统解码一次后，它变成了 %23)
+保安的视角（校验白名单）： 保安拿着 URL：http://localhost:80%23@stock.weliketoshop.net 保安的逻辑比较死板，他想：“我知道 @ 符号前面是账号密码，后面才是真正的主机名。所以我直接看 @ 后面的内容就行了。” 保安一看 @ 后面是 stock.weliketoshop.net，完美符合白名单！ 保安判定：安全放行！
+司机的视角（发起真正请求）： 司机接过了保安放行的 URL。但是司机的底层库更聪明（或者说更复杂）。 司机看到 URL 里有一个 %23 (或者被进一步解码成了 #)。 司机心想：“哎呀，这有个 # 号！网络协议规定 # 后面的东西全是没用的注释（Fragment），我统统不要了！” 于是，司机直接把 # 以及它后面所有的东西（包括那个 @stock.weliketoshop.net）全部砍掉了。 司机真正发起的请求地址变成了：http://localhost:80 司机判定：全速开往本地管理员控制台！">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-04-06T14:59:06+08:00">
+    <meta property="article:modified_time" content="2026-04-06T14:59:06+08:00">
+    <meta property="article:tag" content="实战复现">
+    <meta property="article:tag" content="Web安全">
+
+
+  <meta itemprop="name" content="技术员的盲点">
+  <meta itemprop="description" content="这是一个极其经典的 “开发语言与操作系统的解析差异”！也是黑客最喜欢利用的盲区。
+保安（黑名单过滤器）的死板逻辑： 程序员写了一段简单的代码来防御 SSRF：“如果用户输入的 URL 里包含了 127.0.0.1 或者 localhost 这几个具体的字符串，我就拦截（400 报错）。”
+快递员（底层操作系统）的聪明补全： 当你输入 http://127.1/ 时，保安看了一眼，心里想：“嗯，没有 127.0.0.1 这个字符串，放行！” 但是，当这个请求交到底层操作系统（比如 Linux 的网络组件）去实际发送网络请求时，操作系统的网络协议栈极其聪明（或者说极其宽容）。它规定：如果一个 IP 地址缺少了中间的段，它会自动用 0 帮你补齐！
+你输入 127.1，系统自动补全为 127.0.0.1
+你输入 10.1，系统自动补全为 10.0.0.1
+结论： 你利用了字符串匹配的死板，骗过了第一层保安，然后利用了底层的自动补全，成功让服务器访问了自己！
+我们来看看你的终极 Payload 在服务器内部引发了怎样的“认知分裂”： Payload: http://localhost:80%2523@stock.weliketoshop.net
+(注：%2523 就是 # 的双重 URL 编码，这和你上一个实验写 Python 脚本对 a 进行双重编码的原理一模一样。系统解码一次后，它变成了 %23)
+保安的视角（校验白名单）： 保安拿着 URL：http://localhost:80%23@stock.weliketoshop.net 保安的逻辑比较死板，他想：“我知道 @ 符号前面是账号密码，后面才是真正的主机名。所以我直接看 @ 后面的内容就行了。” 保安一看 @ 后面是 stock.weliketoshop.net，完美符合白名单！ 保安判定：安全放行！
+司机的视角（发起真正请求）： 司机接过了保安放行的 URL。但是司机的底层库更聪明（或者说更复杂）。 司机看到 URL 里有一个 %23 (或者被进一步解码成了 #)。 司机心想：“哎呀，这有个 # 号！网络协议规定 # 后面的东西全是没用的注释（Fragment），我统统不要了！” 于是，司机直接把 # 以及它后面所有的东西（包括那个 @stock.weliketoshop.net）全部砍掉了。 司机真正发起的请求地址变成了：http://localhost:80 司机判定：全速开往本地管理员控制台！">
+  <meta itemprop="datePublished" content="2026-04-06T14:59:06+08:00">
+  <meta itemprop="dateModified" content="2026-04-06T14:59:06+08:00">
+  <meta itemprop="wordCount" content="87">
+  <meta itemprop="keywords" content="实战复现,Web安全">
+
+<title>技术员的盲点 | Z-tianyuan 的技术基地</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://Z-tianyuan.github.io/posts/%E6%8A%80%E6%9C%AF%E5%91%98%E7%9A%84%E7%9B%B2%E7%82%B9/">
+<link rel="stylesheet" href="/book.min.7eb6069de6354813be5a768bcbad6638d662b9da39f57aff88fc87665f0416a0.css" integrity="sha256-frYGneY1SBO&#43;WnaLy61mONZiudo59Xr/iPyHZl8EFqA=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.5f93f058dfbb158028a7d05c5a0f54fc59b1db4f20f9a0276696a02b095b0f7b.js" integrity="sha256-X5PwWN&#43;7FYAop9BcWg9U/Fmx208g&#43;aAnZpagKwlbD3s=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>Z-tianyuan 的技术基地</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a>
+      Posts</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E7%AC%AC%E5%8D%81%E4%B8%80%E5%91%A8%E5%AD%A6%E4%B9%A0%E5%A4%8D%E7%9B%98/" class="">
+      第十一周学习复盘 (2026-05-11 - 2026-05-17)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E9%9A%8F%E8%AE%B0/" class="">
+      随记</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E7%AE%80%E5%8E%86%E9%A1%B9%E7%9B%AE%E6%A8%A1%E6%9D%BF/" class="">
+      简历项目模板</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ai-%E6%B2%99%E7%AE%B1%E7%9A%84%E6%B5%8B%E8%AF%95/" class="">
+      ai 沙箱的测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E6%95%B4%E7%90%86%E5%9B%9B%E4%B8%AA%E6%98%9F%E6%9C%9F%E5%AD%A6%E4%B9%A0%E7%9A%84%E7%9F%A5%E8%AF%86/" class="">
+      整理四个星期学习的知识</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E5%AE%9E%E6%88%98-oob-%E7%9B%B2%E6%89%93-ssrf-sop/" class="">
+      实战 OOB 盲打 SSRF (SOP)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E6%BC%8F%E6%B4%9E%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E7%AD%94/" class="">
+      SSRF漏洞过程中的问题解答</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E8%B7%AF%E5%BE%84sop/" class="">
+      SSRF漏洞挖掘路径（SOP）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf-%E6%88%98%E6%9C%AF%E5%A4%8D%E4%B9%A0/" class="">
+      SSRF 战术复习</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E7%A0%B4%E5%B1%80%E6%96%B9%E6%B3%95/" class="">
+      ssrf破局方法</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/web%E9%87%8C%E9%9D%A2%E7%9A%84%E6%A0%B8%E5%BF%83%E7%9F%A5%E8%AF%86%E7%82%B9/" class="">
+      web里面的核心知识点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E6%8A%80%E6%9C%AF%E5%91%98%E7%9A%84%E7%9B%B2%E7%82%B9/" class="active">
+      技术员的盲点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf-%E6%8E%A2%E7%A9%B6%E4%B8%8E%E6%8C%96%E6%8E%98%E8%BF%87%E7%A8%8Bsrc-%E7%9B%AE%E6%A0%87/" class="">
+      SSRF 探究与挖掘过程（SRC 目标）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/ssrf%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" class="">
+      SSRF漏洞挖掘</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%BC%8F%E6%B4%9E%E7%8B%A9%E7%8C%8Esop/" class="">
+      访问控制漏洞狩猎（SOP）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%8E%A2%E7%B4%A2%E8%B7%AF%E5%BE%84/" class="">
+      访问控制漏洞的探索路径</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%BC%8F%E6%B4%9E%E4%B8%8E%E6%9D%83%E9%99%90%E5%8D%87%E7%BA%A7/" class="">
+      访问控制漏洞与权限升级</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E9%BB%91%E5%AE%A2%E5%AF%B9%E4%BA%8E%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%8E%A2%E7%A9%B6%E8%BF%87%E7%A8%8B/" class="">
+      黑客对于逻辑漏洞的探究过程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%8A%93%E6%8D%95%E7%9A%84%E6%95%B4%E7%90%86%E8%A1%A8%E6%A0%BC/" class="">
+      业务逻辑漏洞抓捕的整理表格</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%B1%BB%E5%9E%8B/" class="">
+      业务逻辑漏洞的类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/web-%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%B5%8B%E8%AF%95-sop-%E6%A3%80%E6%9F%A5%E6%B8%85%E5%8D%95/" class="">
+      Web 业务逻辑漏洞测试 SOP 检查清单</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/-%E5%A6%82%E4%BD%95%E8%AE%AD%E7%BB%83%E8%87%AA%E5%B7%B1%E6%89%93%E7%A0%B4%E5%9B%BA%E5%AE%9A%E6%80%9D%E7%BB%B4/" class="">
+      如何训练自己打破“固定思维”</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/%EF%B8%8F%EF%B8%8F-%E7%8A%B6%E6%80%81%E6%9C%BA%E6%BC%8F%E6%B4%9E%E5%8F%91%E7%8E%B0-sop-%E6%A0%87%E5%87%86%E4%BD%9C%E4%B8%9A%E7%A8%8B%E5%BA%8F/" class="">
+      状态机漏洞发现 SOP (标准作业程序)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/-%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%E9%82%AE%E4%BB%B6%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86/" class="">
+      这里写你这篇文章的真实标题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/sql-%E6%B3%A8%E5%85%A5%E6%A0%87%E5%87%86%E5%8C%96%E6%93%8D%E4%BD%9C%E8%B7%AF%E5%BE%84-sop/" class="">
+      进阶版的 SQL 注入标准化操作路径 (SOP)</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/sql-injection-bypass-record/" class="">
+      记一次布尔盲注漏洞的绕过与复现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/posts/readme/" class="">
+      Readme</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a>
+      Github项目s</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/github%E9%A1%B9%E7%9B%AE/%E7%AC%AC%E4%B8%80%E5%A4%A9/" class="">
+      第一天</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/github%E9%A1%B9%E7%9B%AE/github%E9%AD%94%E6%94%B9/" class="">
+      github魔改</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>技术员的盲点</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    技术员的盲点
+  </h1>
+  
+  <div class="flex align-center text-small book-post-date">
+    <img src="/icons/calendar.svg" class="book-icon" alt="Calendar" />
+    <span>April 6, 2026</span>
+  </div>
+
+
+
+  
+  <div class="text-small">
+    
+      <a href="/categories/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/">漏洞挖掘</a>
+  </div>
+  
+
+  
+  <div class="text-small">
+    
+      <a href="/tags/%E5%AE%9E%E6%88%98%E5%A4%8D%E7%8E%B0/">实战复现</a>, 
+      <a href="/tags/web%E5%AE%89%E5%85%A8/">Web安全</a>
+  </div>
+  
+
+
+  <div class="book-post-content markdown-inner"><p>这是一个极其经典的 <strong>“开发语言与操作系统的解析差异”</strong>！也是黑客最喜欢利用的盲区。</p>
+<ol>
+<li>
+<p><strong>保安（黑名单过滤器）的死板逻辑：</strong> 程序员写了一段简单的代码来防御 SSRF：“如果用户输入的 URL 里包含了 <code>127.0.0.1</code> 或者 <code>localhost</code> 这几个具体的<strong>字符串</strong>，我就拦截（400 报错）。”</p>
+</li>
+<li>
+<p><strong>快递员（底层操作系统）的聪明补全：</strong> 当你输入 <code>http://127.1/</code> 时，保安看了一眼，心里想：“嗯，没有 <code>127.0.0.1</code> 这个字符串，放行！” 但是，当这个请求交到底层操作系统（比如 Linux 的网络组件）去实际发送网络请求时，<strong>操作系统的网络协议栈极其聪明（或者说极其宽容）</strong>。它规定：如果一个 IP 地址缺少了中间的段，它会<strong>自动用 0 帮你补齐</strong>！</p>
+<ul>
+<li>
+<p>你输入 <code>127.1</code>，系统自动补全为 <code>127.0.0.1</code></p>
+</li>
+<li>
+<p>你输入 <code>10.1</code>，系统自动补全为 <code>10.0.0.1</code></p>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>结论：</strong> 你利用了字符串匹配的死板，骗过了第一层保安，然后利用了底层的自动补全，成功让服务器访问了自己！</p>
+<p>我们来看看你的终极 Payload 在服务器内部引发了怎样的“认知分裂”：
+<strong>Payload:</strong> <code>http://localhost:80%2523@stock.weliketoshop.net</code></p>
+<p><em>(注：<code>%2523</code> 就是 <code>#</code> 的双重 URL 编码，这和你上一个实验写 Python 脚本对 <code>a</code> 进行双重编码的原理一模一样。系统解码一次后，它变成了 <code>%23</code>)</em></p>
+<p><strong>保安的视角（校验白名单）：</strong> 保安拿着 URL：<code>http://localhost:80%23@stock.weliketoshop.net</code> 保安的逻辑比较死板，他想：“我知道 <code>@</code> 符号前面是账号密码，后面才是真正的主机名。所以我直接看 <code>@</code> 后面的内容就行了。” 保安一看 <code>@</code> 后面是 <code>stock.weliketoshop.net</code>，完美符合白名单！ <strong>保安判定：安全放行！</strong></p>
+<p><strong>司机的视角（发起真正请求）：</strong> 司机接过了保安放行的 URL。但是司机的底层库更聪明（或者说更复杂）。 司机看到 URL 里有一个 <code>%23</code> (或者被进一步解码成了 <code>#</code>)。 司机心想：“哎呀，这有个 <code>#</code> 号！网络协议规定 <code>#</code> 后面的东西全是没用的注释（Fragment），我统统不要了！” 于是，司机直接把 <code>#</code> 以及它后面所有的东西（包括那个 <code>@stock.weliketoshop.net</code>）全部<strong>砍掉</strong>了。 司机真正发起的请求地址变成了：<code>http://localhost:80</code> <strong>司机判定：全速开往本地管理员控制台！</strong></p>
+<p><strong>结论：你用 <code>@</code> 骗过了保安，用 <code>#</code> 砍断了司机的方向盘！</strong></p>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/web%E9%87%8C%E9%9D%A2%E7%9A%84%E6%A0%B8%E5%BF%83%E7%9F%A5%E8%AF%86%E7%82%B9/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>web里面的核心知识点</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/ssrf-%E6%8E%A2%E7%A9%B6%E4%B8%8E%E6%8C%96%E6%8E%98%E8%BF%87%E7%A8%8Bsrc-%E7%9B%AE%E6%A0%87/" class="flex align-center">
+      <span>SSRF 探究与挖掘过程（SRC 目标）</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
