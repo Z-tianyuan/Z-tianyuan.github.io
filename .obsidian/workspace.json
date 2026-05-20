@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "content/github项目/NucleiAI 项目学习复盘 — 第二周.md",
+                "file": "content/github项目/NucleiAI 项目学习复盘 — 第三周.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "NucleiAI 项目学习复盘 — 第二周"
+              "title": "NucleiAI 项目学习复盘 — 第三周"
             }
           }
         ],
@@ -226,9 +226,10 @@
   },
   "active": "436944c2fd1e20ca",
   "lastOpenFiles": [
+    "content/github项目/NucleiAI 项目学习复盘 — 第二周.md",
+    "content/github项目/NucleiAI 项目学习复盘 — 第三周.md",
     "content/github项目/NucleiAI 项目学习复盘 — 第一周.md",
     "content/github项目/github魔改.md",
-    "content/github项目/NucleiAI 项目学习复盘 — 第二周.md",
     "content/posts/NucleiAI 项目学习复盘 — 第二周.md.tmp.24432.1779067614393",
     "content/github项目/第一天.md",
     "content/posts/访问控制漏洞狩猎（SOP）.md",
@@ -260,7 +261,6 @@
     "content/posts/SQL 注入标准化操作路径 (SOP).md",
     "content/posts/sql-injection-bypass-record.md",
     "content/posts/SSRF漏洞过程中的问题解答.md",
-    "content/posts/SSRF漏洞挖掘路径（SOP）.md",
     "_templates",
     "未命名.canvas"
   ]

@@ -1,9 +1,16 @@
 ---
-title: "NucleiAI 项目学习复盘 — 第一周 (2026-05-11 - 2026-05-17)"
+title: NucleiAI 项目学习复盘 — 第一周 (2026-05-6- 2026-05-12)
 date: 2026-05-18T12:00:00+08:00
 draft: false
-categories: ["项目实战"]
-tags: ["NucleiAI", "Nuclei", "漏洞扫描", "AI过滤", "FastAPI", "学习复盘"]
+categories:
+  - 项目实战
+tags:
+  - NucleiAI
+  - Nuclei
+  - 漏洞扫描
+  - AI过滤
+  - FastAPI
+  - 学习复盘
 ---
 
 ## 🎯 项目概述
@@ -41,13 +48,13 @@ http:                             # HTTP 请求定义
 
 ### 五种匹配器（Matchers）
 
-| 类型 | 用途 | 示例 |
-|------|------|------|
-| **word** | 关键字匹配 | 响应体含 "Directory listing for" |
-| **regex** | 正则提取 | `Python/\d+\.\d+\.\d+` 提取版本号 |
-| **status** | HTTP 状态码 | `200` 表示页面存在 |
-| **dsl** | 表达式组合 | `status_code==200 AND len(body)>1000` |
-| **binary** | 二进制匹配 | 非文本文件特征检测 |
+| 类型         | 用途       | 示例                                    |
+| ---------- | -------- | ------------------------------------- |
+| **word**   | 关键字匹配    | 响应体含 "Directory listing for"          |
+| **regex**  | 正则提取     | `Python/\d+\.\d+\.\d+` 提取版本号          |
+| **status** | HTTP 状态码 | `200` 表示页面存在                          |
+| **dsl**    | 表达式组合    | `status_code==200 AND len(body)>1000` |
+| **binary** | 二进制匹配    | 非文本文件特征检测                             |
 
 ### 匹配逻辑进阶
 
