@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "content/posts/未命名.md",
+                "file": "content/posts/密码学复习.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "未命名"
+              "title": "密码学复习"
             }
           }
         ],
@@ -227,7 +227,7 @@
   "active": "436944c2fd1e20ca",
   "lastOpenFiles": [
     "content/github项目/NucleiAI 项目学习复盘 — 第三周.md",
-    "content/posts/未命名.md",
+    "content/posts/密码学复习.md",
     "content/github项目/NucleiAI 项目学习复盘 — 第二周.md",
     "content/github项目/NucleiAI 项目学习复盘 — 第一周.md",
     "content/github项目/github魔改.md",
