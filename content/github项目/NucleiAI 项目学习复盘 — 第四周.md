@@ -30,14 +30,14 @@ tags:
 
 ### 6 个干扰项
 
-| 端点 | 触发模板 | 干扰原理 | AI 判定要点 |
-|------|---------|---------|-----------|
-| `/blog/xss-tutorial` | XSS | 安全教程中含有 `<script>` 代码示例 | 识别标题"教程""入门"，区分教学/漏洞 |
-| `/safe-search?q=<script>` | XSS | 用户输入被 `html.escape()` 转义 | 检测 HTML 实体编码（`&lt;script&gt;`） |
-| `/about` | Git 泄露 | 页面文字提及 "Index of /.git" | 区分文字提及和真实目录列表 |
-| `/goto?url=evil.com` | Open Redirect | 始终重定向到内部安全 URL | 检查 Location 是否为内部路径 |
-| `/status` | Debug 暴露 | 显示 "Debug Mode: OFF" | 识别调试模式已关闭的声明 |
-| `/oops` | Stack Trace | 通用 500 错误页，无实际堆栈 | 区分文字提及和真实文件路径泄露 |
+| 端点                        | 触发模板          | 干扰原理                     | AI 判定要点                        |
+| ------------------------- | ------------- | ------------------------ | ------------------------------ |
+| `/blog/xss-tutorial`      | XSS           | 安全教程中含有 `<script>` 代码示例  | 识别标题"教程""入门"，区分教学/漏洞           |
+| `/safe-search?q=<script>` | XSS           | 用户输入被 `html.escape()` 转义 | 检测 HTML 实体编码（`&lt;script&gt;`） |
+| `/about`                  | Git 泄露        | 页面文字提及 "Index of /.git"  | 区分文字提及和真实目录列表                  |
+| `/goto?url=evil.com`      | Open Redirect | 始终重定向到内部安全 URL           | 检查 Location 是否为内部路径            |
+| `/status`                 | Debug 暴露      | 显示 "Debug Mode: OFF"     | 识别调试模式已关闭的声明                   |
+| `/oops`                   | Stack Trace   | 通用 500 错误页，无实际堆栈         | 区分文字提及和真实文件路径泄露                |
 
 ### 关键技术细节
 
@@ -96,13 +96,14 @@ response_preview = f"{headers}\n\n--- response body ---\n{body}"
 
 ### 5 条硬规则
 
-| 规则 | 触发条件 | 动作 | 适用场景 |
-|------|---------|------|---------|
-| 技术识别保护 | `finding_type == "tech"` | 永不标误报 | 防止 AI 把技术栈识别当漏洞 |
-| XSS 转义检测 | body 含 `&lt;script&gt;` 且无 `<script>` | 自动标误报 | 正确转义的搜索页 |
-| 内部重定向 | Location 头为内部路径（`/` 开头） | 自动标误报 | 白名单重定向 |
-| 调试已关闭 | body 含 "Debug Mode: OFF" 或 "redacted" | 自动标误报 | 生产环境状态页 |
-| Git 文字提及 | 提及 "Index of /.git" 但无文件链接 | 自动标误报 | 非技术页面提及 git |
+| 规则       | 触发条件                                  | 动作    | 适用场景            |
+| -------- | ------------------------------------- | ----- | --------------- |
+| 技术识别保护   | `finding_type == "tech"`              | 永不标误报 | 防止 AI 把技术栈识别当漏洞 |
+| XSS 转义检测 | body 含 `&lt;script&gt;` 且无 `<script>` | 自动标误报 | 正确转义的搜索页        |
+| 内部重定向    | Location 头为内部路径（`/` 开头）               | 自动标误报 | 白名单重定向          |
+| 调试已关闭    | body 含 "Debug Mode: OFF" 或 "redacted" | 自动标误报 | 生产环境状态页         |
+| Git 文字提及 | 提及 "Index of /.git" 但无文件链接            | 自动标误报 | 非技术页面提及 git     |
+
 
 ### 面试表述
 
