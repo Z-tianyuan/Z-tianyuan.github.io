@@ -4,53 +4,24 @@
     "type": "split",
     "children": [
       {
-        "id": "11179632ff4f2f6b",
+        "id": "f172b92bfdf26822",
         "type": "tabs",
         "children": [
           {
-            "id": "077387de18b77d13",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "content/posts/ai 沙箱的测试.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "ai 沙箱的测试"
-            }
-          },
-          {
-            "id": "f53a422140890492",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "content/github项目/第一天.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "第一天"
-            }
-          },
-          {
-            "id": "436944c2fd1e20ca",
+            "id": "42aca86648da6fe9",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
                 "file": "content/posts/网络攻防期末考试复习重点.md",
-                "mode": "preview",
+                "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
               "title": "网络攻防期末考试复习重点"
             }
           }
-        ],
-        "currentTab": 2
+        ]
       }
     ],
     "direction": "vertical"
@@ -225,8 +196,11 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "436944c2fd1e20ca",
+  "active": "42aca86648da6fe9",
   "lastOpenFiles": [
+    "content/posts/ai 沙箱的测试.md",
+    "content/github项目/第一天.md",
+    "content/posts/网络攻防期末考试复习重点.md",
     "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780307133109",
     "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780307127393",
     "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780307116092",
@@ -237,7 +211,6 @@
     "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780299270254",
     "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780299260448",
     "content/github项目/项目完整学习指南.md",
-    "content/posts/网络攻防期末考试复习重点.md",
     "content/github项目/NucleiAI 项目学习复盘 — 第四周.md",
     "content/github项目/NucleiAI 项目学习复盘 — 第一周.md",
     "YAML简介.md",
@@ -257,14 +230,11 @@
     "content/posts/第十一周学习复盘.md",
     "content/posts/密码学复习.md",
     "content/posts/NucleiAI 项目学习复盘 — 第二周.md.tmp.24432.1779067614393",
-    "content/github项目/第一天.md",
     "content/posts/访问控制漏洞狩猎（SOP）.md",
     "content/posts/访问控制漏洞的探索路径.md",
     "content/posts/学习笔记模板.md",
-    "content/posts/学习笔记模板.md.tmp.24432.1779063593872",
     "_templates/Hugo挖洞SOP模板.md",
     "_templates/周度学习复盘模板.md",
-    "content/posts/ai 沙箱的测试.md",
     "content/posts/简历项目模板.md",
     "content/posts/实战 OOB 盲打 SSRF (SOP).md",
     "content/posts/技术员的盲点.md",
