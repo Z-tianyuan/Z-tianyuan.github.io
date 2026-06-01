@@ -227,6 +227,10 @@
   },
   "active": "436944c2fd1e20ca",
   "lastOpenFiles": [
+    "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780307133109",
+    "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780307127393",
+    "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780307116092",
+    "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780307102373",
     "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780299339460",
     "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780299329517",
     "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780299284398",
@@ -258,10 +262,8 @@
     "content/posts/访问控制漏洞的探索路径.md",
     "content/posts/学习笔记模板.md",
     "content/posts/学习笔记模板.md.tmp.24432.1779063593872",
-    "content/posts/NucleiAI 项目学习复盘 — 第一周.md.tmp.24432.1779063566760",
     "_templates/Hugo挖洞SOP模板.md",
     "_templates/周度学习复盘模板.md",
-    "content/github项目",
     "content/posts/ai 沙箱的测试.md",
     "content/posts/简历项目模板.md",
     "content/posts/实战 OOB 盲打 SSRF (SOP).md",
@@ -270,7 +272,6 @@
     "content/posts/黑客对于逻辑漏洞的探究过程.md",
     "content/posts/README.md",
     "Pasted image 20260412162252.png",
-    "_templates",
     "未命名.canvas"
   ]
 }
