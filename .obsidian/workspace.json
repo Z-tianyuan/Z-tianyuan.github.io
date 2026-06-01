@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "content/github项目/项目完整学习指南.md",
-                "mode": "source",
+                "file": "content/posts/网络攻防期末考试复习重点.md",
+                "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "项目完整学习指南"
+              "title": "网络攻防期末考试复习重点"
             }
           }
         ],
@@ -107,7 +107,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 200,
+    "collapsed": true
   },
   "right": {
     "id": "7c1a9f19fb70551f",
@@ -226,6 +227,13 @@
   },
   "active": "436944c2fd1e20ca",
   "lastOpenFiles": [
+    "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780299339460",
+    "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780299329517",
+    "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780299284398",
+    "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780299270254",
+    "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780299260448",
+    "content/github项目/项目完整学习指南.md",
+    "content/posts/网络攻防期末考试复习重点.md",
     "content/github项目/NucleiAI 项目学习复盘 — 第四周.md",
     "content/github项目/NucleiAI 项目学习复盘 — 第一周.md",
     "YAML简介.md",
@@ -262,8 +270,6 @@
     "content/posts/黑客对于逻辑漏洞的探究过程.md",
     "content/posts/README.md",
     "Pasted image 20260412162252.png",
-    "content/posts/整理四个星期学习的知识.md",
-    "content/posts/业务逻辑漏洞的类型.md",
     "_templates",
     "未命名.canvas"
   ]
