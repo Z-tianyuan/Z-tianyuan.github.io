@@ -164,11 +164,10 @@
   <div class="section">
     <div class="section-title">教育背景</div>
     <div class="edu-row">
-      <span class="school">江苏海洋大学</span>
+      <span class="school">江苏海洋大学 · 网络工程</span>
       <span class="date">2023.09 – 2027.06</span>
     </div>
-    <div class="edu-detail">网络工程 · 本科 · 预计 2027 年毕业</div>
-    <div class="edu-detail" style="margin-top: 4px; color: #444;">🏆 蓝桥杯全国软件和信息技术专业人才大赛 省赛三等奖</div>
+    <div class="edu-detail">本科 · 预计 2027 年毕业 &nbsp;|&nbsp; 🏆 蓝桥杯省赛三等奖</div>
   </div>
 
   <!-- ═══════════ PROJECTS ═══════════ -->
@@ -185,10 +184,10 @@
         独立设计并开发针对大语言模型（LLM）的安全攻防测试工具，实现从单点越狱探测到批量自动化审计的完整闭环。
       </div>
       <ul class="project-bullets">
-        <li><strong>纵深防御架构：</strong>设计"Regex 静态正则 + AI 语义意图"双层 WAF，第一层 O(1) 复杂度正则拦截 80% 低级攻击，第二层低 Temperature（0.01）Flash 模型进行意图级预审，有效防御 Base64 编码注入、开发者模式提权及情境嵌套（小说法）等高级 Prompt Injection。</li>
-        <li><strong>多模型鲁棒性竞技场：</strong>构建并发测试平台（Model Arena），同一 Payload 同时下发至不同参数级大模型。通过控制变量法对比弱模型的"情境幻觉"与强模型的"意图识别"差异，验证模型推理能力与抗越狱能力正相关的安全定论。</li>
-        <li><strong>幻觉识别与威胁定级：</strong>自研三级判定逻辑——泄露真实机密 → 高危，生成伪造数据但角色扮演崩溃 → 中危（对齐协议失效），安全拒绝 → 安全。将传统"漏洞/非漏洞"二分法升级为适应 LLM 特性的多级判定体系。</li>
-        <li><strong>批量审计与数据治理：</strong>基于 Pandas 构建 CSV 驱动的批量审计引擎，支持自动化漏洞评级。SQLite 全链路留存攻击日志，为后续 LLM 安全对齐微调（SFT/RLHF）积累高质量负面样本数据。</li>
+        <li><strong>纵深防御架构：</strong>设计"Regex 静态正则 + AI 语义意图"双层 WAF，第一层 O(1) 正则拦截 80% 低级攻击，第二层 Flash 模型（Temperature 0.01）进行意图预审，有效阻断 Base64 注入、开发者模式提权、小说嵌套法等高级 Prompt Injection 攻击。</li>
+        <li><strong>多模型鲁棒性竞技场：</strong>构建 Model Arena 并发测试平台，同一 Payload 同时探测强弱模型。通过控制变量法发现强模型（推理型）的意图识别能力显著优于弱模型（Flash），验证"推理能力与抗越狱正相关"的安全定论，为模型选型提供量化依据。</li>
+        <li><strong>幻觉识别与威胁定级：</strong>建立三级威胁判定体系——真实数据泄露为高危、角色扮演崩溃为幻觉中危、安全拒绝为通过——解决传统二分法无法区分"真正攻破"与"模型胡说"的问题，使定级结果可直接指导修复优先级。</li>
+        <li><strong>批量审计引擎：</strong>基于 Pandas 构建 CSV 批量审计引擎，支持测试用例高并发清洗与自动评级。SQLite 全链路留存攻击日志，积累的负面样本集可用于后续 LLM 安全对齐微调（SFT/RLHF）。</li>
       </ul>
     </div>
 
@@ -202,8 +201,8 @@
         在 Nuclei 扫描引擎之上集成本地 LLM，通过"AI 语义分析 + 硬规则修正"混合防线实现误报自动过滤，提供 Web 面板与中文报告一键生成。已开源（github.com/Z-tianyuan/NucleiAI）。
       </div>
       <ul class="project-bullets">
-        <li><strong>混合防线设计：</strong>自研"AI 批量语义分析 + 5 条硬规则修正"二级过滤架构。AI 层通过 5 轮 Prompt 迭代（场景化指引替代抽象规则）处理模糊语义，硬规则层处理 HTML 实体编码检测、内部重定向判定等确定性场景，综合准确率 90%+。架构支持 LLM 不可用时的优雅降级。</li>
-        <li><strong>全栈工程交付：</strong>独立搭建含 14 真漏洞（OWASP Top 10）与 6 误报干扰的验证靶场，编写 20 个 Nuclei YAML 检测模板。FastAPI + Jinja2 + 原生 CSS 构建深色仪表盘，集成 httpx 指纹识别与扫描 Diff 对比，一键导出 PDF 报告。~2800 行代码，跨语言工具链整合（Go → Python → Web），已开源。</li>
+        <li><strong>混合防线降低误报：</strong>设计"AI 批量语义分析 + 5 条硬规则"二级过滤架构，将扫描结果人工审核量降低 90%。AI 层经 5 轮 Prompt 迭代（场景化指引替代抽象规则），硬规则层兜底 HTML 转义检测、内部重定向判定等确定性场景，综合准确率 90%+。LLM 不可用时自动降级为纯规则模式。</li>
+        <li><strong>全栈工程验证闭环：</strong>从零搭建含 14 真漏洞（OWASP Top 10）与 6 误报干扰的验证靶场 + 20 个 Nuclei 模板，通过对照实验验证 AI 过滤效果。FastAPI + Jinja2 + 原生 CSS 仪表盘，httpx 指纹识别驱动智能选模，扫描 Diff 对比 + 一键 PDF 报告。~2800 行代码，Go → Python → Web 跨语言工具链，已开源。</li>
       </ul>
     </div>
 
@@ -224,9 +223,6 @@
       <span class="skill-tag">OWASP Top 10</span>
       <span class="skill-tag">Web 安全测试</span>
       <span class="skill-tag">SSRF / XSS / SQLi</span>
-      <span class="skill-tag">Git / GitHub</span>
-      <span class="skill-tag">Linux 基础</span>
-      <span class="skill-tag">HTML / CSS</span>
     </div>
   </div>
 
@@ -234,10 +230,7 @@
   <div class="section">
     <div class="section-title">其他</div>
     <div class="other-item">
-      <strong>技术博客：</strong>维护个人安全学习博客（https://github.com/Z-tianyuan），累计 30+ 篇文章，涵盖 SSRF、SQL 注入、业务逻辑漏洞、密码学等方向。NucleiAI 项目四周完整开发复盘与面试指南已归档。
-    </div>
-    <div class="other-item" style="margin-top:4px;">
-      <strong>自我评价：</strong>独立从零搭建完整安全工具的能力，习惯"发现问题 → 设计方案 → 工程实现 → 对照验证"闭环推进。对 LLM 安全方向有强烈兴趣，具备将传统安全攻防思维迁移至 AI 安全领域的能力。
+      <strong>技术博客：</strong>（<a href="https://github.com/Z-tianyuan" style="color: var(--accent);">github.com/Z-tianyuan</a>）累计 30+ 篇安全学习笔记与项目复盘。其中 SSRF 挖掘 SOP、NucleiAI 四周开发全记录等文章体现完整的研究方法论与工程实践能力。Web 安全漏洞狩猎方法论（SSRF / SQL 注入 / 访问控制 / 业务逻辑）系统归档。
     </div>
   </div>
 
