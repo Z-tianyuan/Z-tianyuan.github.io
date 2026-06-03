@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人简历</title>
+<style>
+  :root {
+    --text: #1a1a2e;
+    --muted: #555;
+    --accent: #2563eb;
+    --border: #e5e7eb;
+    --bg: #f8fafc;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", -apple-system, sans-serif;
+    color: var(--text);
+    background: #f1f5f9;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 800px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 32px 40px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+
+  /* ── Header ── */
+  .header {
+    margin-bottom: 18px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .header .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .header .contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .header .contact span { white-space: nowrap; }
+
+  /* ── Sections ── */
+  .section { margin-top: 16px; }
+  .section-title {
+    font-size: 14px;
+    font-weight: 700;
+    padding-bottom: 4px;
+    border-bottom: 2px solid var(--accent);
+    margin-bottom: 8px;
+    letter-spacing: .5px;
+  }
+
+  /* ── Education ── */
+  .edu-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13px;
+  }
+  .edu-row .school { font-weight: 600; }
+  .edu-row .date  { color: var(--muted); font-size: 12px; }
+  .edu-detail { font-size: 12px; color: var(--muted); margin-top: 1px; }
+
+  /* ── Skills ── */
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 8px;
+  }
+  .skill-tag {
+    font-size: 11px;
+    color: var(--accent);
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    padding: 1px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  /* ── Projects ── */
+  .project { margin-bottom: 10px; }
+  .project:last-child { margin-bottom: 0; }
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 2px;
+  }
+  .project-name { font-size: 14px; font-weight: 700; }
+  .project-tech { font-size: 11px; color: var(--muted); }
+  .project-summary { font-size: 12px; color: var(--muted); margin-bottom: 3px; }
+  .project-bullets { list-style: none; padding: 0; }
+  .project-bullets li {
+    font-size: 12px;
+    position: relative;
+    padding-left: 12px;
+    margin-bottom: 1px;
+    color: #333;
+  }
+  .project-bullets li::before {
+    content: "▸";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 10px;
+    line-height: 1.45;
+  }
+
+  /* ── Other ── */
+  .other-item {
+    font-size: 12px;
+    margin-bottom: 1px;
+  }
+
+  /* ── Print ── */
+  @media print {
+    body { background: #fff; }
+    .page {
+      margin: 0;
+      padding: 24px 32px;
+      box-shadow: none;
+      max-width: 100%;
+    }
+  }
+  @page {
+    size: A4;
+    margin: 10mm 12mm;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ═══════════ HEADER ═══════════ -->
+  <div class="header">
+    <h1>叶瑞翔</h1>
+    <div class="subtitle">网络安全专业 · 大三在读 · 期望实习岗位：AI 安全 / 安全开发</div>
+    <div class="contact">
+      <span>📧z-tianyuan@outlook.com</span>
+      <span>📱 19516920389</span>
+      <span>🔗 <a href="https://github.com/Z-tianyuan" style="color: var(--accent);">github.com/Z-tianyuan</a></span>
+      <span>📍无锡</span>
+    </div>
+  </div>
+
+  <!-- ═══════════ EDUCATION ═══════════ -->
+  <div class="section">
+    <div class="section-title">教育背景</div>
+    <div class="edu-row">
+      <span class="school">江苏海洋大学</span>
+      <span class="date">2023.09 – 2027.06</span>
+    </div>
+    <div class="edu-detail">网络工程 · 本科 · 预计 2027 年毕业</div>
+    <div class="edu-detail" style="margin-top: 4px; color: #444;">🏆 蓝桥杯全国软件和信息技术专业人才大赛 省赛三等奖</div>
+  </div>
+
+  <!-- ═══════════ PROJECTS ═══════════ -->
+  <div class="section">
+    <div class="section-title">项目经历</div>
+
+    <!-- 项目一：LLM 安全沙箱（AI 安全方向主打） -->
+    <div class="project">
+      <div class="project-header">
+        <span class="project-name">基于双层 WAF 架构的 LLM 安全攻防与自动化审计沙箱</span>
+        <span class="project-tech">Python · Streamlit · Pandas · SQLite · LLM API</span>
+      </div>
+      <div class="project-summary">
+        独立设计并开发针对大语言模型（LLM）的安全攻防测试工具，实现从单点越狱探测到批量自动化审计的完整闭环。
+      </div>
+      <ul class="project-bullets">
+        <li><strong>纵深防御架构：</strong>设计"Regex 静态正则 + AI 语义意图"双层 WAF，第一层 O(1) 复杂度正则拦截 80% 低级攻击，第二层低 Temperature（0.01）Flash 模型进行意图级预审，有效防御 Base64 编码注入、开发者模式提权及情境嵌套（小说法）等高级 Prompt Injection。</li>
+        <li><strong>多模型鲁棒性竞技场：</strong>构建并发测试平台（Model Arena），同一 Payload 同时下发至不同参数级大模型。通过控制变量法对比弱模型的"情境幻觉"与强模型的"意图识别"差异，验证模型推理能力与抗越狱能力正相关的安全定论。</li>
+        <li><strong>幻觉识别与威胁定级：</strong>自研三级判定逻辑——泄露真实机密 → 高危，生成伪造数据但角色扮演崩溃 → 中危（对齐协议失效），安全拒绝 → 安全。将传统"漏洞/非漏洞"二分法升级为适应 LLM 特性的多级判定体系。</li>
+        <li><strong>批量审计与数据治理：</strong>基于 Pandas 构建 CSV 驱动的批量审计引擎，支持自动化漏洞评级。SQLite 全链路留存攻击日志，为后续 LLM 安全对齐微调（SFT/RLHF）积累高质量负面样本数据。</li>
+      </ul>
+    </div>
+
+    <!-- 项目二：NucleiAI（辅助项目） -->
+    <div class="project">
+      <div class="project-header">
+        <span class="project-name">NucleiAI — AI 驱动的智能漏洞管理与误报过滤平台</span>
+        <span class="project-tech">Python · FastAPI · Nuclei (Go) · Ollama · Jinja2 · httpx</span>
+      </div>
+      <div class="project-summary">
+        在 Nuclei 扫描引擎之上集成本地 LLM，通过"AI 语义分析 + 硬规则修正"混合防线实现误报自动过滤，提供 Web 面板与中文报告一键生成。已开源（github.com/Z-tianyuan/NucleiAI）。
+      </div>
+      <ul class="project-bullets">
+        <li><strong>混合防线设计：</strong>自研"AI 批量语义分析 + 5 条硬规则修正"二级过滤架构。AI 层通过 5 轮 Prompt 迭代（场景化指引替代抽象规则）处理模糊语义，硬规则层处理 HTML 实体编码检测、内部重定向判定等确定性场景，综合准确率 90%+。架构支持 LLM 不可用时的优雅降级。</li>
+        <li><strong>全栈工程交付：</strong>独立搭建含 14 真漏洞（OWASP Top 10）与 6 误报干扰的验证靶场，编写 20 个 Nuclei YAML 检测模板。FastAPI + Jinja2 + 原生 CSS 构建深色仪表盘，集成 httpx 指纹识别与扫描 Diff 对比，一键导出 PDF 报告。~2800 行代码，跨语言工具链整合（Go → Python → Web），已开源。</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ═══════════ SKILLS ═══════════ -->
+  <div class="section">
+    <div class="section-title">专业技能</div>
+    <div class="skill-tags">
+      <span class="skill-tag">Python</span>
+      <span class="skill-tag">FastAPI</span>
+      <span class="skill-tag">Streamlit</span>
+      <span class="skill-tag">Jinja2</span>
+      <span class="skill-tag">SQLite</span>
+      <span class="skill-tag">Nuclei (YAML 模板)</span>
+      <span class="skill-tag">Ollama / LLM 部署</span>
+      <span class="skill-tag">Prompt Engineering</span>
+      <span class="skill-tag">OWASP Top 10</span>
+      <span class="skill-tag">Web 安全测试</span>
+      <span class="skill-tag">SSRF / XSS / SQLi</span>
+      <span class="skill-tag">Git / GitHub</span>
+      <span class="skill-tag">Linux 基础</span>
+      <span class="skill-tag">HTML / CSS</span>
+    </div>
+  </div>
+
+  <!-- ═══════════ PERSONAL ═══════════ -->
+  <div class="section">
+    <div class="section-title">其他</div>
+    <div class="other-item">
+      <strong>技术博客：</strong>维护个人安全学习博客（https://github.com/Z-tianyuan），累计 30+ 篇文章，涵盖 SSRF、SQL 注入、业务逻辑漏洞、密码学等方向。NucleiAI 项目四周完整开发复盘与面试指南已归档。
+    </div>
+    <div class="other-item" style="margin-top:4px;">
+      <strong>自我评价：</strong>独立从零搭建完整安全工具的能力，习惯"发现问题 → 设计方案 → 工程实现 → 对照验证"闭环推进。对 LLM 安全方向有强烈兴趣，具备将传统安全攻防思维迁移至 AI 安全领域的能力。
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

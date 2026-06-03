@@ -78,8 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "right": {
     "id": "7c1a9f19fb70551f",
@@ -196,20 +195,22 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "42aca86648da6fe9",
+  "active": "1ec661674640ff5e",
   "lastOpenFiles": [
+    "content/简历.pdf",
+    "content/简历.html.tmp.18104.1780477776738",
+    "content/简历.html.tmp.18104.1780477769434",
+    "content/简历.html.tmp.18104.1780477761062",
+    "content/简历.html.tmp.18104.1780477750779",
+    "content/简历.html.tmp.18104.1780477733874",
+    "content/简历.html.tmp.18104.1780477725841",
+    "content/简历.html.tmp.18104.1780477719026",
+    "content/简历.html.tmp.18104.1780477706956",
+    "content/简历.html.tmp.18104.1780477694699",
+    "content/简历.html.tmp.18104.1780477689241",
     "content/posts/ai 沙箱的测试.md",
     "content/github项目/第一天.md",
     "content/posts/网络攻防期末考试复习重点.md",
-    "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780307133109",
-    "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780307127393",
-    "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780307116092",
-    "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780307102373",
-    "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780299339460",
-    "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780299329517",
-    "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780299284398",
-    "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780299270254",
-    "content/posts/网络攻防期末考试复习重点.md.tmp.31244.1780299260448",
     "content/github项目/项目完整学习指南.md",
     "content/github项目/NucleiAI 项目学习复盘 — 第四周.md",
     "content/github项目/NucleiAI 项目学习复盘 — 第一周.md",
@@ -229,7 +230,6 @@
     "public/icons/calendar.svg",
     "content/posts/第十一周学习复盘.md",
     "content/posts/密码学复习.md",
-    "content/posts/NucleiAI 项目学习复盘 — 第二周.md.tmp.24432.1779067614393",
     "content/posts/访问控制漏洞狩猎（SOP）.md",
     "content/posts/访问控制漏洞的探索路径.md",
     "content/posts/学习笔记模板.md",
