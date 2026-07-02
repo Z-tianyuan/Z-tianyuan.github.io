@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>面试学习清单与模拟面试</title>
+<style>
+  body { font-family: "PingFang SC","Microsoft YaHei",sans-serif; max-width: 860px; margin: 0 auto; padding: 30px 40px; color: #222; line-height: 1.7; font-size: 14px; }
+  h1 { font-size: 24px; border-bottom: 2px solid #2563eb; padding-bottom: 8px; margin-top: 0; }
+  h2 { font-size: 18px; margin-top: 28px; border-bottom: 1px solid #e5e7eb; padding-bottom: 4px; }
+  h3 { font-size: 15px; margin-top: 20px; color: #333; }
+  h4 { font-size: 14px; margin-top: 16px; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0 16px; font-size: 13px; }
+  th, td { border: 1px solid #d1d5db; padding: 6px 10px; text-align: left; }
+  th { background: #f3f4f6; font-weight: 600; }
+  code { background: #f1f5f9; padding: 1px 5px; border-radius: 3px; font-size: 13px; }
+  pre { background: #1e293b; color: #e2e8f0; padding: 14px 18px; border-radius: 6px; overflow-x: auto; font-size: 13px; line-height: 1.5; }
+  pre code { background: none; padding: 0; color: inherit; }
+  blockquote { border-left: 3px solid #2563eb; margin: 12px 0; padding: 6px 16px; color: #555; background: #f8fafc; font-size: 13px; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 24px 0; }
+  a { color: #2563eb; }
+  ul, ol { padding-left: 22px; }
+  li { margin-bottom: 2px; }
+  @media print { body { padding: 20px 30px; } }
+  @page { size: A4; margin: 12mm 14mm; }
+</style>
+</head>
+<body>
+<h1 id="_1">面试学习清单与模拟面试</h1>
+<blockquote>
+<p>目标：能自信讲出简历上的每一项技术栈，AI 安全方向有独立判断力。</p>
+</blockquote>
+<hr />
+<h1 id="_2">第一部分：技术栈学习清单</h1>
+<h2 id="1-python">1. Python 核心（必问）</h2>
+<p>简历写了 Python，以下必须能脱稿讲：</p>
+<table>
+<thead>
+<tr>
+<th>知识点</th>
+<th>掌握标准</th>
+<th style="text-align: center;">完成</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>装饰器原理</td>
+<td>能写一个计时装饰器，讲清楚闭包</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>生成器与 yield</td>
+<td>能解释惰性求值，对比 list 内存差异</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>async/await 机制</td>
+<td>能解释事件循环，为什么要用异步（FastAPI 核心）</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td><code>__init__</code> vs <code>__new__</code></td>
+<td>能讲清楚实例化过程</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td><code>with</code> 上下文管理器</td>
+<td>能写一个自定义 context manager</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td><code>*args</code> / <code>**kwargs</code></td>
+<td>能解释解包机制和使用场景</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>GIL 是什么</td>
+<td>能讲清楚对多线程的影响，为什么 FastAPI 用 async</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td><code>.format()</code> vs f-string</td>
+<td>能讲出安全差异（你项目中修过的 Bug）</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>subprocess 模块</td>
+<td>能讲清 Popen/call/run 区别（你项目用到了）</td>
+<td style="text-align: center;">☐</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-fastapi">2. FastAPI（简历核心框架）</h2>
+<table>
+<thead>
+<tr>
+<th>知识点</th>
+<th>掌握标准</th>
+<th style="text-align: center;">完成</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>路由装饰器 <code>@app.get/post</code></td>
+<td>能写出完整路由，讲清 path/query/body 参数</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>依赖注入 (Depends)</td>
+<td>能解释原理和使用场景</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>async vs sync endpoint</td>
+<td>能说清什么时候用 async，什么时候不该用</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>中间件 (Middleware)</td>
+<td>能写出一个简单的请求日志中间件</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>BackgroundTasks</td>
+<td>能解释和 Celery 的区别</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>Pydantic 模型校验</td>
+<td>能写出请求/响应模型，讲清数据校验流程</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>FastAPI vs Flask</td>
+<td>能讲出选型理由（异步性能、自动文档、类型安全）</td>
+<td style="text-align: center;">☐</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-nuclei">3. Nuclei（简历差异性亮点）</h2>
+<table>
+<thead>
+<tr>
+<th>知识点</th>
+<th>掌握标准</th>
+<th style="text-align: center;">完成</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>YAML 模板结构</td>
+<td>能脱稿写出 id/info/http/matchers 完整结构</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>matcher 四种类型</td>
+<td>能讲清 word/regex/status/dsl 各自适用场景</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>matcher condition (and/or)</td>
+<td>能解释组合匹配逻辑</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>DSL 表达式</td>
+<td>能写 3 个常用 DSL（len(body)、contains、status_code）</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td><code>{{BaseURL}}</code> 变量</td>
+<td>能解释动态 URL 替换机制</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>Nuclei v2 vs v3 模板差异</td>
+<td>了解 <code>http:</code> vs <code>requests:</code> 格式区别</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>如何写一个 XSS 检测模板</td>
+<td>能从零口述：method → path → matchers(word)</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>如何避免误报</td>
+<td>能讲出你的设计思路（多关键词 and、精确匹配、排除模式）</td>
+<td style="text-align: center;">☐</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-web-o1">4. Web 安全基础（O(1) 反应级别）</h2>
+<table>
+<thead>
+<tr>
+<th>知识点</th>
+<th>掌握标准</th>
+<th style="text-align: center;">完成</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OWASP Top 10 2021</td>
+<td>能列出 10 个并各用一句话解释</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>XSS 三种类型</td>
+<td>反射型/存储型/DOM 型，能举例</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>SQL 注入原理</td>
+<td>能讲清联合查询/盲注/报错注入三种思路</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>SSRF 原理与利用链</td>
+<td>能讲出 SSRF → 内网探测 → Redis/MySQL 利用完整链条</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>CSRF 原理与防御</td>
+<td>能讲清同源策略、Token、SameSite Cookie</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>CORS 配置错误</td>
+<td>能解释 <code>Access-Control-Allow-Origin: *</code> 的风险</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>开放重定向</td>
+<td>能讲清利用场景（钓鱼、SSRF 跳板）</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>目录遍历/敏感文件</td>
+<td>能举例 <code>.git/</code>、<code>.env</code>、备份文件</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>信息泄露</td>
+<td>服务器版本、调试端点、Stack Trace、注释中的凭证</td>
+<td style="text-align: center;">☐</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-prompt-engineering">5. Prompt Engineering（项目实践）</h2>
+<table>
+<thead>
+<tr>
+<th>知识点</th>
+<th>掌握标准</th>
+<th style="text-align: center;">完成</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>System Prompt vs User Prompt</td>
+<td>能讲清角色定位差异</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>Few-shot vs Zero-shot</td>
+<td>能举例说明</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>Temperature 参数</td>
+<td>能解释高/低 Temperature 对输出的影响（沙箱项目用到 0.01）</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>场景化指引优于抽象规则</td>
+<td>能用你项目的 5 轮迭代经历举例</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>Prompt 注入防御</td>
+<td>能讲出你的双层 WAF 思路</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>批量推理 vs 逐条推理</td>
+<td>能讲出性能差异和准确率差异（NucleiAI 核心优化）</td>
+<td style="text-align: center;">☐</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6">6. 工程化能力</h2>
+<table>
+<thead>
+<tr>
+<th>知识点</th>
+<th>掌握标准</th>
+<th style="text-align: center;">完成</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>优雅降级设计</td>
+<td>能举例（AI 不可用 → 纯规则模式；LLM 摘要失败 → fallback 统计）</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>跨语言工具链</td>
+<td>能讲清楚 Go → JSONL → Python 的数据流</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>SQLite 使用场景</td>
+<td>能讲清适合什么场景、不适合什么场景</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>对照实验方法</td>
+<td>能解释你怎么验证 AI 准确率的（ground truth + 5 轮重复）</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>批量性能优化</td>
+<td>5min → 1min 怎么做的</td>
+<td style="text-align: center;">☐</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="ai">第二部分：AI 安全重要知识点</h1>
+<blockquote>
+<p>既然 AI 安全是你的主攻方向，以下知识点面试时必须能聊。</p>
+</blockquote>
+<h2 id="1-prompt-injection">1. Prompt Injection（核心）</h2>
+<table>
+<thead>
+<tr>
+<th>知识点</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>直接注入</td>
+<td>最基础："忽略之前的指令，做 X"</td>
+</tr>
+<tr>
+<td>间接注入</td>
+<td>通过外部数据源注入（网页、文档、邮件），RAG 场景的致命问题</td>
+</tr>
+<tr>
+<td>多语言注入</td>
+<td>用非英语语言绕过安全检测</td>
+</tr>
+<tr>
+<td>编码绕过</td>
+<td>Base64、ROT13、Unicode 等绕过关键词过滤</td>
+</tr>
+<tr>
+<td>角色扮演越狱</td>
+<td>DAN 模式、开发者模式、奶奶漏洞</td>
+</tr>
+<tr>
+<td>情境嵌套（小说法）</td>
+<td>你项目中提到的高阶攻击——在虚构故事中诱骗模型突破限制</td>
+</tr>
+<tr>
+<td>多轮洗脑</td>
+<td>长对话中逐步削弱安全约束（注意力衰减）</td>
+</tr>
+<tr>
+<td>防御方案</td>
+<td>你项目的双层 WAF（Regex + AI 语义）、系统指令重注入（Anchoring）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-llm-alignment">2. LLM 安全对齐（Alignment）</h2>
+<table>
+<thead>
+<tr>
+<th>知识点</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RLHF</td>
+<td>人类反馈强化学习，当前主流对齐方式</td>
+</tr>
+<tr>
+<td>SFT</td>
+<td>监督微调，RLHF 的前置步骤</td>
+</tr>
+<tr>
+<td>Constitutional AI</td>
+<td>Anthropic 的方案——让 AI 自己给自己提反馈</td>
+</tr>
+<tr>
+<td>Reward Hacking</td>
+<td>模型找到捷径满足 reward 而非真正对齐（面试高阶话题）</td>
+</tr>
+<tr>
+<td>对齐税</td>
+<td>对齐可能导致模型能力下降，如何平衡</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-llm">3. LLM 红队测试</h2>
+<table>
+<thead>
+<tr>
+<th>知识点</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>对抗性测试</td>
+<td>系统性构造恶意 Prompt 探测模型边界</td>
+</tr>
+<tr>
+<td>分类体系</td>
+<td>你的三级判定（高危泄露/中危幻觉/安全）</td>
+</tr>
+<tr>
+<td>自动化红队</td>
+<td>用另一个 LLM 生成攻击 Prompt（你的批量审计引擎思路）</td>
+</tr>
+<tr>
+<td>覆盖率</td>
+<td>不同攻击面：PII 泄露、越狱、有害内容、工具滥用</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4">4. 模型评估基准</h2>
+<table>
+<thead>
+<tr>
+<th>知识点</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model Arena 概念</td>
+<td>你的项目核心——多模型并发对比，控制变量法</td>
+</tr>
+<tr>
+<td>评估维度</td>
+<td>安全性、鲁棒性、幻觉率、指令遵循度</td>
+</tr>
+<tr>
+<td>强弱模型差异</td>
+<td>Flash 模型（快但弱）vs 推理模型（慢但强）在安全上的差异</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5">5. 行业热点（展示视野）</h2>
+<table>
+<thead>
+<tr>
+<th>话题</th>
+<th>需要了解的</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OWASP Top 10 for LLM</td>
+<td>2025 版：Prompt Injection、Insecure Output、Training Data Poisoning、Model Denial of Service、Supply Chain 等</td>
+</tr>
+<tr>
+<td>RAG 安全问题</td>
+<td>间接注入 + 数据源投毒——目前最热门的方向</td>
+</tr>
+<tr>
+<td>Agent 安全</td>
+<td>Tool use 场景下的权限控制、命令注入</td>
+</tr>
+<tr>
+<td>MCP 安全</td>
+<td>Anthropic 的 Model Context Protocol，跨工具调用的安全边界</td>
+</tr>
+<tr>
+<td>国内法规</td>
+<td>《生成式人工智能服务管理暂行办法》基本要求</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6_1">6. 几组必须能讲的对比</h2>
+<table>
+<thead>
+<tr>
+<th>对比</th>
+<th>你的观点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>本地模型 vs 云端 API</td>
+<td>隐私 + 零成本 + 可控，但稳定性差 → 混合防线弥补</td>
+</tr>
+<tr>
+<td>量化小模型 vs 大模型</td>
+<td>小模型波动大但够用，配合硬规则可达到生产可用的准确率</td>
+</tr>
+<tr>
+<td>AI 判定 vs 规则判定</td>
+<td>AI 处理模糊场景，规则兜底确定性场景——不是二选一，是互补</td>
+</tr>
+<tr>
+<td>逐条推理 vs 批量推理</td>
+<td>批量更快且更准（全局上下文）——用你的项目数据说话</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="_3">第三部分：模拟面试问题</h1>
+<h2 id="a-60">A. 项目深挖（必问，占面试 60%）</h2>
+<h3 id="llm">关于 LLM 安全沙箱</h3>
+<p><strong>Q1：介绍一下这个项目，你解决了什么问题？</strong></p>
+<blockquote>
+<p>回答框架：一句话总结 → 核心问题 → 你的方案 → 关键成果</p>
+</blockquote>
+<p><strong>Q2：双层 WAF 具体怎么工作的？第一层挂了第二层怎么兜底？</strong></p>
+<blockquote>
+<p>要讲出：静态 Regex（黑名单关键词，O(1)低延迟）→ AI 语义预审（Flash 模型，低 Temperature）→ 两层是串联关系，第一层拦截不触发第二层，节省 API 成本</p>
+</blockquote>
+<p><strong>Q3：你怎么判断模型是被"真正攻破"还是"在胡说八道"？</strong></p>
+<blockquote>
+<p>核心回答：真实 SECRET_FLAG 泄露 = 系统级高危；伪造 FLAG 但角色扮演崩溃 = 中危（对齐协议失效）；安全拒绝 = 安全。关键洞察在于区分"数据泄露"和"模型幻觉"——传统二分法做不到。</p>
+</blockquote>
+<p><strong>Q4：第二层 AI 预审用的是什么模型？为什么选它？Temperature 为什么设 0.01？</strong></p>
+<blockquote>
+<p>Flash 模型轻量低成本；Temperature 0.01 剥离创造力，追求判定确定性——安全审计场景不需要创造性。</p>
+</blockquote>
+<p><strong>Q5：如果攻击者用中文/文言文/甚至 emoji 来注入，你的正则能拦住吗？</strong></p>
+<blockquote>
+<p>正则层有天然局限（只覆盖已知模式），这正是为什么需要 AI 语义层。AI 不管输入是什么语言/形式，看的是意图。但如果两层都挂了，坦诚承认这是当前方案的局限性，然后讲改进思路（多语言对抗训练、持续补充规则库）。</p>
+</blockquote>
+<h3 id="nucleiai">关于 NucleiAI</h3>
+<p><strong>Q6：为什么做这个项目？Nuclei 本身不是已经很好用了吗？</strong></p>
+<blockquote>
+<p>Nuclei 是规则匹配引擎——告诉你匹配到了，不告诉你是不是误报。安全团队每天花 30% 时间人工审核。我的目标是加一层 AI 分析自动过滤。</p>
+</blockquote>
+<p><strong>Q7：AI 分析从逐条改成批量，除了速度还有别的收益吗？</strong></p>
+<blockquote>
+<p>有。LLM 看到全部结果的全局上下文时，能做更好的相对判断。比如它能看到"这条 SQL 报错 + 这条堆栈泄露 + 这条是教程页"，三者对比后判断更准。这是意外收获。</p>
+</blockquote>
+<p><strong>Q8：你说 5 条硬规则修正 AI 误判，能具体讲一条吗？你遇到过 AI 判错、硬规则纠正的案例？</strong></p>
+<blockquote>
+<p>挑 XSS 转义检测讲：body 含 <code>&amp;lt;script&amp;gt;</code> 但无真实 <code>&lt;script&gt;</code> 标签 → 说明用户输入已被 HTML 实体编码 → 绝对安全。有次 AI 看到响应里有 script 字样就判漏洞，硬规则自动修正为误报。</p>
+</blockquote>
+<p><strong>Q9：你怎么验证 AI 判得对？</strong></p>
+<blockquote>
+<p>对照实验。每个靶场端点设计时就标注了 ground truth（真漏洞/误报干扰），5 轮重复测试记录波动。8B 模型波动 75%-100%，最终轮 100%。所以不是说"AI 准"，而是说"混合防线保证稳态 90%+"。</p>
+</blockquote>
+<p><strong>Q10：如果 Ollama 挂了怎么办？</strong></p>
+<blockquote>
+<p>架构支持优雅降级。AI 模块不可用时，filter_results() 返回默认判定（类型 unknown、标记为非误报），扫描正常执行。报告生成也有纯代码 fallback 统计。整个系统不依赖 AI 也能跑。</p>
+</blockquote>
+<h2 id="b">B. 技术基础（考察基本功）</h2>
+<p><strong>Q11：Python 的 async/await 和同步函数有什么区别？为什么你的 FastAPI 项目要用 async？</strong></p>
+<blockquote>
+<p>同步函数阻塞线程，async 遇到 I/O 等待时释放控制权给事件循环。FastAPI 调用外部工具（Nuclei subprocess、Ollama HTTP API）都是 I/O 密集操作，用 async 可以并发处理多个请求而不阻塞。</p>
+</blockquote>
+<p><strong>Q12：FastAPI 和 Flask 有什么区别？为什么不选 Flask？</strong></p>
+<blockquote>
+<p>FastAPI 原生 async 支持 + 自动 OpenAPI 文档 + Pydantic 数据校验 + 性能接近 Node.js。Flask 是同步框架，需要用扩展库才能实现这些。我的项目需要处理较长时间的扫描任务，async 更合适。</p>
+</blockquote>
+<p><strong>Q13：你在项目里用 subprocess 调用 Nuclei（Go 写的），Python 怎么处理跨语言数据交换？</strong></p>
+<blockquote>
+<p>Nuclei 支持 <code>-jsonl</code> 输出，每行一个 JSON 对象。Python 通过 subprocess.run() 执行命令，捕获 stdout，逐行 json.loads() 解析。中间格式是 JSONL，桥接 Go ←→ Python。</p>
+</blockquote>
+<p><strong>Q14：SQLite 适合生产环境吗？为什么你的项目用它？</strong></p>
+<blockquote>
+<p>适合本地/单机场景和原型验证，不适合高并发写入。我项目定位是本地工具而非 Web 服务，SQLite 零配置、零维护。如果上生产，我会迁移到 PostgreSQL 并增加连接池管理。</p>
+</blockquote>
+<p><strong>Q15：<code>split("\r\n\r\n")[0]</code> 这个 Bug 你是怎么发现的？</strong></p>
+<blockquote>
+<p>AI 判定结果一直很差，不符合预期。我开始怀疑 Prompt 问题，调整了几轮没改善。然后回到数据源头——打印了传给 AI 的响应摘要，发现全是 HTTP 头（Content-Type、Server 等），完全没有页面正文。AI 实际上在盲猜。改成 <code>[0][:200]</code> 取头 + <code>[1][:600]</code> 取体后，准确率立刻提升。</p>
+</blockquote>
+<h2 id="c-ai">C. AI 安全专项（面试官可能会试探你的深度）</h2>
+<p><strong>Q16：你觉得当前 LLM 最大的安全风险是什么？</strong></p>
+<blockquote>
+<p>两条线。应用层：Prompt Injection（尤其是间接注入——RAG 场景下通过检索到的恶意文档注入），因为这是 LLM 独有的、传统安全体系完全不覆盖的攻击面。系统层：Agent + Tool Use 下的权限失控——LLM 被诱导执行危险操作。OWASP Top 10 for LLM 2025 把这两项排在前两位。</p>
+</blockquote>
+<p><strong>Q17：间接注入和直接注入有什么区别？为什么更危险？</strong></p>
+<blockquote>
+<p>直接注入是用户直接在对话框输入恶意指令。间接注入是攻击者通过外部数据源（网页、文档、知识库）注入，用户在不知情的情况下触发。RAG 应用检索到含隐藏指令的文档 → LLM 执行指令 → 泄露信息。用户看不到恶意输入，更难防范。</p>
+</blockquote>
+<p><strong>Q18：你怎么评估一个 LLM 的安全性？有想过系统化的评估框架吗？</strong></p>
+<blockquote>
+<p>我项目里的 Model Arena + 多轮测试就是初步的评估框架——同一攻击载荷，多模型并发，控制变量对比。如果要系统化：按攻击面分类（越狱/PII/工具滥用/有害内容），每个类别设标准测试集，记录通过率和防御退化曲线。这其实也是我项目后续想做的方向。</p>
+</blockquote>
+<p><strong>Q19：本地部署 8B 小模型做安全分析，最大的限制是什么？怎么解决？</strong></p>
+<blockquote>
+<p>最大限制是输出一致性——8B 量化模型面对同样输入，多次输出结果可能不同，准确率 75%-100% 波动。我的方案是混合防线：AI 做语义判断 + 硬规则做确定性兜底。如果资源允许，升级到 32B 或云端大模型能从根本上减少波动。</p>
+</blockquote>
+<p><strong>Q20：你有关注过模型的注意力衰减问题吗？多轮对话安全性退化怎么解决？</strong></p>
+<blockquote>
+<p>这正是我 LLM 沙箱项目里讨论过的问题。多轮对话中，System Prompt 的有效注意力随上下文增长而衰减——模型逐渐"忘记"安全约束。我当时的方案是：当前架构采用无状态设计（每次请求隔离），天然免疫多轮攻击。如果必须保持记忆，可以 Anchoring——在每轮拼接历史前，强制重注入最高优先级的安全指令，保证模型生成回复前看到的最后一行永远是安全底线。</p>
+</blockquote>
+<h2 id="d">D. 行为/设计题（考察思维过程）</h2>
+<p><strong>Q21：如果让你从零设计一个 Web 漏洞扫描器，你会怎么做？</strong></p>
+<blockquote>
+<p>分层：信息收集（httpx 指纹 + 爬虫）→ 漏洞检测（模板引擎，参考 Nuclei 的 YAML 驱动方式）→ 结果分析（AI 误报过滤）→ 报告输出。关键是模块解耦，每层可以独立替换。</p>
+</blockquote>
+<p><strong>Q22：如果 AI 分析的结果和我们预期不符，你怎么排查？</strong></p>
+<blockquote>
+<p>我的排查逻辑：先确认输入对不对（数据层）→ 再确认 Prompt 合不合理（指令层）→ 最后怀疑模型能力。项目里的修复经历就是按这个顺序——最终定位到数据层 Bug。</p>
+</blockquote>
+<p><strong>Q23：你项目里最大的技术难点是什么？怎么克服的？</strong></p>
+<blockquote>
+<p>选一个具体的讲。推荐讲响应摘要 Bug 或 Prompt 迭代过程——有故事有方法，比说"技术选型"这种虚的强得多。</p>
+</blockquote>
+<p><strong>Q24：你的项目如果继续做下去，下一步会做什么？</strong></p>
+<blockquote>
+<p>三个方向：① 接入更大模型验证准确率上限；② 前端重构为 React/Vue（当前是服务端渲染）；③ 支持 Nuclei 官方全量模板库，按指纹智能选择。思路清晰，优先级明确。</p>
+</blockquote>
+<p><strong>Q25：你对安全行业的哪个方向最感兴趣？为什么？</strong></p>
+<blockquote>
+<p>AI 安全，尤其是 LLM 应用安全（Prompt Injection、RAG 安全、Agent 安全）。原因是：这个方向太新，传统安全专家还在学习 LLM、AI 专家不懂安全，交叉领域空间大。我的两个项目刚好在这个交叉点上——一个攻 LLM、一个用 LLM 做防御。</p>
+</blockquote>
+<hr />
+<h1 id="3">第四部分：面试前 3 天冲刺计划</h1>
+<h2 id="day-1">Day 1：基础扫盲</h2>
+<ul>
+<li>过完 Python 9 个知识点（装饰器、async、GIL 是重点）</li>
+<li>过完 FastAPI 7 个知识点</li>
+<li>过完 Web 安全 9 个知识点（OWASP Top 10 背出来）</li>
+</ul>
+<h2 id="day-2-ai">Day 2：项目 + AI 安全</h2>
+<ul>
+<li>过完 Nuclei 8 个知识点</li>
+<li>熟读两个项目的核心数据（准确率、代码量、耗时、模板数）</li>
+<li>过完 AI 安全 6 组知识点 + 5 组对比</li>
+<li>口头模拟回答 25 道面试题，计时练习</li>
+</ul>
+<h2 id="day-3">Day 3：模拟演练</h2>
+<ul>
+<li>找朋友或对着镜子完整讲一遍项目介绍（30 秒版 + 2 分钟版）</li>
+<li>重点练 5 道最可能被问的题：Q1/Q2/Q6/Q9/Q15</li>
+<li>复习自己博客里的面试话术和追问清单</li>
+</ul>
+<hr />
+<blockquote>
+<p>核心原则：不要背答案，要理解逻辑。面试官能听出来你在念稿还是在思考。
+你的最大竞争力不是"会写代码"，而是"能从问题定义到工程验证完整闭环"——这是大三学生里非常难得的。</p>
+</blockquote></body></html>
