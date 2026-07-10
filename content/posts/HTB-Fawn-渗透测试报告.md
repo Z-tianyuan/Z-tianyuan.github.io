@@ -31,8 +31,8 @@ nmap -sV -T4 -Pn 10.129.136.100
 **扫描结果：**
 
 ```
-PORT   STATE  SERVICE    VERSION
-21/tcp open   tcpwrapped
+PORT   STATE SERVICE    VERSION
+21/tcp open  tcpwrapped
 ```
 
 **关键发现：** 目标开放 21 端口，即 FTP 服务。"tcpwrapped" 说明 nmap 无法识读版本号，但端口号本身就是最强指纹——21 = FTP。
@@ -129,3 +129,26 @@ bye             # 退出 FTP
 2. **上传 Webshell** — 如果 FTP 目录恰好是 Web 根目录，上传一句话木马拿 WebShell
 3. **内网跳板** — FTP 服务器往往同时连接内外网，可作为横向移动的起点
 4. **密码喷洒** — 发现的用户名列表可用于其他服务（SSH、邮箱）的密码爆破
+
+---
+
+### 六、HTB Academy 知识点
+
+Academy 交互式教程中涉及的核心问答：
+
+| 问题 | 答案 |
+|------|------|
+| FTP 是什么的缩写？ | File Transfer Protocol |
+| FTP 默认监听端口？ | 21 |
+| 基于 SSH 的 FTP 安全替代协议？ | SFTP |
+| 测试连通性的 ICMP 命令？ | ping |
+| FTP 客户端帮助菜单命令？ | `ftp -?` |
+| FTP 客户端在线帮助命令？ | `?` 或 `help` |
+
+**补充知识：**
+
+- FTP 数据传输为**明文**，密码和文件内容均不加密，可被中间人截获
+- SFTP（SSH File Transfer Protocol）通过 SSH 隧道加密传输，是 FTP 的安全替代
+- FTPS 是另一选择，通过 TLS/SSL 加密 FTP 连接
+- `ping` 基于 ICMP 协议，是测试网络连通性的第一步
+- nmap OS 检测 (`-O`) 通过 TCP/IP 协议栈指纹判断目标操作系统
