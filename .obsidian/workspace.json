@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "content/posts/HTB-Fawn-渗透测试报告.md",
+                "file": "content/posts/HTB-Dancing-渗透测试报告.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "HTB-Fawn-渗透测试报告"
+              "title": "HTB-Dancing-渗透测试报告"
             }
           }
         ]
@@ -197,17 +197,19 @@
   },
   "active": "42aca86648da6fe9",
   "lastOpenFiles": [
+    "content/posts/HTB-Crocodile-渗透测试报告.md",
+    "content/posts/HTB-Fawn-渗透测试报告.md",
+    "content/posts/HTB-Meow-渗透测试报告.md",
+    "content/posts/HTB-Redeemer-渗透测试报告.md",
     "content/posts/HTB-Sequel-渗透测试报告.md",
     "content/posts/HTB-Appointment-渗透测试报告.md",
     "content/posts/HTB-Appointment-渗透测试报告.md.tmp.29304.1783758829647",
     "content/posts/HTB-Redeemer-渗透测试报告.md.tmp.29304.1783757355493",
-    "content/posts/HTB-Redeemer-渗透测试报告.md",
     "content/posts/HTB-Redeemer-渗透测试报告.md.tmp.29304.1783756177403",
     "content/posts/HTB-Dancing-渗透测试报告.md",
     "content/posts/HTB-Cap-渗透测试报告.md",
     "content/posts/HTB-Cap-渗透测试报告.md.tmp.17712.1783670942192",
     "content/posts/HTB-Fawn-渗透测试报告.md.tmp.17712.1783667761750",
-    "content/posts/HTB-Meow-渗透测试报告.md",
     "Pasted image 20260709173408.png",
     "content/posts/🧠 如何训练自己打破“固定思维”？.md",
     "content/posts/第十一周学习复盘.md",
@@ -232,8 +234,6 @@
     "content/简历.html.tmp.18104.1780481830634",
     "content/简历.html.tmp.18104.1780481821931",
     "content/简历.html.tmp.18104.1780481794406",
-    "content/github项目/第一天.md",
-    "content/github项目/项目完整学习指南.md",
     "Pasted image 20260412163338.png",
     "Pasted image 20260412163302.png",
     "Pasted image 20260412150148.png",
